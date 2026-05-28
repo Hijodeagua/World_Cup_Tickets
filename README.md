@@ -76,12 +76,17 @@ curl -H "Authorization: Bearer <CRON_SECRET>" http://localhost:3000/api/cron/ref
 
 ## Data accuracy note
 
-The 16 venues are the confirmed 2026 host stadiums. The group draw and kickoff
-times in `data/fixtures-2026.json` are a structurally-correct **placeholder**
-(12 groups of 4; only the three hosts marked confirmed) so the app runs
-end-to-end. Update team assignments and kickoffs from the official FIFA draw —
-the seed upserts by `fifaMatchNo`, so re-running picks up changes, and seed-time
-validation rejects malformed fixtures.
+`data/fixtures-2026.json` holds the **official** group-stage fixtures (FIFA Match
+Schedule v17): the real 12 groups, team assignments, dates and host venues for
+all 72 group matches. Kickoff **times** are not in that source, so each day's
+matches are staggered across afternoon/evening slots and should be treated as
+approximate until confirmed. Knockout matches (Round of 32 onward) remain
+provisional placeholders since the teams depend on group results.
+
+The seed upserts by `fifaMatchNo`, so re-running picks up corrections, and
+seed-time validation fails loudly on malformed fixtures (wrong group sizes,
+unknown team/venue references, a team not playing exactly 3 group games, or a
+stadium double-booked on a day).
 
 ## Out of scope (v1)
 

@@ -15,43 +15,69 @@ interface FixtureTeam {
   name: string;
   group: string;
   flag: string;
-  confirmed: boolean;
+}
+interface FixtureGroupMatch {
+  date: string;
+  group: string;
+  home: string;
+  away: string;
+  venue: string;
 }
 
-const MATCH_SPACING_HOURS = 3; // unique-per-venue spacing => no double-booking
 const GROUPS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"] as const;
+const DAY_BASE_HOUR_UTC = 12; // first kickoff slot of a match day
+const SLOT_SPACING_HOURS = 2; // stagger same-day matches
 
-// Round-robin pairings for a 4-team group (indices into the group's team list).
-const ROUND_ROBIN: [number, number][] = [
-  [0, 1],
-  [2, 3],
-  [0, 2],
-  [1, 3],
-  [0, 3],
-  [1, 2],
-];
-
-function validateFixtures(venues: FixtureVenue[], teams: FixtureTeam[]) {
+function validateFixtures(venues: FixtureVenue[], teams: FixtureTeam[], matches: FixtureGroupMatch[]) {
   const errors: string[] = [];
 
   const venueKeys = new Set(venues.map((v) => v.key));
   if (venueKeys.size !== venues.length) errors.push("duplicate venue keys");
   if (venues.length !== 16) errors.push(`expected 16 venues, got ${venues.length}`);
 
-  const byGroup = new Map<string, FixtureTeam[]>();
+  const teamsByGroup = new Map<string, FixtureTeam[]>();
   for (const t of teams) {
-    if (!byGroup.has(t.group)) byGroup.set(t.group, []);
-    byGroup.get(t.group)!.push(t);
+    if (!teamsByGroup.has(t.group)) teamsByGroup.set(t.group, []);
+    teamsByGroup.get(t.group)!.push(t);
   }
   for (const g of GROUPS) {
-    const n = byGroup.get(g)?.length ?? 0;
+    const n = teamsByGroup.get(g)?.length ?? 0;
     if (n !== 4) errors.push(`group ${g} has ${n} teams, expected 4`);
   }
-  const extra = [...byGroup.keys()].filter((g) => !GROUPS.includes(g as (typeof GROUPS)[number]));
-  if (extra.length) errors.push(`unexpected groups: ${extra.join(", ")}`);
+  const extraGroups = [...teamsByGroup.keys()].filter((g) => !GROUPS.includes(g as (typeof GROUPS)[number]));
+  if (extraGroups.length) errors.push(`unexpected groups: ${extraGroups.join(", ")}`);
 
   const codes = new Set(teams.map((t) => t.code));
   if (codes.size !== teams.length) errors.push("duplicate team codes");
+  const groupByCode = new Map(teams.map((t) => [t.code, t.group]));
+
+  if (matches.length !== 72) errors.push(`expected 72 group matches, got ${matches.length}`);
+
+  const appearances = new Map<string, number>();
+  const matchesPerGroup = new Map<string, number>();
+  const venueDateSlot = new Set<string>();
+
+  for (const m of matches) {
+    if (!venueKeys.has(m.venue)) errors.push(`match ${m.home}-${m.away}: unknown venue "${m.venue}"`);
+    for (const code of [m.home, m.away]) {
+      if (!codes.has(code)) errors.push(`match references unknown team "${code}"`);
+      else if (groupByCode.get(code) !== m.group) errors.push(`team ${code} listed in group ${m.group} but belongs to ${groupByCode.get(code)}`);
+      appearances.set(code, (appearances.get(code) ?? 0) + 1);
+    }
+    matchesPerGroup.set(m.group, (matchesPerGroup.get(m.group) ?? 0) + 1);
+
+    // No stadium hosts two matches on the same day.
+    const vd = `${m.venue}|${m.date}`;
+    if (venueDateSlot.has(vd)) errors.push(`venue ${m.venue} double-booked on ${m.date}`);
+    venueDateSlot.add(vd);
+  }
+
+  for (const g of GROUPS) {
+    if ((matchesPerGroup.get(g) ?? 0) !== 6) errors.push(`group ${g} has ${matchesPerGroup.get(g) ?? 0} matches, expected 6`);
+  }
+  for (const t of teams) {
+    if ((appearances.get(t.code) ?? 0) !== 3) errors.push(`team ${t.code} plays ${appearances.get(t.code) ?? 0} group matches, expected 3`);
+  }
 
   if (errors.length) {
     throw new Error(`Fixture validation failed:\n - ${errors.join("\n - ")}`);
@@ -61,8 +87,9 @@ function validateFixtures(venues: FixtureVenue[], teams: FixtureTeam[]) {
 async function main() {
   const venues = fixtures.venues as FixtureVenue[];
   const teams = fixtures.teams as FixtureTeam[];
+  const groupMatches = fixtures.groupMatches as FixtureGroupMatch[];
 
-  validateFixtures(venues, teams);
+  validateFixtures(venues, teams, groupMatches);
 
   // Venues.
   const venueIdByKey = new Map<string, string>();
@@ -76,25 +103,23 @@ async function main() {
   }
   const venueIds = venues.map((v) => venueIdByKey.get(v.key)!);
 
-  // Teams.
+  // Teams (group-stage draw is final, so all confirmed).
   const teamIdByCode = new Map<string, string>();
   for (const t of teams) {
     const row = await prisma.team.upsert({
       where: { code: t.code },
-      create: { code: t.code, name: t.name, group: t.group, flag: t.flag, confirmed: t.confirmed },
-      update: { name: t.name, group: t.group, flag: t.flag, confirmed: t.confirmed },
+      create: { code: t.code, name: t.name, group: t.group, flag: t.flag, confirmed: true },
+      update: { name: t.name, group: t.group, flag: t.flag, confirmed: true },
     });
     teamIdByCode.set(t.code, row.id);
   }
 
-  const teamsByGroup = new Map<string, FixtureTeam[]>();
-  for (const g of GROUPS) teamsByGroup.set(g, teams.filter((t) => t.group === g));
-
-  const start = new Date(`${fixtures.groupStageStart}T16:00:00.000Z`);
   const seen = new Set<string>(); // venueId|kickoff collision guard
 
   let matchNo = 0;
   const upsertMatch = async (data: {
+    kickoff: Date;
+    venueId: string;
     stage: string;
     group: string | null;
     confirmed: boolean;
@@ -104,58 +129,48 @@ async function main() {
     awayLabel?: string;
   }) => {
     matchNo++;
-    const venueId = venueIds[(matchNo - 1) % venueIds.length];
-    const kickoff = new Date(start.getTime() + (matchNo - 1) * MATCH_SPACING_HOURS * 3600_000);
-
-    const collisionKey = `${venueId}|${kickoff.toISOString()}`;
-    if (seen.has(collisionKey)) {
-      throw new Error(`venue double-booked at ${collisionKey} (match ${matchNo})`);
-    }
+    const collisionKey = `${data.venueId}|${data.kickoff.toISOString()}`;
+    if (seen.has(collisionKey)) throw new Error(`venue double-booked at ${collisionKey} (match ${matchNo})`);
     seen.add(collisionKey);
 
+    const fields = {
+      kickoff: data.kickoff,
+      stage: data.stage,
+      group: data.group,
+      confirmed: data.confirmed,
+      venueId: data.venueId,
+      homeTeamId: data.homeCode ? teamIdByCode.get(data.homeCode) : null,
+      awayTeamId: data.awayCode ? teamIdByCode.get(data.awayCode) : null,
+      homeLabel: data.homeLabel ?? null,
+      awayLabel: data.awayLabel ?? null,
+    };
     await prisma.match.upsert({
       where: { fifaMatchNo: matchNo },
-      create: {
-        fifaMatchNo: matchNo,
-        kickoff,
-        stage: data.stage,
-        group: data.group,
-        confirmed: data.confirmed,
-        venueId,
-        homeTeamId: data.homeCode ? teamIdByCode.get(data.homeCode) : null,
-        awayTeamId: data.awayCode ? teamIdByCode.get(data.awayCode) : null,
-        homeLabel: data.homeLabel ?? null,
-        awayLabel: data.awayLabel ?? null,
-      },
-      update: {
-        kickoff,
-        stage: data.stage,
-        group: data.group,
-        confirmed: data.confirmed,
-        venueId,
-        homeTeamId: data.homeCode ? teamIdByCode.get(data.homeCode) : null,
-        awayTeamId: data.awayCode ? teamIdByCode.get(data.awayCode) : null,
-        homeLabel: data.homeLabel ?? null,
-        awayLabel: data.awayLabel ?? null,
-      },
+      create: { fifaMatchNo: matchNo, ...fields },
+      update: fields,
     });
   };
 
-  // 72 group-stage matches.
-  for (const g of GROUPS) {
-    const gt = teamsByGroup.get(g)!;
-    for (const [a, b] of ROUND_ROBIN) {
-      await upsertMatch({
-        stage: "GROUP",
-        group: g,
-        confirmed: gt[a].confirmed && gt[b].confirmed,
-        homeCode: gt[a].code,
-        awayCode: gt[b].code,
-      });
-    }
+  // 72 real group-stage matches. Kickoff times aren't in the source, so stagger
+  // each day's matches across afternoon/evening slots (treated as approximate).
+  const slotByDate = new Map<string, number>();
+  for (const m of groupMatches) {
+    const slot = slotByDate.get(m.date) ?? 0;
+    slotByDate.set(m.date, slot + 1);
+    const kickoff = new Date(`${m.date}T00:00:00.000Z`);
+    kickoff.setUTCHours(DAY_BASE_HOUR_UTC + slot * SLOT_SPACING_HOURS);
+    await upsertMatch({
+      kickoff,
+      venueId: venueIdByKey.get(m.venue)!,
+      stage: "GROUP",
+      group: m.group,
+      confirmed: true,
+      homeCode: m.home,
+      awayCode: m.away,
+    });
   }
 
-  // 32 provisional knockout matches (teams TBD -> labels).
+  // 32 provisional knockout matches (teams TBD -> labels), placed after groups.
   const knockout: { stage: string; count: number }[] = [
     { stage: "R32", count: 16 },
     { stage: "R16", count: 8 },
@@ -164,25 +179,31 @@ async function main() {
     { stage: "THIRD", count: 1 },
     { stage: "FINAL", count: 1 },
   ];
+  const knockoutStart = new Date("2026-06-29T16:00:00.000Z");
+  let koIndex = 0;
   for (const k of knockout) {
     for (let i = 1; i <= k.count; i++) {
+      const kickoff = new Date(knockoutStart.getTime() + koIndex * 6 * 3600_000);
       await upsertMatch({
+        kickoff,
+        venueId: venueIds[koIndex % venueIds.length],
         stage: k.stage,
         group: null,
         confirmed: false,
         homeLabel: `${k.stage} ${i} — TBD`,
         awayLabel: `${k.stage} ${i} — TBD`,
       });
+      koIndex++;
     }
   }
 
   // Demo manual overrides so availability is visible out of the box.
   const overrides = [
-    { fifaMatchNo: 1, availability: "AVAILABLE", minPrice: 145, currency: "USD", note: "Category 3 available" },
-    { fifaMatchNo: 2, availability: "LIMITED", minPrice: 320, currency: "USD", note: "Few seats left" },
-    { fifaMatchNo: 3, availability: "SOLD_OUT", currency: "USD", note: "Sold out on official portal" },
-    { fifaMatchNo: 19, availability: "AVAILABLE", minPrice: 210, currency: "USD" },
-    { fifaMatchNo: 37, availability: "LIMITED", minPrice: 480, currency: "USD" },
+    { fifaMatchNo: 1, availability: "AVAILABLE", minPrice: 165, currency: "USD", note: "Opening match — Category 3 available" },
+    { fifaMatchNo: 4, availability: "LIMITED", minPrice: 290, currency: "USD", note: "USA opener — few seats left" },
+    { fifaMatchNo: 7, availability: "AVAILABLE", minPrice: 240, currency: "USD", note: "Brazil v Morocco" },
+    { fifaMatchNo: 17, availability: "LIMITED", minPrice: 410, currency: "USD", note: "France v Senegal" },
+    { fifaMatchNo: 22, availability: "SOLD_OUT", currency: "USD", note: "England v Croatia — sold out on official portal" },
   ];
   for (const o of overrides) {
     const match = await prisma.match.findUnique({ where: { fifaMatchNo: o.fifaMatchNo } });
