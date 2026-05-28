@@ -24,6 +24,13 @@ interface FixtureGroupMatch {
   venue: string;
   timeET: string; // "HH:MM" Eastern Time (per source legend)
 }
+interface FixtureKnockoutMatch {
+  matchNo: number;
+  stage: string;
+  date: string;
+  venue: string;
+  timeET: string;
+}
 
 const GROUPS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"] as const;
 const ET_UTC_OFFSET = "-04:00"; // EDT in June/July 2026
@@ -89,6 +96,7 @@ async function main() {
   const venues = fixtures.venues as FixtureVenue[];
   const teams = fixtures.teams as FixtureTeam[];
   const groupMatches = fixtures.groupMatches as FixtureGroupMatch[];
+  const knockoutMatches = fixtures.knockoutMatches as FixtureKnockoutMatch[];
 
   validateFixtures(venues, teams, groupMatches);
 
@@ -102,7 +110,6 @@ async function main() {
     });
     venueIdByKey.set(v.key, row.id);
   }
-  const venueIds = venues.map((v) => venueIdByKey.get(v.key)!);
 
   // Teams (group-stage draw is final, so all confirmed).
   const teamIdByCode = new Map<string, string>();
@@ -168,31 +175,19 @@ async function main() {
     });
   }
 
-  // 32 provisional knockout matches (teams TBD -> labels), placed after groups.
-  const knockout: { stage: string; count: number }[] = [
-    { stage: "R32", count: 16 },
-    { stage: "R16", count: 8 },
-    { stage: "QF", count: 4 },
-    { stage: "SF", count: 2 },
-    { stage: "THIRD", count: 1 },
-    { stage: "FINAL", count: 1 },
-  ];
-  const knockoutStart = new Date("2026-06-29T16:00:00.000Z");
-  let koIndex = 0;
-  for (const k of knockout) {
-    for (let i = 1; i <= k.count; i++) {
-      const kickoff = new Date(knockoutStart.getTime() + koIndex * 6 * 3600_000);
-      await upsertMatch({
-        kickoff,
-        venueId: venueIds[koIndex % venueIds.length],
-        stage: k.stage,
-        group: null,
-        confirmed: false,
-        homeLabel: `${k.stage} ${i} — TBD`,
-        awayLabel: `${k.stage} ${i} — TBD`,
-      });
-      koIndex++;
-    }
+  // 32 real knockout matches: real venue/date/time from the official schedule,
+  // teams TBD (decided by group results). Bracket lineage isn't modeled here —
+  // the /predictions page projects who fills these slots via Elo.
+  for (const m of knockoutMatches) {
+    const kickoff = new Date(`${m.date}T${m.timeET}:00${ET_UTC_OFFSET}`);
+    if (Number.isNaN(kickoff.getTime())) throw new Error(`invalid knockout kickoff: match ${m.matchNo}`);
+    await upsertMatch({
+      kickoff,
+      venueId: venueIdByKey.get(m.venue)!,
+      stage: m.stage,
+      group: null,
+      confirmed: false,
+    });
   }
 
   // Demo manual overrides so availability is visible out of the box.
@@ -225,6 +220,11 @@ async function main() {
   const { runRefresh } = await import("../lib/tickets/index");
   const result = await runRefresh();
   console.log("Initial refresh:", result);
+
+  // Compute Elo Monte Carlo projections.
+  const { computeAndStoreProjections } = await import("../lib/predictions/store");
+  const n = await computeAndStoreProjections(prisma);
+  console.log("Projections computed for", n, "teams");
 }
 
 main()

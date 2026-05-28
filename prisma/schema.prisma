@@ -144,3 +144,19 @@ model RefreshLock {
   lockedAt  DateTime
   expiresAt DateTime
 }
+
+// Elo Monte Carlo projection per team. Recomputed by scripts/predict.ts.
+model TeamProjection {
+  code         String   @id
+  group        String
+  elo          Int
+  pGroupWinner Float
+  pQualify     Float
+  pR16         Float
+  pQF          Float
+  pSF          Float
+  pFinal       Float
+  pChampion    Float
+  iterations   Int
+  computedAt   DateTime @updatedAt
+}

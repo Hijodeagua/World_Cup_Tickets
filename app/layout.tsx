@@ -20,6 +20,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Link href="/" className="hover:text-neutral-900 dark:hover:text-neutral-100">
                 Matches
               </Link>
+              <Link href="/predictions" className="hover:text-neutral-900 dark:hover:text-neutral-100">
+                Projections
+              </Link>
               <Link href="/admin/health" className="hover:text-neutral-900 dark:hover:text-neutral-100">
                 Source health
               </Link>

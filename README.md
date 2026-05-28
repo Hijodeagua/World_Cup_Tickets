@@ -54,8 +54,28 @@ source-reliability analysis, and keeps the site useful even when a source breaks
 - `/` — match list with filters (team, host city, stage, "available only").
 - `/matches/[id]` — match detail, availability + price, buy link, recent
   observations.
+- `/predictions` — Elo Monte Carlo title projections (see below).
 - `/admin/health` — source health (error rate, last successful fetch, recent runs).
 - `/api/cron/refresh` — the refresh endpoint (Bearer `CRON_SECRET`).
+
+## Title projections (`lib/predictions/`)
+
+A Monte Carlo simulation (default 20,000 tournaments) estimates each team's odds
+to win its group, advance, and lift the trophy.
+
+- `data/elo-ratings.json` — editable strength snapshot blending an online World
+  Football Elo (`eloOnline`) and a Silver/SPI-style model (`eloModel`); blend
+  weight in `lib/predictions/elo.ts`.
+- `elo.ts` — Poisson goals model driven by Elo difference (host boost for the
+  three host nations); yields W/D/L and goal differences for tiebreakers.
+- `simulate.ts` — simulates the real group fixtures, ranks with tiebreakers,
+  qualifies 12 winners + 12 runners-up + 8 best thirds, then runs an Elo-seeded
+  single-elimination bracket.
+- Recompute after editing ratings: `npm run predict` (optionally pass iterations,
+  e.g. `npm run predict 50000`).
+
+Caveat: the knockout bracket is **Elo-seeded**, not FIFA's exact slot/third-place
+table — a projection, not a prediction.
 
 ## Local setup
 
@@ -87,11 +107,12 @@ curl -H "Authorization: Bearer <CRON_SECRET>" http://localhost:3000/api/cron/ref
 
 `data/fixtures-2026.json` holds the **official** group-stage fixtures (FIFA Match
 Schedule v17): the real 12 groups, team assignments, dates, host venues and
-kickoff times for all 72 group matches. Times are stored per the source as
-Eastern Time (`timeET`) and converted to UTC at seed time (EDT, UTC-4, in
-June/July 2026); the UI then renders them in the viewer's local zone. Knockout
-matches (Round of 32 onward) remain provisional placeholders since the teams
-depend on group results.
+kickoff times for all 72 group matches, plus the real venue/date/time for all 32
+knockout matches. Times are stored per the source as Eastern Time (`timeET`) and
+converted to UTC at seed time (EDT, UTC-4, in June/July 2026); the UI renders
+them in the viewer's local zone. Knockout matches keep their real slot
+(venue/date/time) but teams stay TBD until group results are known — the
+`/predictions` page projects who fills them.
 
 The seed upserts by `fifaMatchNo`, so re-running picks up corrections, and
 seed-time validation fails loudly on malformed fixtures (wrong group sizes,

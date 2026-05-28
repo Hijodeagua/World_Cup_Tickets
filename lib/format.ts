@@ -31,6 +31,12 @@ export function formatKickoff(d: Date, timeZone?: string): string {
   }).format(d);
 }
 
+export function formatPct(p: number): string {
+  if (p <= 0) return "—";
+  if (p < 0.01) return "<1%";
+  return `${Math.round(p * 100)}%`;
+}
+
 export function formatPrice(amount: number | null, currency: string | null): string | null {
   if (amount == null) return null;
   try {
