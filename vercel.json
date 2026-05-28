@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/worldcup/api/cron/refresh",
-      "schedule": "0 * * * *"
+      "schedule": "0 10 * * *"
     }
   ]
 }
