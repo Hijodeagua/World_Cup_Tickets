@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getFilterOptions, getMatches } from "@/lib/matches";
 import { STAGE_LABELS } from "@/lib/format";
 import { MatchRow } from "./ui";
@@ -72,9 +73,9 @@ export default async function HomePage({ searchParams }: { searchParams: SearchP
         <button type="submit" className="rounded bg-neutral-900 px-3 py-1.5 text-sm font-medium text-white dark:bg-white dark:text-neutral-900">
           Apply
         </button>
-        <a href="/" className="text-sm text-neutral-500 hover:underline">
+        <Link href="/" className="text-sm text-neutral-500 hover:underline">
           Reset
-        </a>
+        </Link>
       </form>
 
       {matches.length === 0 ? (
