@@ -1,0 +1,85 @@
+{
+  "tournament": "FIFA World Cup 2026",
+  "note": "Venues are the 16 confirmed host stadiums. The group draw and kickoff times below are a structurally-correct PLACEHOLDER (12 groups of 4) so the app runs end-to-end; only the three hosts are marked confirmed. Update team assignments and kickoffs from the official FIFA draw — the seed upserts by fifaMatchNo, so re-running picks up changes.",
+  "groupStageStart": "2026-06-11",
+  "venues": [
+    { "key": "azteca", "city": "Mexico City", "country": "Mexico", "stadium": "Estadio Azteca", "capacity": 87000 },
+    { "key": "akron", "city": "Guadalajara", "country": "Mexico", "stadium": "Estadio Akron", "capacity": 48000 },
+    { "key": "bbva", "city": "Monterrey", "country": "Mexico", "stadium": "Estadio BBVA", "capacity": 53500 },
+    { "key": "bmo", "city": "Toronto", "country": "Canada", "stadium": "BMO Field", "capacity": 45000 },
+    { "key": "bcplace", "city": "Vancouver", "country": "Canada", "stadium": "BC Place", "capacity": 54500 },
+    { "key": "mercedes", "city": "Atlanta", "country": "USA", "stadium": "Mercedes-Benz Stadium", "capacity": 71000 },
+    { "key": "gillette", "city": "Boston", "country": "USA", "stadium": "Gillette Stadium", "capacity": 65000 },
+    { "key": "att", "city": "Dallas", "country": "USA", "stadium": "AT&T Stadium", "capacity": 80000 },
+    { "key": "nrg", "city": "Houston", "country": "USA", "stadium": "NRG Stadium", "capacity": 72000 },
+    { "key": "arrowhead", "city": "Kansas City", "country": "USA", "stadium": "Arrowhead Stadium", "capacity": 76000 },
+    { "key": "sofi", "city": "Los Angeles", "country": "USA", "stadium": "SoFi Stadium", "capacity": 70000 },
+    { "key": "hardrock", "city": "Miami", "country": "USA", "stadium": "Hard Rock Stadium", "capacity": 65000 },
+    { "key": "metlife", "city": "New York/New Jersey", "country": "USA", "stadium": "MetLife Stadium", "capacity": 82500 },
+    { "key": "linc", "city": "Philadelphia", "country": "USA", "stadium": "Lincoln Financial Field", "capacity": 69000 },
+    { "key": "levis", "city": "San Francisco Bay Area", "country": "USA", "stadium": "Levi's Stadium", "capacity": 68500 },
+    { "key": "lumen", "city": "Seattle", "country": "USA", "stadium": "Lumen Field", "capacity": 69000 }
+  ],
+  "teams": [
+    { "code": "MEX", "name": "Mexico", "group": "A", "flag": "🇲🇽", "confirmed": true },
+    { "code": "CAN", "name": "Canada", "group": "B", "flag": "🇨🇦", "confirmed": true },
+    { "code": "USA", "name": "United States", "group": "D", "flag": "🇺🇸", "confirmed": true },
+
+    { "code": "ARG", "name": "Argentina", "group": "A", "flag": "🇦🇷", "confirmed": false },
+    { "code": "JPN", "name": "Japan", "group": "A", "flag": "🇯🇵", "confirmed": false },
+    { "code": "GHA", "name": "Ghana", "group": "A", "flag": "🇬🇭", "confirmed": false },
+
+    { "code": "FRA", "name": "France", "group": "B", "flag": "🇫🇷", "confirmed": false },
+    { "code": "KOR", "name": "South Korea", "group": "B", "flag": "🇰🇷", "confirmed": false },
+    { "code": "SEN", "name": "Senegal", "group": "B", "flag": "🇸🇳", "confirmed": false },
+
+    { "code": "ESP", "name": "Spain", "group": "C", "flag": "🇪🇸", "confirmed": false },
+    { "code": "URU", "name": "Uruguay", "group": "C", "flag": "🇺🇾", "confirmed": false },
+    { "code": "AUS", "name": "Australia", "group": "C", "flag": "🇦🇺", "confirmed": false },
+    { "code": "MAR", "name": "Morocco", "group": "C", "flag": "🇲🇦", "confirmed": false },
+
+    { "code": "ENG", "name": "England", "group": "D", "flag": "🏴", "confirmed": false },
+    { "code": "ECU", "name": "Ecuador", "group": "D", "flag": "🇪🇨", "confirmed": false },
+    { "code": "IRN", "name": "Iran", "group": "D", "flag": "🇮🇷", "confirmed": false },
+
+    { "code": "BRA", "name": "Brazil", "group": "E", "flag": "🇧🇷", "confirmed": false },
+    { "code": "NED", "name": "Netherlands", "group": "E", "flag": "🇳🇱", "confirmed": false },
+    { "code": "QAT", "name": "Qatar", "group": "E", "flag": "🇶🇦", "confirmed": false },
+    { "code": "CMR", "name": "Cameroon", "group": "E", "flag": "🇨🇲", "confirmed": false },
+
+    { "code": "POR", "name": "Portugal", "group": "F", "flag": "🇵🇹", "confirmed": false },
+    { "code": "COL", "name": "Colombia", "group": "F", "flag": "🇨🇴", "confirmed": false },
+    { "code": "SUI", "name": "Switzerland", "group": "F", "flag": "🇨🇭", "confirmed": false },
+    { "code": "NGA", "name": "Nigeria", "group": "F", "flag": "🇳🇬", "confirmed": false },
+
+    { "code": "GER", "name": "Germany", "group": "G", "flag": "🇩🇪", "confirmed": false },
+    { "code": "MEX2", "name": "Costa Rica", "group": "G", "flag": "🇨🇷", "confirmed": false },
+    { "code": "POL", "name": "Poland", "group": "G", "flag": "🇵🇱", "confirmed": false },
+    { "code": "KSA", "name": "Saudi Arabia", "group": "G", "flag": "🇸🇦", "confirmed": false },
+
+    { "code": "BEL", "name": "Belgium", "group": "H", "flag": "🇧🇪", "confirmed": false },
+    { "code": "CRO", "name": "Croatia", "group": "H", "flag": "🇭🇷", "confirmed": false },
+    { "code": "TUN", "name": "Tunisia", "group": "H", "flag": "🇹🇳", "confirmed": false },
+    { "code": "NZL", "name": "New Zealand", "group": "H", "flag": "🇳🇿", "confirmed": false },
+
+    { "code": "ITA", "name": "Italy", "group": "I", "flag": "🇮🇹", "confirmed": false },
+    { "code": "CHI", "name": "Chile", "group": "I", "flag": "🇨🇱", "confirmed": false },
+    { "code": "ALG", "name": "Algeria", "group": "I", "flag": "🇩🇿", "confirmed": false },
+    { "code": "JOR", "name": "Jordan", "group": "I", "flag": "🇯🇴", "confirmed": false },
+
+    { "code": "DEN", "name": "Denmark", "group": "J", "flag": "🇩🇰", "confirmed": false },
+    { "code": "PER", "name": "Peru", "group": "J", "flag": "🇵🇪", "confirmed": false },
+    { "code": "EGY", "name": "Egypt", "group": "J", "flag": "🇪🇬", "confirmed": false },
+    { "code": "CIV", "name": "Ivory Coast", "group": "J", "flag": "🇨🇮", "confirmed": false },
+
+    { "code": "ARGN", "name": "Austria", "group": "K", "flag": "🇦🇹", "confirmed": false },
+    { "code": "PAR", "name": "Paraguay", "group": "K", "flag": "🇵🇾", "confirmed": false },
+    { "code": "RSA", "name": "South Africa", "group": "K", "flag": "🇿🇦", "confirmed": false },
+    { "code": "UZB", "name": "Uzbekistan", "group": "K", "flag": "🇺🇿", "confirmed": false },
+
+    { "code": "SCO", "name": "Scotland", "group": "L", "flag": "🏴", "confirmed": false },
+    { "code": "VEN", "name": "Venezuela", "group": "L", "flag": "🇻🇪", "confirmed": false },
+    { "code": "PAN", "name": "Panama", "group": "L", "flag": "🇵🇦", "confirmed": false },
+    { "code": "CTA", "name": "Curaçao", "group": "L", "flag": "🇨🇼", "confirmed": false }
+  ]
+}

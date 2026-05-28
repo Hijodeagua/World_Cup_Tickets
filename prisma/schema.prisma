@@ -1,0 +1,146 @@
+// World Cup Tickets — data model.
+//
+// Core design: ticket data is an append-only OBSERVATION STREAM, never an
+// overwrite-in-place status. Every fetch attempt writes one immutable
+// TicketObservation row; CurrentTicketState is derived from that stream.
+//
+// Dev uses SQLite (no native enums, no Json type) so "enum" fields are String
+// constrained in app code (see lib/tickets/types.ts) and raw payloads are
+// stored as stringified JSON. For production, switch provider to "postgresql"
+// and point DATABASE_URL at Postgres — no model changes required.
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Team {
+  id          String  @id @default(cuid())
+  code        String  @unique
+  name        String
+  group       String?
+  flag        String?
+  confirmed   Boolean @default(true)
+  homeMatches Match[] @relation("home")
+  awayMatches Match[] @relation("away")
+}
+
+model Venue {
+  id       String  @id @default(cuid())
+  city     String
+  country  String
+  stadium  String  @unique
+  capacity Int?
+  matches  Match[]
+}
+
+model Match {
+  id          String   @id @default(cuid())
+  fifaMatchNo Int      @unique
+  kickoff     DateTime
+  stage       String
+  group       String?
+  confirmed   Boolean  @default(true)
+
+  venueId String
+  venue   Venue  @relation(fields: [venueId], references: [id])
+
+  homeTeamId String?
+  homeTeam   Team?   @relation("home", fields: [homeTeamId], references: [id])
+  awayTeamId String?
+  awayTeam   Team?   @relation("away", fields: [awayTeamId], references: [id])
+
+  // Labels for knockout placeholders ("Winner Group A", "Runner-up B", ...).
+  homeLabel String?
+  awayLabel String?
+
+  observations TicketObservation[]
+  currentState CurrentTicketState?
+
+  @@index([kickoff])
+}
+
+// Immutable: one row per fetch attempt, success OR failure. Never updated.
+model TicketObservation {
+  id         String   @id @default(cuid())
+  matchId    String
+  match      Match    @relation(fields: [matchId], references: [id])
+  providerId String
+  observedAt DateTime @default(now())
+
+  availability String // AVAILABLE | LIMITED | SOLD_OUT | UNKNOWN
+
+  minPrice    Float?
+  medianPrice Float?
+  currency    String?
+  category    String?
+  quantity    Int?
+  priceType   String? // FACE_VALUE | RESALE | UNKNOWN
+
+  rawPayload    String?
+  confidence    Float   @default(0)
+  sourceTier    Int     @default(0)
+  parserVersion String?
+
+  fetchSucceeded Boolean @default(true)
+  scrapeStatus   String  @default("OK") // OK | SOURCE_DOWN | LAYOUT_CHANGED | BLOCKED | NO_DATA | ERROR
+  failureReason  String?
+  responseTimeMs Int?
+
+  @@index([matchId, observedAt])
+  @@index([providerId, observedAt])
+}
+
+// Derived from the observation stream by the resolver. One row per match.
+model CurrentTicketState {
+  matchId String @id
+  match   Match  @relation(fields: [matchId], references: [id])
+
+  availability      String
+  minPrice          Float?
+  medianPrice       Float?
+  currency          String?
+  sourceTier        Int       @default(0)
+  confidence        Float     @default(0)
+  winningProviderId String?
+  lastObservedAt    DateTime?
+  isStale           Boolean   @default(false)
+  updatedAt         DateTime  @updatedAt
+}
+
+// Structured per-run log — the early-warning system for broken sources.
+model ProviderRun {
+  id             String    @id @default(cuid())
+  providerId     String
+  startedAt      DateTime  @default(now())
+  completedAt    DateTime?
+  matchesChecked Int       @default(0)
+  matchesUpdated Int       @default(0)
+  successCount   Int       @default(0)
+  failureCount   Int       @default(0)
+  failures       String? // stringified JSON: [{matchId, scrapeStatus, reason}]
+
+  @@index([providerId, startedAt])
+}
+
+// Human-in-the-loop overrides. Read by ManualProvider, subject to TTL/decay.
+model ManualOverride {
+  matchId      String   @id
+  availability String
+  minPrice     Float?
+  currency     String?
+  note         String?
+  setBy        String?
+  updatedAt    DateTime @updatedAt
+}
+
+// Prevents overlapping cron runs (Vercel Cron can double-fire).
+model RefreshLock {
+  id        String   @id @default("global")
+  lockedAt  DateTime
+  expiresAt DateTime
+}
