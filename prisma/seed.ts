@@ -22,11 +22,11 @@ interface FixtureGroupMatch {
   home: string;
   away: string;
   venue: string;
+  timeET: string; // "HH:MM" Eastern Time (per source legend)
 }
 
 const GROUPS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"] as const;
-const DAY_BASE_HOUR_UTC = 12; // first kickoff slot of a match day
-const SLOT_SPACING_HOURS = 2; // stagger same-day matches
+const ET_UTC_OFFSET = "-04:00"; // EDT in June/July 2026
 
 function validateFixtures(venues: FixtureVenue[], teams: FixtureTeam[], matches: FixtureGroupMatch[]) {
   const errors: string[] = [];
@@ -59,6 +59,7 @@ function validateFixtures(venues: FixtureVenue[], teams: FixtureTeam[], matches:
 
   for (const m of matches) {
     if (!venueKeys.has(m.venue)) errors.push(`match ${m.home}-${m.away}: unknown venue "${m.venue}"`);
+    if (!/^\d{1,2}:\d{2}$/.test(m.timeET ?? "")) errors.push(`match ${m.home}-${m.away}: invalid timeET "${m.timeET}"`);
     for (const code of [m.home, m.away]) {
       if (!codes.has(code)) errors.push(`match references unknown team "${code}"`);
       else if (groupByCode.get(code) !== m.group) errors.push(`team ${code} listed in group ${m.group} but belongs to ${groupByCode.get(code)}`);
@@ -151,14 +152,11 @@ async function main() {
     });
   };
 
-  // 72 real group-stage matches. Kickoff times aren't in the source, so stagger
-  // each day's matches across afternoon/evening slots (treated as approximate).
-  const slotByDate = new Map<string, number>();
+  // 72 real group-stage matches. Times are Eastern Time per the source; build
+  // the instant directly from the ET wall-time so it's stored as correct UTC.
   for (const m of groupMatches) {
-    const slot = slotByDate.get(m.date) ?? 0;
-    slotByDate.set(m.date, slot + 1);
-    const kickoff = new Date(`${m.date}T00:00:00.000Z`);
-    kickoff.setUTCHours(DAY_BASE_HOUR_UTC + slot * SLOT_SPACING_HOURS);
+    const kickoff = new Date(`${m.date}T${m.timeET}:00${ET_UTC_OFFSET}`);
+    if (Number.isNaN(kickoff.getTime())) throw new Error(`invalid kickoff for ${m.home}-${m.away}: ${m.date} ${m.timeET}`);
     await upsertMatch({
       kickoff,
       venueId: venueIdByKey.get(m.venue)!,

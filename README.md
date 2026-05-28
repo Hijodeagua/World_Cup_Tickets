@@ -34,9 +34,15 @@ source-reliability analysis, and keeps the site useful even when a source breaks
 - `ManualProvider` — reads `ManualOverride`; entries older than the TTL
   (`MANUAL_OVERRIDE_TTL_MS`) decay to UNKNOWN so they never silently beat a fresh
   automated read.
-- `BestEffortScraperProvider` — pluggable automated source. Never throws; any
-  failure becomes a structured observation. Implement `fetchRaw` to wire a real
-  source (official deep link or resale API).
+- `TicketmasterProvider` — **real integration** with the Ticketmaster Discovery
+  API. Queries by team names + city + date window, maps event onsale status to
+  availability and `priceRanges` to price. Gated on `TICKETMASTER_API_KEY`; with
+  no key it degrades to a clean UNKNOWN. Note: FIFA sells most World Cup tickets
+  on its own portal, so Discovery coverage of these matches may be partial — the
+  provider records that as NO_DATA rather than guessing.
+- `BestEffortScraperProvider` — placeholder slot for an official-portal source.
+  Never throws; any failure becomes a structured observation. Implement
+  `fetchRaw` to wire it up.
 - `resolver.ts` — picks the authoritative state by source tier → confidence →
   recency, and flags staleness (`STALE_AFTER_MS`).
 - `index.ts` — the refresh loop: adaptive polling (closer matches polled more
@@ -55,11 +61,14 @@ source-reliability analysis, and keeps the site useful even when a source breaks
 
 ```bash
 npm install
-cp .env.example .env          # SQLite + a CRON_SECRET
+cp .env.example .env          # SQLite + CRON_SECRET (+ optional TICKETMASTER_API_KEY)
 npm run db:push               # create the SQLite schema
 npm run db:seed               # seed schedule + demo overrides, run first refresh
 npm run dev                   # http://localhost:3000
 ```
+
+Set `TICKETMASTER_API_KEY` (free from https://developer.ticketmaster.com) to
+activate the live Ticketmaster provider; otherwise it stays a no-op.
 
 Trigger a refresh manually:
 
@@ -77,11 +86,12 @@ curl -H "Authorization: Bearer <CRON_SECRET>" http://localhost:3000/api/cron/ref
 ## Data accuracy note
 
 `data/fixtures-2026.json` holds the **official** group-stage fixtures (FIFA Match
-Schedule v17): the real 12 groups, team assignments, dates and host venues for
-all 72 group matches. Kickoff **times** are not in that source, so each day's
-matches are staggered across afternoon/evening slots and should be treated as
-approximate until confirmed. Knockout matches (Round of 32 onward) remain
-provisional placeholders since the teams depend on group results.
+Schedule v17): the real 12 groups, team assignments, dates, host venues and
+kickoff times for all 72 group matches. Times are stored per the source as
+Eastern Time (`timeET`) and converted to UTC at seed time (EDT, UTC-4, in
+June/July 2026); the UI then renders them in the viewer's local zone. Knockout
+matches (Round of 32 onward) remain provisional placeholders since the teams
+depend on group results.
 
 The seed upserts by `fifaMatchNo`, so re-running picks up corrections, and
 seed-time validation fails loudly on malformed fixtures (wrong group sizes,

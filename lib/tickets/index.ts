@@ -2,9 +2,14 @@ import { prisma } from "@/lib/db";
 import { ManualProvider } from "./manual";
 import { resolveState, type ResolvableObservation } from "./resolver";
 import { BestEffortScraperProvider } from "./scraper";
+import { TicketmasterProvider } from "./ticketmaster";
 import type { MatchForFetch, ObservationInput, TicketProvider } from "./types";
 
-export const providers: TicketProvider[] = [new ManualProvider(), new BestEffortScraperProvider()];
+export const providers: TicketProvider[] = [
+  new ManualProvider(),
+  new TicketmasterProvider(),
+  new BestEffortScraperProvider(),
+];
 
 const LOCK_TTL_MS = 5 * 60 * 1000;
 const MAX_JITTER_MS = 250;
@@ -60,6 +65,9 @@ export async function runRefresh(now = new Date()): Promise<RefreshResult> {
         fifaMatchNo: true,
         kickoff: true,
         stage: true,
+        homeTeam: { select: { name: true } },
+        awayTeam: { select: { name: true } },
+        venue: { select: { city: true, country: true } },
         observations: { orderBy: { observedAt: "desc" }, take: 1, select: { observedAt: true } },
       },
     });
@@ -70,7 +78,16 @@ export async function runRefresh(now = new Date()): Promise<RefreshResult> {
         if (!last) return true;
         return now.getTime() - last.getTime() >= minIntervalMs(m.kickoff, now);
       })
-      .map(({ id, fifaMatchNo, kickoff, stage }) => ({ id, fifaMatchNo, kickoff, stage }));
+      .map((m) => ({
+        id: m.id,
+        fifaMatchNo: m.fifaMatchNo,
+        kickoff: m.kickoff,
+        stage: m.stage,
+        homeTeam: m.homeTeam?.name ?? null,
+        awayTeam: m.awayTeam?.name ?? null,
+        venueCity: m.venue.city,
+        venueCountry: m.venue.country,
+      }));
 
     const runStats = new Map<string, { success: number; failure: number; failures: unknown[] }>();
     for (const p of providers) runStats.set(p.id, { success: 0, failure: 0, failures: [] });

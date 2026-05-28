@@ -58,6 +58,10 @@ export interface MatchForFetch {
   fifaMatchNo: number;
   kickoff: Date;
   stage: string;
+  homeTeam?: string | null;
+  awayTeam?: string | null;
+  venueCity?: string | null;
+  venueCountry?: string | null;
 }
 
 export interface TicketProvider {
