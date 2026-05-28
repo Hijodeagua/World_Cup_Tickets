@@ -10,7 +10,7 @@
 // and point DATABASE_URL at Postgres — no model changes required.
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
