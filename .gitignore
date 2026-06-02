@@ -20,3 +20,4 @@ prisma/dev.db-journal
 .idea/
 
 next-env.d.ts
+tsconfig.tsbuildinfo
