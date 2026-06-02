@@ -12,10 +12,19 @@ function pick(v: string | string[] | undefined): string | undefined {
   return s && s.length ? s : undefined;
 }
 
+function pickAll(v: string | string[] | undefined): string[] {
+  if (!v) return [];
+  return (Array.isArray(v) ? v : [v]).filter((s) => s && s.length);
+}
+
+const MAX_TOP_TEAMS = 5;
+
 export default async function HomePage({ searchParams }: { searchParams: SearchParams }) {
   const sp = await searchParams;
+  const topTeams = pickAll(sp.teams).slice(0, MAX_TOP_TEAMS);
   const filters = {
     team: pick(sp.team),
+    teams: topTeams,
     city: pick(sp.city),
     stage: pick(sp.stage),
     availableOnly: pick(sp.available) === "1",
@@ -28,7 +37,7 @@ export default async function HomePage({ searchParams }: { searchParams: SearchP
       <div>
         <h1 className="text-2xl font-bold">Matches & ticket availability</h1>
         <p className="text-sm text-neutral-500">
-          {matches.length} match{matches.length === 1 ? "" : "es"} shown. Times in your local timezone.
+          {matches.length} match{matches.length === 1 ? "" : "es"} shown. Times shown in Eastern Time (ET).
         </p>
       </div>
 
@@ -62,6 +71,22 @@ export default async function HomePage({ searchParams }: { searchParams: SearchP
             {options.stages.map((s) => (
               <option key={s} value={s}>
                 {STAGE_LABELS[s] ?? s}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="flex flex-col text-xs font-medium text-neutral-500">
+          My top 5 teams (Ctrl/Cmd-click to pick up to {MAX_TOP_TEAMS})
+          <select
+            name="teams"
+            multiple
+            size={5}
+            defaultValue={filters.teams}
+            className="mt-1 min-w-[12rem] rounded border border-neutral-300 bg-transparent px-2 py-1 text-sm dark:border-neutral-700"
+          >
+            {options.teams.map((t) => (
+              <option key={t.code} value={t.code}>
+                {t.flag} {t.name}
               </option>
             ))}
           </select>
