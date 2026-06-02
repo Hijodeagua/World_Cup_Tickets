@@ -54,7 +54,7 @@ export interface RefreshResult {
 
 // One refresh pass: select due matches (adaptive), fetch every provider, persist
 // immutable observations, recompute derived state, and log a ProviderRun per provider.
-export async function runRefresh(now = new Date()): Promise<RefreshResult> {
+export async function runRefresh(now = new Date(), opts: { force?: boolean } = {}): Promise<RefreshResult> {
   if (!(await acquireLock(now))) return { skipped: "locked", matchesChecked: 0, observationsWritten: 0, statesUpdated: 0, runs: [] };
 
   try {
@@ -74,6 +74,7 @@ export async function runRefresh(now = new Date()): Promise<RefreshResult> {
 
     const due: MatchForFetch[] = candidates
       .filter((m) => {
+        if (opts.force) return true;
         const last = m.observations[0]?.observedAt;
         if (!last) return true;
         return now.getTime() - last.getTime() >= minIntervalMs(m.kickoff, now);

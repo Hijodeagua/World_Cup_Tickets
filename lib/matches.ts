@@ -3,6 +3,7 @@ import type { Prisma } from "@prisma/client";
 
 export interface MatchFilters {
   team?: string; // team code
+  teams?: string[]; // multiple team codes (top-5 filter); any match involving any of them
   city?: string;
   stage?: string;
   availableOnly?: boolean;
@@ -20,7 +21,12 @@ export type MatchWithRelations = Prisma.MatchGetPayload<{ include: typeof matchI
 export async function getMatches(filters: MatchFilters): Promise<MatchWithRelations[]> {
   const where: Prisma.MatchWhereInput = {};
 
-  if (filters.team) {
+  if (filters.teams && filters.teams.length > 0) {
+    where.OR = [
+      { homeTeam: { code: { in: filters.teams } } },
+      { awayTeam: { code: { in: filters.teams } } },
+    ];
+  } else if (filters.team) {
     where.OR = [{ homeTeam: { code: filters.team } }, { awayTeam: { code: filters.team } }];
   }
   if (filters.city) where.venue = { city: filters.city };

@@ -17,9 +17,9 @@ export const AVAILABILITY_BADGE: Record<Availability, { label: string; className
   UNKNOWN: { label: "Unknown", className: "bg-neutral-200 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400" },
 };
 
-// Display kickoff in a given IANA timezone (defaults to the viewer's local zone
-// on the client; pass an explicit zone on the server to avoid hydration drift).
-export function formatKickoff(d: Date, timeZone?: string): string {
+export const DEFAULT_TIMEZONE = "America/New_York";
+
+export function formatKickoff(d: Date, timeZone: string = DEFAULT_TIMEZONE): string {
   return new Intl.DateTimeFormat("en-US", {
     weekday: "short",
     month: "short",

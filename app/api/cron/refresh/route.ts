@@ -15,6 +15,7 @@ export async function GET(request: Request) {
     }
   }
 
-  const result = await runRefresh();
-  return NextResponse.json({ ok: true, ...result });
+  const force = new URL(request.url).searchParams.get("force") === "1";
+  const result = await runRefresh(new Date(), { force });
+  return NextResponse.json({ ok: true, force, ...result });
 }
