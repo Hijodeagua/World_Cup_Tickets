@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 export function SiteNav() {
   const path = usePathname();
@@ -9,15 +10,15 @@ export function SiteNav() {
     href === "/" ? (path === "/" || path.startsWith("/matches") ? "active" : "") : path.startsWith(href) ? "active" : "";
   return (
     <nav className="top-nav">
-      <a href="/" className={cls("/")}>
+      <Link href="/" className={cls("/")}>
         Matches
-      </a>
-      <a href="/predictions" className={cls("/predictions")}>
+      </Link>
+      <Link href="/predictions" className={cls("/predictions")}>
         Projections
-      </a>
-      <a href="/admin/health" className={cls("/admin/health")}>
+      </Link>
+      <Link href="/admin/health" className={cls("/admin/health")}>
         Source health
-      </a>
+      </Link>
     </nav>
   );
 }
@@ -80,7 +81,7 @@ function Highlight({ text, q }: { text: string; q: string }) {
 function Row({ fx, q }: { fx: Fixture; q: string }) {
   const t = timeParts(fx.time);
   return (
-    <a className="row" href={`/matches/${fx.id}`}>
+    <Link className="row" href={`/matches/${fx.id}`}>
       <div className="tcol">
         {t.h}
         <span className="ampm">{t.ap}</span>
@@ -138,7 +139,7 @@ function Row({ fx, q }: { fx: Fixture; q: string }) {
           </>
         )}
       </div>
-    </a>
+    </Link>
   );
 }
 

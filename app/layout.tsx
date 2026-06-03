@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import "./globals.css";
 import { SiteNav } from "./ui";
 
@@ -13,10 +14,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <header className="top">
           <div className="wrap top-inner">
-            <a className="brand" href="/">
+            <Link className="brand" href="/">
               <span className="em" />
               World Cup 2026
-            </a>
+            </Link>
             <SiteNav />
           </div>
         </header>
