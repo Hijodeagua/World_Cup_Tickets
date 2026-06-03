@@ -56,14 +56,18 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
       codeA: match.homeTeam.code,
       codeB: match.awayTeam.code,
     });
-    const odds = await getMatchupOdds(match.homeTeam.name, match.awayTeam.name);
+    const [odds, rosterA, rosterB] = await Promise.all([
+      getMatchupOdds(match.homeTeam.name, match.awayTeam.name),
+      getRoster(match.homeTeam.code),
+      getRoster(match.awayTeam.code),
+    ]);
     matchup = {
       a: { name: match.homeTeam.name, flag: match.homeTeam.flag ?? "", elo: eloHome },
       b: { name: match.awayTeam.name, flag: match.awayTeam.flag ?? "", elo: eloAway },
       h2h,
       odds,
-      rosterA: getRoster(match.homeTeam.code),
-      rosterB: getRoster(match.awayTeam.code),
+      rosterA,
+      rosterB,
     };
   }
   const onSale = avail === "AVAILABLE" || avail === "LIMITED";

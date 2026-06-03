@@ -1,5 +1,5 @@
 {
-  "note": "Editable squad snapshot, NOT live data. One entry per team code (matching data/fixtures-2026.json). Seeded with real squads for the demo-matchup teams; add the rest the same way and the /matches/[id] roster view renders them automatically. Stats are approximate pre-tournament values — verify before relying on them. position: GK | DF | MF | FW. league/club are the player's club side. caps/goals/assists are senior international totals. firstCapYear is the year of debut for the national team.",
+  "note": "MANUAL OVERRIDE LAYER, merged on top of the auto-pulled Wikipedia rows (Player table) at read time: any non-null field here wins over the fetched value, and players listed only here are added. Use it for fields Wikipedia's squad table can't supply (assists, league, year of first cap) or to correct anything. One entry per team code (matching data/fixtures-2026.json). Stats are approximate pre-tournament values — verify before relying on them. position: GK | DF | MF | FW. caps/goals/assists are senior international totals. firstCapYear is the year of national-team debut.",
   "asOf": "2026-05-01",
   "fields": ["name", "position", "club", "league", "caps", "goals", "assists", "firstCapYear"],
   "rosters": {

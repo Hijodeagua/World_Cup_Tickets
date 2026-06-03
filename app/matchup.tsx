@@ -120,12 +120,13 @@ function RosterTable({ team, players }: { team: MatchupTeam; players: Player[] }
               <td>{p.name}</td>
               <td className="t-mut">{p.position}</td>
               <td>
-                {p.club} <span className="t-mut">· {p.league}</span>
+                {p.club ?? <span className="t-mut">—</span>}
+                {p.league && <span className="t-mut"> · {p.league}</span>}
               </td>
-              <td className="num">{p.caps}</td>
-              <td className="num">{p.goals}</td>
-              <td className="num">{p.assists}</td>
-              <td className="num t-mut">{p.firstCapYear}</td>
+              <td className="num">{p.caps ?? "—"}</td>
+              <td className="num">{p.goals ?? "—"}</td>
+              <td className="num">{p.assists ?? "—"}</td>
+              <td className="num t-mut">{p.firstCapYear ?? "—"}</td>
             </tr>
           ))}
         </tbody>
