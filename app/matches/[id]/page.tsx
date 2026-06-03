@@ -3,6 +3,11 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { getMatch } from "@/lib/matches";
 import { STAGE_LABELS, formatKickoff, formatPrice } from "@/lib/format";
+import { getBlendedElo } from "@/lib/predictions/ratings";
+import { simulateHeadToHead } from "@/lib/predictions/headToHead";
+import { getMatchupOdds } from "@/lib/odds";
+import { getRoster } from "@/lib/rosters";
+import { MatchupSection } from "@/app/matchup";
 
 export const dynamic = "force-dynamic";
 
@@ -38,6 +43,29 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
   const state = match.currentState;
   const avail = state?.availability ?? "UNKNOWN";
   const price = formatPrice(state?.minPrice ?? null, state?.currency ?? null);
+
+  // Head-to-head matchup view: only when both teams are known (knockout slots
+  // stay TBD until the group stage resolves) and both have an Elo rating.
+  const eloHome = getBlendedElo(match.homeTeam?.code);
+  const eloAway = getBlendedElo(match.awayTeam?.code);
+  let matchup = null;
+  if (match.homeTeam && match.awayTeam && eloHome != null && eloAway != null) {
+    const h2h = simulateHeadToHead({
+      eloA: eloHome,
+      eloB: eloAway,
+      codeA: match.homeTeam.code,
+      codeB: match.awayTeam.code,
+    });
+    const odds = await getMatchupOdds(match.homeTeam.name, match.awayTeam.name);
+    matchup = {
+      a: { name: match.homeTeam.name, flag: match.homeTeam.flag ?? "", elo: eloHome },
+      b: { name: match.awayTeam.name, flag: match.awayTeam.flag ?? "", elo: eloAway },
+      h2h,
+      odds,
+      rosterA: getRoster(match.homeTeam.code),
+      rosterB: getRoster(match.awayTeam.code),
+    };
+  }
   const onSale = avail === "AVAILABLE" || avail === "LIMITED";
 
   return (
@@ -90,6 +118,17 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
           )}
         </div>
       </div>
+
+      {matchup && (
+        <MatchupSection
+          a={matchup.a}
+          b={matchup.b}
+          h2h={matchup.h2h}
+          odds={matchup.odds}
+          rosterA={matchup.rosterA}
+          rosterB={matchup.rosterB}
+        />
+      )}
 
       <h2 className="section-h">Recent observations</h2>
       {recent.length === 0 ? (

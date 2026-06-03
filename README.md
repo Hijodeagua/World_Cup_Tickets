@@ -53,7 +53,9 @@ source-reliability analysis, and keeps the site useful even when a source breaks
 
 - `/` — match list with filters (team, host city, stage, "available only").
 - `/matches/[id]` — match detail, availability + price, buy link, recent
-  observations.
+  observations, and a **matchup view**: an Elo head-to-head forecast
+  (win/draw/loss + average scoreline + the ten most likely scorelines), optional
+  market lines, and both teams' rosters. Shown only when both teams are known.
 - `/predictions` — Elo Monte Carlo title projections (see below).
 - `/admin/health` — source health (error rate, last successful fetch, recent runs).
 - `/api/cron/refresh` — the refresh endpoint (Bearer `CRON_SECRET`).
@@ -76,6 +78,26 @@ to win its group, advance, and lift the trophy.
 
 Caveat: the knockout bracket is **Elo-seeded**, not FIFA's exact slot/third-place
 table — a projection, not a prediction.
+
+## Matchup view (`lib/predictions/headToHead.ts`, `lib/odds/`, `lib/rosters.ts`)
+
+The per-match page runs the same Elo + Poisson engine as the title projections
+on just the two teams:
+
+- `headToHead.ts` — derives win/draw/loss and the average scoreline from a large
+  run (default 10,000) for stable percentages, while surfacing the **ten most
+  likely exact scorelines** for human-readable texture. Deterministic per
+  matchup (seeded from the two Elos). Host nations get the same home boost as the
+  tournament sim.
+- `lib/odds/` — a **pluggable, env-gated odds source** (The Odds API) mirroring
+  the ticket-provider design: with `THE_ODDS_API_KEY` set it fetches h2h lines,
+  averages across books, and de-vigs to implied probabilities shown beside the
+  model; with no key (or no market coverage) it degrades cleanly and the forecast
+  shows the model only. Never throws.
+- `data/rosters.json` — editable squad snapshot (caps, goals, assists, position,
+  club, league, debut year), one entry per team code. Seeded with real squads for
+  the demo-matchup teams; add the rest the same way and the roster view renders
+  them automatically. Teams without a roster show a graceful empty state.
 
 ## Local setup
 

@@ -1,0 +1,41 @@
+{
+  "note": "Editable squad snapshot, NOT live data. One entry per team code (matching data/fixtures-2026.json). Seeded with real squads for the demo-matchup teams; add the rest the same way and the /matches/[id] roster view renders them automatically. Stats are approximate pre-tournament values — verify before relying on them. position: GK | DF | MF | FW. league/club are the player's club side. caps/goals/assists are senior international totals. firstCapYear is the year of debut for the national team.",
+  "asOf": "2026-05-01",
+  "fields": ["name", "position", "club", "league", "caps", "goals", "assists", "firstCapYear"],
+  "rosters": {
+    "MEX": [
+      { "name": "Guillermo Ochoa", "position": "GK", "club": "AVS", "league": "Liga Portugal", "caps": 151, "goals": 0, "assists": 0, "firstCapYear": 2005 },
+      { "name": "Luis Malagón", "position": "GK", "club": "Club América", "league": "Liga MX", "caps": 12, "goals": 0, "assists": 0, "firstCapYear": 2023 },
+      { "name": "Julián Araujo", "position": "DF", "club": "Bournemouth", "league": "Premier League", "caps": 14, "goals": 0, "assists": 1, "firstCapYear": 2021 },
+      { "name": "César Montes", "position": "DF", "club": "Lokomotiv Moscow", "league": "Russian Premier League", "caps": 54, "goals": 4, "assists": 1, "firstCapYear": 2018 },
+      { "name": "Johan Vásquez", "position": "DF", "club": "Genoa", "league": "Serie A", "caps": 38, "goals": 2, "assists": 1, "firstCapYear": 2021 },
+      { "name": "Jesús Gallardo", "position": "DF", "club": "Toluca", "league": "Liga MX", "caps": 78, "goals": 1, "assists": 8, "firstCapYear": 2017 },
+      { "name": "Edson Álvarez", "position": "MF", "club": "West Ham United", "league": "Premier League", "caps": 84, "goals": 4, "assists": 3, "firstCapYear": 2017 },
+      { "name": "Luis Romo", "position": "MF", "club": "Cruz Azul", "league": "Liga MX", "caps": 47, "goals": 4, "assists": 2, "firstCapYear": 2019 },
+      { "name": "Orbelín Pineda", "position": "MF", "club": "AEK Athens", "league": "Super League Greece", "caps": 56, "goals": 9, "assists": 7, "firstCapYear": 2017 },
+      { "name": "Luis Chávez", "position": "MF", "club": "Dynamo Moscow", "league": "Russian Premier League", "caps": 37, "goals": 3, "assists": 5, "firstCapYear": 2021 },
+      { "name": "Hirving Lozano", "position": "FW", "club": "San Diego FC", "league": "MLS", "caps": 70, "goals": 18, "assists": 11, "firstCapYear": 2016 },
+      { "name": "Santiago Giménez", "position": "FW", "club": "AC Milan", "league": "Serie A", "caps": 34, "goals": 9, "assists": 2, "firstCapYear": 2021 },
+      { "name": "Raúl Jiménez", "position": "FW", "club": "Fulham", "league": "Premier League", "caps": 105, "goals": 36, "assists": 12, "firstCapYear": 2013 },
+      { "name": "Alexis Vega", "position": "FW", "club": "Toluca", "league": "Liga MX", "caps": 40, "goals": 6, "assists": 6, "firstCapYear": 2019 },
+      { "name": "César Huerta", "position": "FW", "club": "RC Lens", "league": "Ligue 1", "caps": 14, "goals": 3, "assists": 2, "firstCapYear": 2024 }
+    ],
+    "RSA": [
+      { "name": "Ronwen Williams", "position": "GK", "club": "Mamelodi Sundowns", "league": "PSL", "caps": 35, "goals": 0, "assists": 0, "firstCapYear": 2013 },
+      { "name": "Ricardo Goss", "position": "GK", "club": "SuperSport United", "league": "PSL", "caps": 4, "goals": 0, "assists": 0, "firstCapYear": 2022 },
+      { "name": "Khuliso Mudau", "position": "DF", "club": "Mamelodi Sundowns", "league": "PSL", "caps": 24, "goals": 0, "assists": 2, "firstCapYear": 2021 },
+      { "name": "Mothobi Mvala", "position": "DF", "club": "Mamelodi Sundowns", "league": "PSL", "caps": 30, "goals": 3, "assists": 1, "firstCapYear": 2019 },
+      { "name": "Aubrey Modiba", "position": "DF", "club": "Mamelodi Sundowns", "league": "PSL", "caps": 33, "goals": 3, "assists": 5, "firstCapYear": 2017 },
+      { "name": "Nkosinathi Sibisi", "position": "DF", "club": "Orlando Pirates", "league": "PSL", "caps": 12, "goals": 0, "assists": 0, "firstCapYear": 2023 },
+      { "name": "Teboho Mokoena", "position": "MF", "club": "Mamelodi Sundowns", "league": "PSL", "caps": 41, "goals": 6, "assists": 4, "firstCapYear": 2019 },
+      { "name": "Sphephelo Sithole", "position": "MF", "club": "Tondela", "league": "Liga Portugal", "caps": 19, "goals": 0, "assists": 1, "firstCapYear": 2021 },
+      { "name": "Themba Zwane", "position": "MF", "club": "Mamelodi Sundowns", "league": "PSL", "caps": 34, "goals": 8, "assists": 7, "firstCapYear": 2017 },
+      { "name": "Oswin Appollis", "position": "MF", "club": "Polokwane City", "league": "PSL", "caps": 13, "goals": 2, "assists": 3, "firstCapYear": 2023 },
+      { "name": "Percy Tau", "position": "FW", "club": "Qatar SC", "league": "Qatar Stars League", "caps": 41, "goals": 11, "assists": 6, "firstCapYear": 2015 },
+      { "name": "Lyle Foster", "position": "FW", "club": "Burnley", "league": "Championship", "caps": 21, "goals": 5, "assists": 2, "firstCapYear": 2022 },
+      { "name": "Evidence Makgopa", "position": "FW", "club": "Orlando Pirates", "league": "PSL", "caps": 18, "goals": 4, "assists": 1, "firstCapYear": 2022 },
+      { "name": "Mihlali Mayambela", "position": "FW", "club": "Aris Limassol", "league": "Cypriot First Division", "caps": 14, "goals": 3, "assists": 2, "firstCapYear": 2018 },
+      { "name": "Iqraam Rayners", "position": "FW", "club": "Mamelodi Sundowns", "league": "PSL", "caps": 11, "goals": 3, "assists": 1, "firstCapYear": 2024 }
+    ]
+  }
+}
