@@ -1,119 +1,58 @@
-import Link from "next/link";
-import { getFilterOptions, getMatches } from "@/lib/matches";
-import { STAGE_LABELS } from "@/lib/format";
-import { MatchRow } from "./ui";
+import { getMatches } from "@/lib/matches";
+import { STAGE_LABELS, kickoffParts } from "@/lib/format";
+import { MatchLedger, type Fixture } from "./ui";
 
 export const dynamic = "force-dynamic";
 
-type SearchParams = Promise<Record<string, string | string[] | undefined>>;
+const AVAIL_STATUS: Record<string, Fixture["status"]> = {
+  AVAILABLE: "available",
+  LIMITED: "limited",
+  SOLD_OUT: "soldout",
+  UNKNOWN: "unk",
+};
 
-function pick(v: string | string[] | undefined): string | undefined {
-  const s = Array.isArray(v) ? v[0] : v;
-  return s && s.length ? s : undefined;
+function side(team: { name: string; flag: string | null } | null, label: string | null) {
+  if (team) return { n: team.name, f: team.flag ?? "" };
+  return { n: label ?? "TBD", f: "" };
 }
 
-function pickAll(v: string | string[] | undefined): string[] {
-  if (!v) return [];
-  return (Array.isArray(v) ? v : [v]).filter((s) => s && s.length);
-}
+export default async function HomePage() {
+  const matches = await getMatches({});
 
-const MAX_TOP_TEAMS = 5;
-
-export default async function HomePage({ searchParams }: { searchParams: SearchParams }) {
-  const sp = await searchParams;
-  const topTeams = pickAll(sp.teams).slice(0, MAX_TOP_TEAMS);
-  const filters = {
-    team: pick(sp.team),
-    teams: topTeams,
-    city: pick(sp.city),
-    stage: pick(sp.stage),
-    availableOnly: pick(sp.available) === "1",
-  };
-
-  const [matches, options] = await Promise.all([getMatches(filters), getFilterOptions()]);
+  const fixtures: Fixture[] = matches.map((m) => {
+    const { date, time } = kickoffParts(m.kickoff);
+    const state = m.currentState;
+    const status = AVAIL_STATUS[state?.availability ?? "UNKNOWN"] ?? "unk";
+    return {
+      id: m.id,
+      date,
+      time,
+      a: side(m.homeTeam, m.homeLabel),
+      b: side(m.awayTeam, m.awayLabel),
+      group: m.group,
+      stageLabel: STAGE_LABELS[m.stage] ?? m.stage,
+      stage: m.stage === "GROUP" ? "group" : "knockout",
+      venue: m.venue.stadium,
+      city: m.venue.city,
+      status,
+      price: state?.minPrice ?? null,
+      stale: Boolean(state?.isStale),
+      provisional: !m.confirmed,
+    };
+  });
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Matches & ticket availability</h1>
-        <p className="text-sm text-neutral-500">
-          {matches.length} match{matches.length === 1 ? "" : "es"} shown. Times shown in Eastern Time (ET).
+    <>
+      <section className="hero">
+        <div className="kicker">Tickets &amp; availability</div>
+        <h1 className="display">The Fixtures</h1>
+        <p>
+          <b>{fixtures.length} matches</b> across sixteen host cities, June through July. Prices reflect the
+          verified resale floor and refresh hourly. All times in Eastern Time (ET).
         </p>
-      </div>
+      </section>
 
-      <form method="get" className="flex flex-wrap items-end gap-3 rounded-lg border border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900">
-        <label className="flex flex-col text-xs font-medium text-neutral-500">
-          Team
-          <select name="team" defaultValue={filters.team ?? ""} className="mt-1 rounded border border-neutral-300 bg-transparent px-2 py-1 text-sm dark:border-neutral-700">
-            <option value="">All teams</option>
-            {options.teams.map((t) => (
-              <option key={t.code} value={t.code}>
-                {t.flag} {t.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="flex flex-col text-xs font-medium text-neutral-500">
-          Host city
-          <select name="city" defaultValue={filters.city ?? ""} className="mt-1 rounded border border-neutral-300 bg-transparent px-2 py-1 text-sm dark:border-neutral-700">
-            <option value="">All cities</option>
-            {options.cities.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="flex flex-col text-xs font-medium text-neutral-500">
-          Stage
-          <select name="stage" defaultValue={filters.stage ?? ""} className="mt-1 rounded border border-neutral-300 bg-transparent px-2 py-1 text-sm dark:border-neutral-700">
-            <option value="">All stages</option>
-            {options.stages.map((s) => (
-              <option key={s} value={s}>
-                {STAGE_LABELS[s] ?? s}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="flex flex-col text-xs font-medium text-neutral-500">
-          My top 5 teams (Ctrl/Cmd-click to pick up to {MAX_TOP_TEAMS})
-          <select
-            name="teams"
-            multiple
-            size={5}
-            defaultValue={filters.teams}
-            className="mt-1 min-w-[12rem] rounded border border-neutral-300 bg-transparent px-2 py-1 text-sm dark:border-neutral-700"
-          >
-            {options.teams.map((t) => (
-              <option key={t.code} value={t.code}>
-                {t.flag} {t.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" name="available" value="1" defaultChecked={filters.availableOnly} />
-          Available only
-        </label>
-        <button type="submit" className="rounded bg-neutral-900 px-3 py-1.5 text-sm font-medium text-white dark:bg-white dark:text-neutral-900">
-          Apply
-        </button>
-        <Link href="/" className="text-sm text-neutral-500 hover:underline">
-          Reset
-        </Link>
-      </form>
-
-      {matches.length === 0 ? (
-        <p className="rounded-lg border border-dashed border-neutral-300 p-8 text-center text-neutral-500 dark:border-neutral-700">
-          No matches match these filters.
-        </p>
-      ) : (
-        <div className="grid gap-3">
-          {matches.map((m) => (
-            <MatchRow key={m.id} match={m} />
-          ))}
-        </div>
-      )}
-    </div>
+      <MatchLedger fixtures={fixtures} />
+    </>
   );
 }

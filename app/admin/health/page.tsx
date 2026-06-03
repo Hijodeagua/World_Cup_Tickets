@@ -26,64 +26,55 @@ export default async function HealthPage() {
   const recentRuns = await prisma.providerRun.findMany({ orderBy: { startedAt: "desc" }, take: 15 });
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Source health</h1>
-        <p className="text-sm text-neutral-500">Early warning for broken ticket sources.</p>
-      </div>
+    <>
+      <section className="hero" style={{ paddingBottom: 6 }}>
+        <div className="kicker">Operations</div>
+        <h1 className="display" style={{ fontSize: 56 }}>
+          Source health
+        </h1>
+        <p>Early warning for broken ticket sources — error rate, last successful fetch, and recent runs.</p>
+      </section>
 
-      <div className="grid gap-3 sm:grid-cols-2">
-        {perProvider.length === 0 && <p className="text-sm text-neutral-500">No runs recorded yet.</p>}
-        {perProvider.map((p) => (
-          <div key={p.providerId} className="rounded-lg border border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900">
-            <div className="flex items-center justify-between">
-              <span className="font-semibold">{p.providerId}</span>
-              <span
-                className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                  p.errorRate === 0
-                    ? "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300"
-                    : p.errorRate < 0.5
-                      ? "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300"
-                      : "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300"
-                }`}
-              >
-                {Math.round(p.errorRate * 100)}% errors
-              </span>
+      <div className="health-grid">
+        {perProvider.length === 0 && <p style={{ color: "var(--mut-2)", fontSize: 14 }}>No runs recorded yet.</p>}
+        {perProvider.map((p) => {
+          const pill = p.errorRate === 0 ? "ok" : p.errorRate < 0.5 ? "warn" : "bad";
+          return (
+            <div key={p.providerId} className="health-card">
+              <div className="hh">
+                <span className="pid">{p.providerId}</span>
+                <span className={`pill ${pill}`}>{Math.round(p.errorRate * 100)}% errors</span>
+              </div>
+              <p className="meta">Last successful fetch: {p.lastSuccess ? formatKickoff(p.lastSuccess) : "never"}</p>
             </div>
-            <p className="mt-2 text-sm text-neutral-500">
-              Last successful fetch: {p.lastSuccess ? formatKickoff(p.lastSuccess) : "never"}
-            </p>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
-      <div>
-        <h2 className="mb-2 text-sm font-semibold text-neutral-500">Recent runs</h2>
-        <div className="overflow-hidden rounded-lg border border-neutral-200 dark:border-neutral-800">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-neutral-100 text-xs uppercase text-neutral-500 dark:bg-neutral-800">
-              <tr>
-                <th className="px-3 py-2">Started</th>
-                <th className="px-3 py-2">Source</th>
-                <th className="px-3 py-2">Checked</th>
-                <th className="px-3 py-2">OK</th>
-                <th className="px-3 py-2">Failed</th>
-              </tr>
-            </thead>
-            <tbody>
-              {recentRuns.map((r) => (
-                <tr key={r.id} className="border-t border-neutral-200 dark:border-neutral-800">
-                  <td className="px-3 py-2 text-neutral-500">{formatKickoff(r.startedAt)}</td>
-                  <td className="px-3 py-2">{r.providerId}</td>
-                  <td className="px-3 py-2">{r.matchesChecked}</td>
-                  <td className="px-3 py-2 text-green-700 dark:text-green-400">{r.successCount}</td>
-                  <td className="px-3 py-2 text-red-700 dark:text-red-400">{r.failureCount}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+      <h2 className="section-h">Recent runs</h2>
+      <table className="data">
+        <thead>
+          <tr>
+            <th>Started</th>
+            <th>Source</th>
+            <th>Checked</th>
+            <th>OK</th>
+            <th>Failed</th>
+          </tr>
+        </thead>
+        <tbody>
+          {recentRuns.map((r) => (
+            <tr key={r.id}>
+              <td className="t-mut">{formatKickoff(r.startedAt)}</td>
+              <td>{r.providerId}</td>
+              <td>{r.matchesChecked}</td>
+              <td className="t-ok">{r.successCount}</td>
+              <td className="t-bad">{r.failureCount}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div className="foot" />
+    </>
   );
 }
