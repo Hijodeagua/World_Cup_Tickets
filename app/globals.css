@@ -896,3 +896,218 @@ td.grp {
   font-weight: 500;
   color: var(--gold);
 }
+
+/* ===== matchup forecast + rosters ===== */
+.mu-panel {
+  padding: 24px 26px;
+}
+.mu-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-family: "Newsreader", serif;
+  font-size: 22px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.mu-head .fl {
+  font-size: 22px;
+}
+.mu-head .x {
+  color: var(--mut-2);
+  font-style: italic;
+  font-size: 17px;
+}
+
+.mu-bar {
+  display: flex;
+  height: 16px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: rgba(233, 224, 210, 0.05);
+}
+.mu-seg {
+  height: 100%;
+}
+.mu-seg.win-a {
+  background: linear-gradient(90deg, var(--gold-dim), var(--gold));
+}
+.mu-seg.draw {
+  background: #3a382f;
+}
+.mu-seg.win-b {
+  background: linear-gradient(90deg, #4a7d8c, var(--emerald));
+}
+.mu-legend3 {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+.mu-legend3 .l {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.mu-legend3 .l.d {
+  align-items: center;
+}
+.mu-legend3 .l.b {
+  align-items: flex-end;
+}
+.mu-legend3 .v {
+  font-family: "Newsreader", serif;
+  font-size: 24px;
+  font-weight: 500;
+}
+.mu-legend3 .l.a .v {
+  color: var(--gold);
+}
+.mu-legend3 .l.b .v {
+  color: var(--emerald);
+}
+.mu-legend3 .k {
+  font-size: 12px;
+  color: var(--mut);
+}
+
+.mu-stats {
+  display: flex;
+  gap: 28px;
+  flex-wrap: wrap;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+.mu-stats .n {
+  font-family: "Newsreader", serif;
+  font-size: 22px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.mu-stats .l {
+  font-size: 11px;
+  color: var(--mut);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-top: 3px;
+}
+
+.mu-market {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 13.5px;
+  color: var(--txt);
+}
+.mu-market .tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #1a1408;
+  background: var(--gold);
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+.mu-market .src {
+  color: var(--mut-2);
+  font-size: 12px;
+  font-style: italic;
+}
+
+.mu-scores {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+.mu-sub {
+  font-family: "Newsreader", serif;
+  font-style: italic;
+  font-size: 15px;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+.mu-chips {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+.mu-chips .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(233, 224, 210, 0.04);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 6px 13px;
+  font-variant-numeric: tabular-nums;
+}
+.mu-chips .chip b {
+  font-family: "Newsreader", serif;
+  font-size: 16px;
+  font-weight: 500;
+}
+.mu-chips .chip .cpct {
+  font-size: 12px;
+  color: var(--mut);
+  font-weight: 600;
+}
+
+.rosters-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.roster-h {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.roster-h .fl {
+  font-size: 22px;
+}
+.roster-h .nm {
+  font-family: "Newsreader", serif;
+  font-size: 22px;
+  font-weight: 500;
+}
+.roster-h .ct {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--mut-2);
+}
+table.roster-tbl {
+  font-size: 13px;
+}
+table.roster-tbl th,
+table.roster-tbl td {
+  padding: 9px 12px;
+}
+table.roster-tbl th.num,
+table.roster-tbl td.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.empty-roster {
+  background: var(--panel);
+  border: 1px dashed var(--line-2);
+  border-radius: 16px;
+  padding: 28px;
+  color: var(--mut-2);
+  font-style: italic;
+  font-family: "Newsreader", serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 760px) {
+  .rosters-grid {
+    grid-template-columns: 1fr;
+  }
+}

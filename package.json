@@ -10,7 +10,8 @@
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
-    "predict": "tsx scripts/predict.ts"
+    "predict": "tsx scripts/predict.ts",
+    "rosters": "tsx scripts/fetch-rosters.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

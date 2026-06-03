@@ -160,3 +160,27 @@ model TeamProjection {
   iterations   Int
   computedAt   DateTime @updatedAt
 }
+
+// Auto-pulled squad rows (currently from Wikipedia). The editable
+// data/rosters.json layer is merged on top at read time as manual overrides,
+// so hand-entered fields (assists, league, debut year) win over fetched data.
+// Wikipedia squad tables provide name/position/caps/goals/club; the other
+// fields stay null until a manual override or a richer source fills them.
+model Player {
+  id           String   @id @default(cuid())
+  teamCode     String
+  name         String
+  position     String // GK | DF | MF | FW
+  club         String?
+  league       String?
+  caps         Int?
+  goals        Int?
+  assists      Int?
+  firstCapYear Int?
+  source       String   @default("wikipedia")
+  fetchedAt    DateTime @default(now())
+
+  @@unique([teamCode, name])
+  @@index([teamCode])
+}
+
