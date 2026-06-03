@@ -15,7 +15,7 @@ source-reliability analysis, and keeps the site useful even when a source breaks
 ## Stack
 
 - **Next.js 15** (App Router) + TypeScript + Tailwind CSS v4
-- **Prisma** ORM — SQLite for local dev, Postgres for production
+- **Prisma** ORM — Postgres in every environment (local and production)
 - **Vercel Cron** for the autonomous availability refresh
 
 ## Data model (`prisma/schema.prisma`)
@@ -101,10 +101,13 @@ on just the two teams:
 
 ## Local setup
 
+Requires a Postgres database. Use any local or hosted instance (local Docker,
+Neon, Vercel Postgres, etc.) and put its connection string in `DATABASE_URL`.
+
 ```bash
 npm install
-cp .env.example .env          # SQLite + CRON_SECRET (+ optional TICKETMASTER_API_KEY)
-npm run db:push               # create the SQLite schema
+cp .env.example .env          # set DATABASE_URL (Postgres) + CRON_SECRET (+ optional TICKETMASTER_API_KEY)
+npm run db:push               # create the schema in your Postgres database
 npm run db:seed               # seed schedule + demo overrides, run first refresh
 npm run dev                   # http://localhost:3000
 ```
@@ -120,8 +123,8 @@ curl -H "Authorization: Bearer <CRON_SECRET>" http://localhost:3000/api/cron/ref
 
 ## Production (Vercel)
 
-1. Set `DATABASE_URL` to a Postgres connection string and change the datasource
-   `provider` in `prisma/schema.prisma` to `postgresql`.
+1. Set `DATABASE_URL` to your production Postgres connection string. The
+   datasource `provider` is already `postgresql`, so no schema change is needed.
 2. Set `CRON_SECRET`. `vercel.json` already schedules the hourly cron; the loop
    internally throttles per-match via adaptive polling.
 

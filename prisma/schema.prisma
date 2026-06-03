@@ -4,13 +4,14 @@
 // overwrite-in-place status. Every fetch attempt writes one immutable
 // TicketObservation row; CurrentTicketState is derived from that stream.
 //
-// Dev uses SQLite (no native enums, no Json type) so "enum" fields are String
+// Uses Postgres in every environment (local and production) so the committed
+// schema always matches the live deployment. "enum" fields are kept as String
 // constrained in app code (see lib/tickets/types.ts) and raw payloads are
-// stored as stringified JSON. For production, switch provider to "postgresql"
-// and point DATABASE_URL at Postgres — no model changes required.
+// stored as stringified JSON for portability. Point DATABASE_URL at any
+// Postgres instance (local Docker, Neon, Vercel Postgres, etc.).
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
