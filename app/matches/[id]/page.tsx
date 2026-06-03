@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { getMatch } from "@/lib/matches";
@@ -41,9 +42,9 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
 
   return (
     <>
-      <a href="/" className="backlink">
+      <Link href="/" className="backlink">
         ← All matches
-      </a>
+      </Link>
 
       <div className="panel" style={{ marginTop: 18 }}>
         <div className="submeta" style={{ marginTop: 0 }}>
