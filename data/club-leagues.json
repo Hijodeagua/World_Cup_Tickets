@@ -1,0 +1,54 @@
+{
+  "_note": "Exact club -> league overrides applied on top of the federation-inferred league in scripts/build-rosters.ts. Pre-filled with best-effort 2025-26 divisions for clubs below their country's top flight (or cross-border). VERIFY/EDIT these, then re-run `npx tsx scripts/build-rosters.ts`. Clubs not listed keep the inferred top-league label.",
+
+  "Birmingham City": "Championship",
+  "Charlton Athletic": "Championship",
+  "Coventry City": "Championship",
+  "Derby County": "Championship",
+  "Hull City": "Championship",
+  "Ipswich Town": "Championship",
+  "Leicester City": "Championship",
+  "Middlesbrough": "Championship",
+  "Millwall": "Championship",
+  "Norwich City": "Championship",
+  "Portsmouth": "Championship",
+  "Sheffield United": "Championship",
+  "Southampton": "Championship",
+  "Stoke City": "Championship",
+  "Watford": "Championship",
+  "Luton Town": "League One",
+  "Barnsley": "League One",
+  "Peterborough United": "League One",
+  "Port Vale": "League One",
+  "Rotherham United": "League One",
+  "Braintree Town": "National League",
+
+  "Schalke 04": "2. Bundesliga",
+  "Hannover 96": "2. Bundesliga",
+  "Karlsruher SC": "2. Bundesliga",
+  "Fortuna Düsseldorf": "2. Bundesliga",
+  "Holstein Kiel": "2. Bundesliga",
+  "Cosmos Koblenz": "Regionalliga",
+
+  "Bastia": "Ligue 2",
+  "Nancy": "Ligue 2",
+  "Sochaux": "Championnat National",
+
+  "VVV-Venlo": "Eerste Divisie",
+  "Den Bosch": "Eerste Divisie",
+  "Almere City": "Eerste Divisie",
+
+  "Chaves": "Liga Portugal 2",
+  "Torreense": "Liga Portugal 2",
+  "Vizela": "Liga Portugal 2",
+  "Farense": "Liga Portugal 2",
+
+  "Cultural Leonesa": "Segunda División",
+  "Castellón": "Segunda División",
+  "Granada": "Segunda División",
+  "Racing Santander": "Segunda División",
+
+  "Sampdoria": "Serie B",
+
+  "Iğdır": "TFF First League"
+}

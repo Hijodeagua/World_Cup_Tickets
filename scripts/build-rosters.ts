@@ -30,7 +30,7 @@ const FED_TO_LEAGUE: Record<string, string> = {
   "Royal Dutch Football Association": "Eredivisie",
   "Football Association of the Czech Republic": "Czech First League",
   "German Football Association": "Bundesliga",
-  "The Football Association": "England (EPL/EFL)",
+  "The Football Association": "Premier League",
   "Portuguese Football Federation": "Liga Portugal",
   "Hellenic Football Federation": "Super League Greece",
   "Russian Football Union": "Russian Premier League",
@@ -75,7 +75,7 @@ const FED_TO_LEAGUE: Record<string, string> = {
   "Football Federation of Chile": "Primera División (CHI)",
   "National Autonomous Federation of Football of Honduras": "Liga Nacional (HON)",
   "Football Association of Ireland": "League of Ireland",
-  "Football Association of Wales": "England (EFL)",
+  "Football Association of Wales": "Championship",
   "Football Australia": "A-League",
   "New Zealand Football": "A-League",
   "Football Association of Malaysia": "Malaysia Super League",
@@ -102,11 +102,19 @@ const FED_TO_LEAGUE: Record<string, string> = {
 
 const FEDS = Object.keys(FED_TO_LEAGUE).sort((a, b) => b.length - a.length);
 
+// Exact per-club league overrides (data/club-leagues.json), applied on top of
+// the federation-inferred league so second-division/cross-border clubs are right.
+const CLUB_OVERRIDES: Record<string, string> = JSON.parse(readFileSync("data/club-leagues.json", "utf8"));
+
 function splitClub(raw: string): { club: string; league: string | null } {
   for (const fed of FEDS) {
-    if (raw.startsWith(fed + " ")) return { club: raw.slice(fed.length + 1).trim(), league: FED_TO_LEAGUE[fed] };
+    if (raw.startsWith(fed + " ")) {
+      const club = raw.slice(fed.length + 1).trim();
+      return { club, league: CLUB_OVERRIDES[club] ?? FED_TO_LEAGUE[fed] };
+    }
   }
-  return { club: raw.trim(), league: null };
+  const club = raw.trim();
+  return { club, league: CLUB_OVERRIDES[club] ?? null };
 }
 
 const ROW = /^(\d+)\s+(GK|DF|MF|FW)\s+(.+?)\s+[A-Z][a-z]+ \d{1,2}, \d{4} \(aged \d+\)\s+(\d+)\s+(\d+)\s+(.+)$/;
