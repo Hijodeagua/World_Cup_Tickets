@@ -2,12 +2,14 @@ import { prisma } from "@/lib/db";
 import { ManualProvider } from "./manual";
 import { resolveState, type ResolvableObservation } from "./resolver";
 import { BestEffortScraperProvider } from "./scraper";
+import { SeatGeekProvider } from "./seatgeek";
 import { TicketmasterProvider } from "./ticketmaster";
 import type { MatchForFetch, ObservationInput, TicketProvider } from "./types";
 
 export const providers: TicketProvider[] = [
   new ManualProvider(),
   new TicketmasterProvider(),
+  new SeatGeekProvider(),
   new BestEffortScraperProvider(),
 ];
 
