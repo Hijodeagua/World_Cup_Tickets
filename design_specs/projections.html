@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projections · World Cup 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .meth{margin-top:10px;font-size:13px;color:var(--mut-2);font-style:italic;font-family:'Newsreader',serif}
+
+  .topgrid{display:grid;grid-template-columns:340px 1fr;gap:18px;margin:34px 0 6px}
+  .fav{background:linear-gradient(160deg,rgba(227,183,101,.1),transparent 62%),var(--panel);border:1px solid rgba(227,183,101,.28);border-radius:18px;padding:26px;display:flex;flex-direction:column}
+  .fav .lab{font-family:'Newsreader',serif;font-style:italic;font-size:15px;color:var(--gold)}
+  .fav .who{display:flex;align-items:center;gap:13px;margin-top:14px}
+  .fav .who .fl{font-size:42px;line-height:1}
+  .fav .who .nm{font-family:'Newsreader',serif;font-size:34px;font-weight:500;letter-spacing:-.01em}
+  .fav .big{margin-top:auto;padding-top:24px;display:flex;align-items:flex-end;gap:8px}
+  .fav .big .pct{font-family:'Newsreader',serif;font-size:64px;font-weight:500;line-height:.82;color:var(--gold)}
+  .fav .big .cap{font-size:13px;color:var(--mut);font-weight:500;padding-bottom:9px;font-family:'Newsreader',serif;font-style:italic}
+  .fav .sub{display:flex;gap:24px;margin-top:18px;border-top:1px solid var(--line);padding-top:16px}
+  .fav .sub .n{font-family:'Newsreader',serif;font-size:21px;font-weight:500}
+  .fav .sub .l{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.08em;margin-top:3px}
+
+  .chart{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px 28px}
+  .chart h3{font-family:'Newsreader',serif;font-style:italic;font-weight:500;font-size:18px;color:var(--txt);margin-bottom:3px}
+  .chart .csub{font-size:12.5px;color:var(--mut-2);margin-bottom:18px}
+  .bar{display:grid;grid-template-columns:118px 1fr 46px;align-items:center;gap:14px;margin-bottom:11px}
+  .bar .bt{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;white-space:nowrap;font-family:'Newsreader',serif}
+  .bar .bt .fl{font-size:17px}
+  .bar .track{height:13px;background:rgba(233,224,210,.05);border-radius:4px;overflow:hidden}
+  .bar .fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--gold-dim),var(--gold))}
+  .bar .bv{font-variant-numeric:tabular-nums;font-size:14px;font-weight:700;text-align:right;color:var(--gold)}
+
+  .legend{display:flex;align-items:center;gap:12px;margin:36px 0 14px;font-size:12.5px;color:var(--mut)}
+  .legend .tg{font-family:'Newsreader',serif;font-style:italic;font-size:16px;color:var(--txt)}
+  .legend .grad{width:150px;height:9px;border-radius:5px;background:linear-gradient(90deg,rgba(227,183,101,.07),var(--gold))}
+  .legend .sp{flex:1}
+
+  table{width:100%;border-collapse:separate;border-spacing:0;background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  thead th{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--mut);text-align:center;padding:15px 8px;background:rgba(233,224,210,.025);border-bottom:1px solid var(--line);cursor:pointer;user-select:none;white-space:nowrap;transition:color .15s}
+  thead th:hover{color:var(--txt)}
+  thead th.l{text-align:left;padding-left:22px;cursor:default}
+  thead th.l:hover{color:var(--mut)}
+  thead th .ar{display:inline-block;width:9px;margin-left:3px;color:var(--gold);opacity:0}
+  thead th.sorted .ar{opacity:1}
+  tbody td{padding:0;text-align:center;border-bottom:1px solid rgba(233,224,210,.05);height:54px}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:rgba(233,224,210,.025)}
+  .rk{color:var(--mut-2);font-family:'Newsreader',serif;font-size:18px;width:52px}
+  .team{text-align:left;padding-left:22px;width:220px}
+  .team .tw{display:flex;align-items:center;gap:11px}
+  .team .fl{font-size:22px}
+  .team .nm{font-family:'Newsreader',serif;font-weight:500;font-size:20px;letter-spacing:-.01em}
+  .grp{color:var(--mut);font-variant-numeric:tabular-nums;font-size:13px;width:50px}
+  .elo{color:var(--txt);font-variant-numeric:tabular-nums;font-size:14px;font-weight:600;width:64px}
+  .cell{font-variant-numeric:tabular-nums;font-size:14px;font-weight:600;position:relative}
+  .cell .v{position:relative;z-index:2}
+  .champ{position:relative}
+  .champ .fillbar{position:absolute;left:8px;top:50%;transform:translateY(-50%);height:30px;border-radius:6px;background:linear-gradient(90deg,rgba(227,183,101,.22),rgba(227,183,101,.5));z-index:1}
+  .champ .v{font-family:'Newsreader',serif;font-size:18px;font-weight:500;color:var(--gold)}
+  .foot{height:80px}
+</style>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <a class="brand" href="index.html"><span class="em"></span>World Cup 2026</a>
+      <nav class="top-nav">
+        <a href="index.html">Matches</a>
+        <a href="projections.html" class="active">Projections</a>
+        <a href="#">Source health</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero" style="border-bottom:none;padding-bottom:6px">
+      <div class="kicker">Elo Monte Carlo · 20,000 simulations</div>
+      <h1>Road to the Final</h1>
+      <p>Championship odds drawn from <b>20,000 simulated tournaments</b>, blending an online World Football Elo with a Silver/SPI-style model, weighted evenly. A projection — not a prediction.</p>
+      <div class="meth">Refreshed whenever the rating file is updated.</div>
+    </section>
+
+    <div class="topgrid">
+      <div class="fav" id="fav"></div>
+      <div class="chart">
+        <h3>Championship probability</h3>
+        <div class="csub">Top contenders · share of 20,000 simulations ending in a title</div>
+        <div id="chart"></div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <span class="tg">Round-by-round survival</span>
+      <span class="sp"></span>
+      <span>0%</span><span class="grad"></span><span>100%</span>
+    </div>
+
+    <table>
+      <thead><tr id="head"></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <div class="foot"></div>
+  </main>
+
+<script src="data.js"></script>
+<script>
+  const { projections:P, projCols } = window.WC, F = window.WCfmt;
+  const fmt = F.pct;
+  const maxC = Math.max(...P.map(d=>d.c[6]));
+
+  // favorite card (top champion)
+  (function(){
+    const a = [...P].sort((x,y)=>y.c[6]-x.c[6])[0];
+    document.getElementById("fav").innerHTML = `
+      <div class="lab">Projected favorite</div>
+      <div class="who"><span class="fl">${a.fl}</span><span class="nm">${a.nm}</span></div>
+      <div class="big"><span class="pct">${a.c[6]}<span style="font-size:24px">%</span></span><span class="cap">to lift the trophy</span></div>
+      <div class="sub">
+        <div><div class="n">${fmt(a.c[5])}</div><div class="l">Reach final</div></div>
+        <div><div class="n">${fmt(a.c[4])}</div><div class="l">Reach semis</div></div>
+        <div><div class="n">${a.e}</div><div class="l">Elo</div></div>
+      </div>`;
+  })();
+
+  // title-odds chart (top 7 by champion)
+  document.getElementById("chart").innerHTML = [...P].sort((a,b)=>b.c[6]-a.c[6]).slice(0,7).map(d=>{
+    const v=d.c[6], w=Math.max(2,(v/maxC)*100);
+    return `<div class="bar"><div class="bt"><span class="fl">${d.fl}</span>${d.nm}</div>
+      <div class="track"><div class="fill" style="width:${w}%"></div></div>
+      <div class="bv">${fmt(v)}</div></div>`;
+  }).join("");
+
+  // sortable heat table
+  const cols = projCols; // 7
+  const headEl = document.getElementById("head"), rowsEl = document.getElementById("rows");
+  let sortKey = "c6", sortDir = -1; // default champion desc
+
+  headEl.innerHTML = `<th class="l">#</th><th class="l" data-k="nm">Team</th>`
+    + `<th data-k="g">Grp</th><th data-k="e">Elo</th>`
+    + cols.map((c,i)=>`<th data-k="c${i}">${c}<span class="ar"></span></th>`).join("");
+
+  function tint(v){const a=Math.pow(v/100,.85)*.26;return `background:rgba(227,183,101,${a.toFixed(3)})`;}
+  function txtcol(v){return v>=60?"color:#f3e4c4":v>=25?"color:#d8cfbf":"color:var(--mut)";}
+
+  function val(d,k){ if(k==="nm")return d.nm; if(k==="g")return d.g; if(k==="e")return d.e; return d.c[+k.slice(1)]; }
+
+  function render(){
+    const sorted = [...P].sort((a,b)=>{
+      const va=val(a,sortKey), vb=val(b,sortKey);
+      if(typeof va==="string") return sortDir*va.localeCompare(vb);
+      return sortDir*(va-vb);
+    });
+    rowsEl.innerHTML = sorted.map((d,idx)=>{
+      const cells = d.c.map((v,i)=>{
+        if(i===6){const w=Math.max(4,(v/maxC)*100);
+          return `<td class="cell champ"><div class="fillbar" style="width:${w}%"></div><span class="v">${fmt(v)}</span></td>`;}
+        return `<td class="cell" style="${tint(v)}"><span class="v" style="${txtcol(v)}">${fmt(v)}</span></td>`;
+      }).join("");
+      return `<tr>
+        <td class="rk">${idx+1}</td>
+        <td class="team"><div class="tw"><span class="fl">${d.fl}</span><span class="nm">${d.nm}</span></div></td>
+        <td class="grp">${d.g}</td>
+        <td class="elo">${d.e}</td>${cells}</tr>`;
+    }).join("");
+    // header arrows
+    headEl.querySelectorAll("th[data-k]").forEach(th=>{
+      const on = th.dataset.k===sortKey;
+      th.classList.toggle("sorted",on);
+      const ar = th.querySelector(".ar"); if(ar) ar.textContent = on ? (sortDir<0?"▼":"▲") : "";
+    });
+  }
+
+  headEl.addEventListener("click", e=>{
+    const th = e.target.closest("th[data-k]"); if(!th) return;
+    const k = th.dataset.k;
+    if(k===sortKey){ sortDir*=-1; }
+    else { sortKey=k; sortDir = (k==="nm")?1:-1; } // text asc, numbers desc by default
+    render();
+  });
+
+  render();
+</script>
+</body>
+</html>

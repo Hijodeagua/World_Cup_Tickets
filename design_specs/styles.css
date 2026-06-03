@@ -1,0 +1,56 @@
+/* ===== World Cup 2026 — Editorial system (gold + serif) ===== */
+:root{
+  --bg:#0B0B0C;
+  --ink:#0F0F11;
+  --paper:#15151A;
+  --panel:#121217;
+  --line:rgba(233,224,210,.12);
+  --line-2:rgba(233,224,210,.2);
+  --txt:#F1ECE3;
+  --mut:#9A948A;
+  --mut-2:#67625A;
+  --gold:#E3B765;
+  --gold-dim:#A8854a;
+  --emerald:#6FCF97;
+  --rust:#E08A5B;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--bg);color:var(--txt);
+  font-family:'Archivo',system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  font-feature-settings:"tnum";
+}
+a{color:inherit}
+.wrap{max-width:1120px;margin:0 auto;padding:0 48px}
+
+header.top{position:sticky;top:0;z-index:50;background:rgba(11,11,12,.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.top-inner{display:flex;align-items:center;justify-content:space-between;height:70px}
+.brand{display:flex;align-items:center;gap:12px;font-family:'Newsreader',serif;font-weight:600;font-size:21px;letter-spacing:-.01em;text-decoration:none}
+.brand .em{width:9px;height:9px;border-radius:50%;background:var(--gold);box-shadow:0 0 14px rgba(227,183,101,.55)}
+nav.top-nav{display:flex;gap:34px;align-items:center;height:70px}
+nav.top-nav a{color:var(--mut);text-decoration:none;font-weight:500;font-size:15px;display:flex;align-items:center;height:100%;border-bottom:1.5px solid transparent;transition:color .15s}
+nav.top-nav a:hover{color:var(--txt)}
+nav.top-nav a.active{color:var(--txt);border-bottom-color:var(--gold)}
+
+.hero{padding:60px 0 28px;border-bottom:1px solid var(--line)}
+.kicker{font-family:'Newsreader',serif;font-style:italic;font-size:18px;color:var(--gold);margin-bottom:14px}
+h1{font-family:'Newsreader',serif;font-weight:500;font-size:72px;line-height:.96;letter-spacing:-.02em}
+.hero p{color:var(--mut);font-size:16px;margin-top:18px;max-width:580px;line-height:1.6}
+.hero p b{color:var(--txt);font-weight:600}
+
+.toolbar{display:flex;align-items:center;gap:24px;padding:20px 0;border-bottom:1px solid var(--line);position:sticky;top:70px;z-index:40;background:var(--bg);flex-wrap:wrap}
+.tb-search{display:flex;align-items:center;gap:10px;color:var(--mut);flex:1;min-width:200px}
+.tb-search svg{width:17px;height:17px;flex:none}
+.tb-search input{background:none;border:none;color:var(--txt);font:inherit;font-size:16px;width:100%;outline:none}
+.tb-search input::placeholder{color:var(--mut-2)}
+.tb-tabs{display:flex;gap:4px}
+.tb-tabs button{font-size:14px;font-weight:600;color:var(--mut);background:none;border:none;padding:7px 15px;border-radius:999px;cursor:pointer;font-family:inherit;transition:.15s}
+.tb-tabs button:hover{color:var(--txt)}
+.tb-tabs button.on{color:#1a1408;background:var(--gold)}
+.tb-avail{display:flex;align-items:center;gap:9px;font-size:14px;font-weight:600;color:var(--mut);cursor:pointer;background:none;border:none;font-family:inherit}
+.tb-avail .sw{width:32px;height:19px;border-radius:19px;background:#26241d;position:relative;transition:.18s}
+.tb-avail .sw::after{content:"";position:absolute;top:2px;left:2px;width:15px;height:15px;border-radius:50%;background:#5a564d;transition:.18s}
+.tb-avail.on .sw{background:rgba(227,183,101,.3)}
+.tb-avail.on .sw::after{left:15px;background:var(--gold)}
+.tb-avail.on{color:var(--txt)}

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matches · World Cup 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  /* day group */
+  .day{padding:34px 0 4px;display:flex;align-items:baseline;gap:16px;position:sticky;top:135px;z-index:20;background:linear-gradient(var(--bg) 70%,transparent)}
+  .day .num{font-family:'Newsreader',serif;font-size:38px;font-weight:500;line-height:1;color:var(--txt)}
+  .day .wd{display:flex;flex-direction:column}
+  .day .wd .a{font-family:'Newsreader',serif;font-style:italic;font-size:16px;color:var(--gold)}
+  .day .wd .b{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mut-2)}
+  .day .cnt{margin-left:auto;font-size:12.5px;color:var(--mut-2);font-weight:600;letter-spacing:.04em}
+
+  .row{display:grid;grid-template-columns:76px 1fr 190px;align-items:center;gap:28px;padding:20px 8px;border-top:1px solid var(--line);transition:background .16s}
+  .row:hover{background:linear-gradient(90deg,rgba(227,183,101,.05),transparent)}
+  .row .tcol{font-variant-numeric:tabular-nums;color:var(--mut);font-size:14px;font-weight:600}
+  .row .tcol .ampm{display:block;font-size:11px;color:var(--mut-2);margin-top:2px;letter-spacing:.1em;text-transform:uppercase}
+
+  .match .teams{display:flex;align-items:center;gap:13px;flex-wrap:wrap}
+  .tm{display:flex;align-items:center;gap:10px}
+  .flag{font-size:23px;line-height:1}
+  .nm{font-family:'Newsreader',serif;font-size:26px;font-weight:500;letter-spacing:-.01em}
+  .x{font-family:'Newsreader',serif;font-style:italic;font-size:17px;color:var(--mut-2)}
+  .submeta{margin-top:7px;font-size:13px;color:var(--mut);display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+  .submeta .grp{color:var(--gold-dim);font-weight:700;font-family:'Newsreader',serif;font-style:italic;font-size:15px}
+  .submeta .dot{color:var(--mut-2)}
+
+  .pricecol{text-align:right}
+  .pricecol .status{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;display:inline-flex;align-items:center;gap:7px;margin-bottom:7px}
+  .pricecol .status::before{content:"";width:6px;height:6px;border-radius:50%}
+  .status.available{color:var(--emerald)} .status.available::before{background:var(--emerald)}
+  .status.limited{color:var(--rust)} .status.limited::before{background:var(--rust)}
+  .status.unk{color:var(--mut-2)} .status.unk::before{background:var(--mut-2)}
+  .pricecol .amt{font-family:'Newsreader',serif;font-size:33px;font-weight:500;letter-spacing:-.01em;line-height:1}
+  .pricecol .amt small{font-size:15px;font-style:italic;color:var(--mut);font-weight:400;margin-right:4px}
+  .pricecol .none{font-family:'Newsreader',serif;font-style:italic;font-size:17px;color:var(--mut-2)}
+  .pricecol .notify{display:inline-block;margin-top:6px;font-size:12.5px;color:var(--gold);font-weight:600;text-decoration:none;border-bottom:1px solid var(--gold-dim);padding-bottom:1px;cursor:pointer;background:none;border-top:none;border-left:none;border-right:none;font-family:inherit}
+
+  .empty{padding:70px 8px;text-align:center;color:var(--mut-2)}
+  .empty .e1{font-family:'Newsreader',serif;font-style:italic;font-size:24px;color:var(--mut);margin-bottom:8px}
+  .empty .e2{font-size:14px}
+  .foot{height:90px}
+  mark{background:rgba(227,183,101,.28);color:var(--txt);border-radius:2px}
+</style>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <a class="brand" href="index.html"><span class="em"></span>World Cup 2026</a>
+      <nav class="top-nav">
+        <a href="index.html" class="active">Matches</a>
+        <a href="projections.html">Projections</a>
+        <a href="#">Source health</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="kicker">Tickets &amp; availability</div>
+      <h1>The Fixtures</h1>
+      <p><b>104 matches</b> across sixteen host cities, June through July. Prices reflect the verified resale floor and refresh hourly. All times in your local zone.</p>
+    </section>
+
+    <div class="toolbar">
+      <div class="tb-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="q" placeholder="Search a team or host city…" autocomplete="off">
+      </div>
+      <div class="tb-tabs" id="tabs">
+        <button class="on" data-stage="all">All</button>
+        <button data-stage="group">Group</button>
+        <button data-stage="knockout">Knockout</button>
+      </div>
+      <button class="tb-avail" id="avail" aria-pressed="false"><span class="sw"></span>On sale only</button>
+    </div>
+
+    <div id="list"></div>
+    <div class="foot"></div>
+  </main>
+
+<script src="data.js"></script>
+<script>
+  const { fixtures } = window.WC, F = window.WCfmt;
+  const state = { q:"", stage:"all", availOnly:false };
+  const listEl = document.getElementById("list");
+
+  const esc = s => s.replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+  function hl(text){
+    if(!state.q) return esc(text);
+    const i = text.toLowerCase().indexOf(state.q.toLowerCase());
+    if(i<0) return esc(text);
+    return esc(text.slice(0,i))+"<mark>"+esc(text.slice(i,i+state.q.length))+"</mark>"+esc(text.slice(i+state.q.length));
+  }
+
+  function matches(fx){
+    if(state.availOnly && fx.status==="unk") return false;
+    if(state.stage!=="all" && fx.stage!==state.stage) return false;
+    if(state.q){
+      const hay = (fx.a.n+" "+fx.b.n+" "+fx.city+" "+fx.venue).toLowerCase();
+      if(!hay.includes(state.q.toLowerCase())) return false;
+    }
+    return true;
+  }
+
+  function rowHTML(fx){
+    const t = F.time(fx.time);
+    let price;
+    if(fx.status==="unk"){
+      price = `<div class="status unk">Not yet on sale</div><div class="none">—</div><button class="notify">Notify me</button>`;
+    } else {
+      const label = fx.status==="available" ? "Available" : "Limited";
+      price = `<div class="status ${fx.status}">${label}</div><div class="amt"><small>from</small>$${fx.price}</div>`;
+    }
+    return `<div class="row">
+      <div class="tcol">${t.h}<span class="ampm">${t.ap}</span></div>
+      <div class="match">
+        <div class="teams">
+          <span class="tm"><span class="flag">${fx.a.f}</span><span class="nm">${hl(fx.a.n)}</span></span>
+          <span class="x">v</span>
+          <span class="tm"><span class="flag">${fx.b.f}</span><span class="nm">${hl(fx.b.n)}</span></span>
+        </div>
+        <div class="submeta"><span class="grp">Group ${fx.group}</span><span class="dot">·</span><span>${hl(fx.venue)}, ${hl(fx.city)}</span></div>
+      </div>
+      <div class="pricecol">${price}</div>
+    </div>`;
+  }
+
+  function render(){
+    const list = fixtures.filter(matches);
+    if(!list.length){
+      const why = state.stage==="knockout"
+        ? "Knockout fixtures are set once the group stage concludes."
+        : "Try a different team, city, or filter.";
+      listEl.innerHTML = `<div class="empty"><div class="e1">No matches found</div><div class="e2">${why}</div></div>`;
+      return;
+    }
+    // group by date, sort days asc, matches within day by time
+    const byDay = {};
+    list.forEach(fx => (byDay[fx.date] ||= []).push(fx));
+    const days = Object.keys(byDay).sort();
+    listEl.innerHTML = days.map(key => {
+      const d = F.day(key);
+      const rows = byDay[key].sort((a,b)=>a.time.localeCompare(b.time)).map(rowHTML).join("");
+      const n = byDay[key].length;
+      return `<div class="day"><div class="num">${d.dd}</div>
+        <div class="wd"><span class="a">${d.wd}</span><span class="b">${d.mo}</span></div>
+        <div class="cnt">${n} ${n===1?"fixture":"fixtures"}</div></div>${rows}`;
+    }).join("");
+  }
+
+  // wire interactions
+  document.getElementById("q").addEventListener("input", e => { state.q = e.target.value.trim(); render(); });
+  document.getElementById("tabs").addEventListener("click", e => {
+    const btn = e.target.closest("button"); if(!btn) return;
+    state.stage = btn.dataset.stage;
+    [...e.currentTarget.children].forEach(b => b.classList.toggle("on", b===btn));
+    render();
+  });
+  const availBtn = document.getElementById("avail");
+  availBtn.addEventListener("click", () => {
+    state.availOnly = !state.availOnly;
+    availBtn.classList.toggle("on", state.availOnly);
+    availBtn.setAttribute("aria-pressed", state.availOnly);
+    render();
+  });
+
+  render();
+</script>
+</body>
+</html>
