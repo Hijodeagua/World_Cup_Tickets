@@ -11,7 +11,9 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
     "predict": "tsx scripts/predict.ts",
-    "rosters": "tsx scripts/fetch-rosters.ts"
+    "rosters": "tsx scripts/fetch-rosters.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -30,6 +32,7 @@
     "prisma": "^6.2.1",
     "tailwindcss": "^4.0.0",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
   }
 }
