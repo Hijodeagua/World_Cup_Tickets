@@ -1,51 +1,62 @@
 import { prisma } from "@/lib/db";
-import { ensureMatchColumns } from "@/lib/ensure-schema";
 import { computeStandings, type ResultInput } from "@/lib/predictions/standings";
+import fixtures from "@/data/fixtures-2026.json";
+import results2026 from "@/data/results-2026.json";
 
 export const dynamic = "force-dynamic";
 
 const fmtPct = (v: number) => (v <= 0 ? "—" : v < 0.01 ? "<1%" : `${Math.round(v * 100)}%`);
 
-export default async function GroupsPage() {
-  await ensureMatchColumns(prisma);
-  const [matches, teams, projections] = await Promise.all([
-    prisma.match.findMany({
-      where: { stage: "GROUP" },
-      include: { homeTeam: true, awayTeam: true },
-      orderBy: { kickoff: "asc" },
-    }),
-    prisma.team.findMany({ where: { group: { not: null } }, select: { code: true, name: true, flag: true, group: true } }),
-    prisma.teamProjection.findMany(),
-  ]);
+interface FixtureTeam {
+  code: string;
+  name: string;
+  group: string;
+  flag: string;
+}
+interface StoredResult {
+  fifaMatchNo: number;
+  home: string;
+  away: string;
+  homeScore: number;
+  awayScore: number;
+}
 
-  const meta = new Map(teams.map((t) => [t.code, t]));
+export default async function GroupsPage() {
+  // Standings come from the committed results file (the source of truth synced
+  // from the Elo engine's dataset), so they reflect the latest results as soon
+  // as it deploys — no dependency on the nightly cron having run. Projection
+  // columns come from the stored Elo Monte Carlo (refreshed by the cron).
+  const projections = await prisma.teamProjection.findMany();
   const proj = new Map(projections.map((p) => [p.code, p]));
   const iterations = projections[0]?.iterations ?? 0;
 
-  // Teams per group (seeds standings so empty groups still show all four sides).
+  const teams = fixtures.teams as FixtureTeam[];
+  const meta = new Map(teams.map((t) => [t.code, t]));
   const teamsByGroup: Record<string, string[]> = {};
-  for (const t of teams) (teamsByGroup[t.group!] ??= []).push(t.code);
+  for (const t of teams) (teamsByGroup[t.group] ??= []).push(t.code);
 
-  const resultInputs: ResultInput[] = matches.map((m) => ({
-    group: m.group,
-    homeCode: m.homeTeam?.code ?? null,
-    awayCode: m.awayTeam?.code ?? null,
-    homeScore: m.homeScore,
-    awayScore: m.awayScore,
-    status: m.status,
+  // Map each played result to its group via fixture order (group matches are
+  // seeded 1..72 in groupMatches order, so fifaMatchNo = index + 1).
+  const groupMatches = fixtures.groupMatches as { group: string }[];
+  const results = results2026.results as StoredResult[];
+  const resultInputs: ResultInput[] = results.map((r) => ({
+    group: groupMatches[r.fifaMatchNo - 1]?.group ?? null,
+    homeCode: r.home,
+    awayCode: r.away,
+    homeScore: r.homeScore,
+    awayScore: r.awayScore,
+    status: "COMPLETED",
   }));
   const standings = computeStandings(resultInputs, teamsByGroup);
 
-  const completed = matches.filter((m) => m.status === "COMPLETED");
   const groups = Object.keys(standings).sort();
-
-  // Completed results grouped, for the per-group results strip.
-  const resultsByGroup = new Map<string, typeof matches>();
-  for (const m of completed) {
-    if (!m.group) continue;
-    const arr = resultsByGroup.get(m.group) ?? [];
-    arr.push(m);
-    resultsByGroup.set(m.group, arr);
+  const resultsByGroup = new Map<string, StoredResult[]>();
+  for (const r of results) {
+    const g = groupMatches[r.fifaMatchNo - 1]?.group;
+    if (!g) continue;
+    const arr = resultsByGroup.get(g) ?? [];
+    arr.push(r);
+    resultsByGroup.set(g, arr);
   }
 
   const name = (code: string) => meta.get(code)?.name ?? code;
@@ -64,8 +75,8 @@ export default async function GroupsPage() {
           reach the round of 32.
         </p>
         <div className="meth">
-          {completed.length > 0 ? (
-            <>{completed.length} of 72 group matches played.</>
+          {results.length > 0 ? (
+            <>{results.length} of 72 group matches played.</>
           ) : (
             <>No group matches played yet — standings show the pre-tournament field; projections are full simulations.</>
           )}{" "}
@@ -127,12 +138,12 @@ export default async function GroupsPage() {
               {played.length > 0 && (
                 <div className="res-strip">
                   {played.map((m) => (
-                    <span className="res" key={m.id}>
-                      <span className="rc">{m.homeTeam?.code ?? "?"}</span>
+                    <span className="res" key={m.fifaMatchNo}>
+                      <span className="rc">{m.home}</span>
                       <b>
                         {m.homeScore}–{m.awayScore}
                       </b>
-                      <span className="rc">{m.awayTeam?.code ?? "?"}</span>
+                      <span className="rc">{m.away}</span>
                     </span>
                   ))}
                 </div>

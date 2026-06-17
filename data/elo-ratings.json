@@ -15,47 +15,47 @@
     {
       "code": "ARG",
       "eloOnline": 2090,
-      "eloModel": 2049
+      "eloModel": 2071
     },
     {
       "code": "FRA",
       "eloOnline": 2065,
-      "eloModel": 2010
+      "eloModel": 2039
     },
     {
       "code": "ESP",
       "eloOnline": 2070,
-      "eloModel": 2101
+      "eloModel": 2074
     },
     {
       "code": "BRA",
       "eloOnline": 2025,
-      "eloModel": 1924
+      "eloModel": 1925
     },
     {
       "code": "ENG",
       "eloOnline": 2000,
-      "eloModel": 1995
+      "eloModel": 1997
     },
     {
       "code": "POR",
       "eloOnline": 1995,
-      "eloModel": 1902
+      "eloModel": 1904
     },
     {
       "code": "NED",
       "eloOnline": 1965,
-      "eloModel": 1901
+      "eloModel": 1905
     },
     {
       "code": "GER",
       "eloOnline": 1930,
-      "eloModel": 1884
+      "eloModel": 1912
     },
     {
       "code": "BEL",
       "eloOnline": 1925,
-      "eloModel": 1820
+      "eloModel": 1817
     },
     {
       "code": "CRO",
@@ -65,7 +65,7 @@
     {
       "code": "URU",
       "eloOnline": 1895,
-      "eloModel": 1866
+      "eloModel": 1853
     },
     {
       "code": "COL",
@@ -75,107 +75,107 @@
     {
       "code": "MAR",
       "eloOnline": 1865,
-      "eloModel": 1938
+      "eloModel": 1937
     },
     {
       "code": "SUI",
       "eloOnline": 1835,
-      "eloModel": 1818
+      "eloModel": 1805
     },
     {
       "code": "JPN",
       "eloOnline": 1830,
-      "eloModel": 1949
+      "eloModel": 1945
     },
     {
       "code": "SEN",
       "eloOnline": 1815,
-      "eloModel": 1878
+      "eloModel": 1848
     },
     {
       "code": "USA",
       "eloOnline": 1805,
-      "eloModel": 1818
+      "eloModel": 1855
     },
     {
       "code": "MEX",
       "eloOnline": 1800,
-      "eloModel": 1947
+      "eloModel": 1957
     },
     {
       "code": "ECU",
       "eloOnline": 1790,
-      "eloModel": 1899
+      "eloModel": 1857
     },
     {
       "code": "AUT",
       "eloOnline": 1790,
-      "eloModel": 1733
+      "eloModel": 1786
     },
     {
       "code": "NOR",
       "eloOnline": 1780,
-      "eloModel": 1826
+      "eloModel": 1870
     },
     {
       "code": "TUR",
       "eloOnline": 1780,
-      "eloModel": 1826
+      "eloModel": 1789
     },
     {
       "code": "SCO",
       "eloOnline": 1760,
-      "eloModel": 1734
+      "eloModel": 1762
     },
     {
       "code": "CZE",
       "eloOnline": 1760,
-      "eloModel": 1652
+      "eloModel": 1640
     },
     {
       "code": "IRN",
       "eloOnline": 1750,
-      "eloModel": 1889
+      "eloModel": 1878
     },
     {
       "code": "CAN",
       "eloOnline": 1750,
-      "eloModel": 1836
+      "eloModel": 1812
     },
     {
       "code": "KOR",
       "eloOnline": 1760,
-      "eloModel": 1883
+      "eloModel": 1895
     },
     {
       "code": "SWE",
       "eloOnline": 1740,
-      "eloModel": 1618
+      "eloModel": 1688
     },
     {
       "code": "ALG",
       "eloOnline": 1720,
-      "eloModel": 1814
+      "eloModel": 1795
     },
     {
       "code": "AUS",
       "eloOnline": 1720,
-      "eloModel": 1889
+      "eloModel": 1926
     },
     {
       "code": "CIV",
       "eloOnline": 1710,
-      "eloModel": 1758
+      "eloModel": 1800
     },
     {
       "code": "EGY",
       "eloOnline": 1700,
-      "eloModel": 1788
+      "eloModel": 1790
     },
     {
       "code": "BIH",
       "eloOnline": 1700,
-      "eloModel": 1524
+      "eloModel": 1548
     },
     {
       "code": "GHA",
@@ -185,32 +185,32 @@
     {
       "code": "PAR",
       "eloOnline": 1690,
-      "eloModel": 1790
+      "eloModel": 1753
     },
     {
       "code": "TUN",
       "eloOnline": 1680,
-      "eloModel": 1707
+      "eloModel": 1637
     },
     {
       "code": "COD",
       "eloOnline": 1660,
-      "eloModel": 1745
+      "eloModel": 1742
     },
     {
       "code": "QAT",
       "eloOnline": 1650,
-      "eloModel": 1654
+      "eloModel": 1667
     },
     {
       "code": "KSA",
       "eloOnline": 1640,
-      "eloModel": 1711
+      "eloModel": 1724
     },
     {
       "code": "RSA",
       "eloOnline": 1640,
-      "eloModel": 1658
+      "eloModel": 1649
     },
     {
       "code": "UZB",
@@ -225,37 +225,37 @@
     {
       "code": "IRQ",
       "eloOnline": 1610,
-      "eloModel": 1772
+      "eloModel": 1724
     },
     {
       "code": "JOR",
       "eloOnline": 1600,
-      "eloModel": 1796
+      "eloModel": 1743
     },
     {
       "code": "CPV",
       "eloOnline": 1560,
-      "eloModel": 1619
+      "eloModel": 1646
     },
     {
       "code": "NZL",
       "eloOnline": 1500,
-      "eloModel": 1744
+      "eloModel": 1756
     },
     {
       "code": "HAI",
       "eloOnline": 1500,
-      "eloModel": 1718
+      "eloModel": 1690
     },
     {
       "code": "CUW",
       "eloOnline": 1450,
-      "eloModel": 1660
+      "eloModel": 1632
     }
   ],
   "eloModelSource": {
     "engine": "Can-Tre-Beat-Vegas soccer Elo (soccer/model/elo.py)",
-    "generatedAt": "2026-06-17T15:08:36+00:00",
-    "syncedAt": "2026-06-17T15:14:19.497Z"
+    "generatedAt": "2026-06-17T15:40:23+00:00",
+    "syncedAt": "2026-06-17T15:40:31.687Z"
   }
 }
