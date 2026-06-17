@@ -168,7 +168,8 @@ Keeping the groups page and projections current is a nightly pipeline:
    (`fetch_results` → `export_ratings`) to **recalculate ratings from
    newly-played games**, then `npm run sync-elo` + `npm run sync-results` and
    commits the refreshed `data/elo-ratings.json` and `data/results-2026.json`.
-   (Needs a `CANTRE_REPO_TOKEN` secret with read access to that repo.)
+   (No extra secrets: Can-Tre-Beat-Vegas is public, so the default
+   `GITHUB_TOKEN` checks it out.)
 2. **Vercel Cron** (`/api/cron/predictions`, 08:00 UTC) then reads the committed
    data, writes the results onto `Match` rows (driving the standings) and
    recomputes the Elo Monte Carlo projections conditioned on them.
@@ -182,7 +183,9 @@ npm run predict        # recompute projections from the synced data
 ```
 
 > **Schema note:** this integration adds `status`/`homeScore`/`awayScore` to
-> `Match`. After pulling, run `npm run db:push` to apply them.
+> `Match`. These are applied automatically on deploy — the `build` script runs
+> `prisma db push` (the columns are nullable / defaulted, so it's
+> non-destructive). For a local DB, `npm run db:push` does the same.
 
 ## Data accuracy note
 

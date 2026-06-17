@@ -12,11 +12,9 @@ name: Nightly Elo + projections refresh
 # Monte Carlo projections. This keeps a single Elo implementation
 # (Can-Tre-Beat-Vegas/soccer/model/elo.py) behind both projects.
 #
-# Required secret:
-#   CANTRE_REPO_TOKEN — a token with read access to Hijodeagua/Can-Tre-Beat-Vegas
-#                       (a fine-grained PAT or equivalent). Falls back to the
-#                       default GITHUB_TOKEN, which only works if that repo is
-#                       reachable with it.
+# No extra secrets needed: Can-Tre-Beat-Vegas is a public repo, so the default
+# GITHUB_TOKEN checks it out, and `permissions: contents: write` lets this job
+# commit the refreshed data back to this repo.
 
 on:
   schedule:
@@ -40,7 +38,6 @@ jobs:
         with:
           repository: Hijodeagua/Can-Tre-Beat-Vegas
           path: Can-Tre-Beat-Vegas
-          token: ${{ secrets.CANTRE_REPO_TOKEN || secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
