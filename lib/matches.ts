@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { ensureMatchColumns } from "@/lib/ensure-schema";
 import type { Prisma } from "@prisma/client";
 
 export interface MatchFilters {
@@ -19,6 +20,7 @@ const matchInclude = {
 export type MatchWithRelations = Prisma.MatchGetPayload<{ include: typeof matchInclude }>;
 
 export async function getMatches(filters: MatchFilters): Promise<MatchWithRelations[]> {
+  await ensureMatchColumns(prisma);
   const where: Prisma.MatchWhereInput = {};
 
   if (filters.teams && filters.teams.length > 0) {
@@ -43,6 +45,7 @@ export async function getMatches(filters: MatchFilters): Promise<MatchWithRelati
 }
 
 export async function getMatch(id: string): Promise<MatchWithRelations | null> {
+  await ensureMatchColumns(prisma);
   return prisma.match.findUnique({ where: { id }, include: matchInclude });
 }
 

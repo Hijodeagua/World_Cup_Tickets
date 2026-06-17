@@ -183,9 +183,11 @@ npm run predict        # recompute projections from the synced data
 ```
 
 > **Schema note:** this integration adds `status`/`homeScore`/`awayScore` to
-> `Match`. These are applied automatically on deploy — the `build` script runs
-> `prisma db push` (the columns are nullable / defaulted, so it's
-> non-destructive). For a local DB, `npm run db:push` does the same.
+> `Match`. They're applied automatically at runtime — `lib/ensure-schema.ts`
+> runs an idempotent `ADD COLUMN IF NOT EXISTS` (memoized, once per server
+> instance) before any Match query, so no build-time DB access or manual
+> migration is needed. `npm run db:push` still applies them up front for a
+> local DB.
 
 ## Data accuracy note
 

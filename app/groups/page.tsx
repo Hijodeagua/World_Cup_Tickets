@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { ensureMatchColumns } from "@/lib/ensure-schema";
 import { computeStandings, type ResultInput } from "@/lib/predictions/standings";
 
 export const dynamic = "force-dynamic";
@@ -6,6 +7,7 @@ export const dynamic = "force-dynamic";
 const fmtPct = (v: number) => (v <= 0 ? "—" : v < 0.01 ? "<1%" : `${Math.round(v * 100)}%`);
 
 export default async function GroupsPage() {
+  await ensureMatchColumns(prisma);
   const [matches, teams, projections] = await Promise.all([
     prisma.match.findMany({
       where: { stage: "GROUP" },

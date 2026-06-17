@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { ensureMatchColumns } from "@/lib/ensure-schema";
 import { computeAndStoreProjections } from "@/lib/predictions/store";
 import results2026 from "@/data/results-2026.json";
 
@@ -27,6 +28,8 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "unauthorized" }, { status: 401 });
     }
   }
+
+  await ensureMatchColumns(prisma);
 
   // 1. Apply results to Match rows (idempotent — only writes on change).
   const stored = (results2026.results as StoredResult[]) ?? [];
