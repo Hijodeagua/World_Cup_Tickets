@@ -221,7 +221,24 @@ async function main() {
   const result = await runRefresh();
   console.log("Initial refresh:", result);
 
-  // Compute Elo Monte Carlo projections.
+  // Apply any committed completed results so standings reflect them immediately
+  // (empty until matches are played; the nightly job keeps it current).
+  const results = (await import("../data/results-2026.json")).default as {
+    results: { fifaMatchNo: number; homeScore: number; awayScore: number }[];
+  };
+  let applied = 0;
+  for (const r of results.results) {
+    const match = await prisma.match.findUnique({ where: { fifaMatchNo: r.fifaMatchNo } });
+    if (!match) continue;
+    await prisma.match.update({
+      where: { fifaMatchNo: r.fifaMatchNo },
+      data: { status: "COMPLETED", homeScore: r.homeScore, awayScore: r.awayScore },
+    });
+    applied++;
+  }
+  console.log("Applied", applied, "completed result(s)");
+
+  // Compute Elo Monte Carlo projections (conditioned on any applied results).
   const { computeAndStoreProjections } = await import("../lib/predictions/store");
   const n = await computeAndStoreProjections(prisma);
   console.log("Projections computed for", n, "teams");

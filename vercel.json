@@ -7,6 +7,10 @@
     {
       "path": "/worldcup/api/cron/rosters",
       "schedule": "0 6 * * 1"
+    },
+    {
+      "path": "/worldcup/api/cron/predictions",
+      "schedule": "0 8 * * *"
     }
   ]
 }

@@ -16,6 +16,15 @@ export interface GroupFixture {
   home: string;
   away: string;
 }
+// A group match already played: its result is fixed, not simulated, so
+// projections update after every real outcome. Keyed by "home|away" (fixture
+// orientation) within rankGroup.
+export interface PlayedMatch {
+  home: string;
+  away: string;
+  homeScore: number;
+  awayScore: number;
+}
 
 // Standard 32-seed single-elimination bracket order (seeds, 1-indexed) so higher
 // seeds are kept apart until later rounds.
@@ -44,7 +53,13 @@ interface Standing {
   elo: number;
 }
 
-function rankGroup(teams: TeamInput[], fixtures: GroupFixture[], groupElo: Map<string, number>, rng: () => number): Standing[] {
+function rankGroup(
+  teams: TeamInput[],
+  fixtures: GroupFixture[],
+  groupElo: Map<string, number>,
+  rng: () => number,
+  played?: Map<string, PlayedMatch>,
+): Standing[] {
   const s = new Map<string, Standing>();
   for (const t of teams) s.set(t.code, { code: t.code, pts: 0, gd: 0, gf: 0, elo: t.elo });
 
@@ -52,7 +67,13 @@ function rankGroup(teams: TeamInput[], fixtures: GroupFixture[], groupElo: Map<s
     const a = s.get(f.home);
     const b = s.get(f.away);
     if (!a || !b) continue;
-    const m = simulateMatch(groupElo.get(f.home)!, groupElo.get(f.away)!, rng);
+    // Use the real result if this match has been played; otherwise simulate it.
+    const fixed = played?.get(`${f.home}|${f.away}`);
+    const goalsA = fixed ? fixed.homeScore : 0;
+    const goalsB = fixed ? fixed.awayScore : 0;
+    const m = fixed
+      ? { goalsA, goalsB, result: goalsA > goalsB ? 1 : goalsA < goalsB ? -1 : 0 }
+      : simulateMatch(groupElo.get(f.home)!, groupElo.get(f.away)!, rng);
     a.gf += m.goalsA;
     b.gf += m.goalsB;
     a.gd += m.goalsA - m.goalsB;
@@ -80,10 +101,15 @@ export function runSimulations(
   groupFixtures: Record<string, GroupFixture[]>,
   iterations = 20000,
   seed = 1234,
+  playedResults: PlayedMatch[] = [],
 ): TeamProbabilities[] {
   const rng = makeRng(seed);
   const byCode = new Map(teams.map((t) => [t.code, t]));
   const groups = [...new Set(teams.map((t) => t.group))].sort();
+
+  // Index played matches by "home|away" so rankGroup can fix their outcomes.
+  const playedByMatch = new Map<string, PlayedMatch>();
+  for (const p of playedResults) playedByMatch.set(`${p.home}|${p.away}`, p);
 
   // Group-stage Elo includes a host boost; knockout uses base Elo.
   const groupElo = new Map<string, number>();
@@ -99,7 +125,7 @@ export function runSimulations(
 
     for (const g of groups) {
       const gteams = teams.filter((t) => t.group === g);
-      const standings = rankGroup(gteams, groupFixtures[g] ?? [], groupElo, rng);
+      const standings = rankGroup(gteams, groupFixtures[g] ?? [], groupElo, rng, playedByMatch);
       winners.push(standings[0].code);
       runners.push(standings[1].code);
       thirds.push(standings[2]);

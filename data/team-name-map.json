@@ -1,0 +1,12 @@
+{
+  "note": "Maps this site's team codes (data/fixtures-2026.json) to the team names used by the Can-Tre-Beat-Vegas Elo engine / martj42 results dataset. Only entries that differ from the fixture 'name' need listing here; scripts/sync-elo.ts falls back to the fixture name otherwise. Used by sync-elo.ts and sync-results.ts.",
+  "codeToEngineName": {
+    "KOR": "South Korea",
+    "CZE": "Czech Republic",
+    "TUR": "Turkey",
+    "CIV": "Ivory Coast",
+    "IRN": "Iran",
+    "CPV": "Cape Verde",
+    "COD": "DR Congo"
+  }
+}

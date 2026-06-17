@@ -59,6 +59,12 @@ model Match {
   homeLabel String?
   awayLabel String?
 
+  // Result, once played. Populated by the nightly results sync; drives the
+  // group standings and conditions the Elo projections on actual outcomes.
+  status    String @default("SCHEDULED") // SCHEDULED | LIVE | COMPLETED
+  homeScore Int?
+  awayScore Int?
+
   observations TicketObservation[]
   currentState CurrentTicketState?
 
