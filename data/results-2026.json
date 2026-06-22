@@ -1,6 +1,6 @@
 {
   "note": "Completed World Cup 2026 match results, keyed by fifaMatchNo (matches data/fixtures-2026.json seed order). Populated by `npm run sync-results` from the Can-Tre-Beat-Vegas results dataset; the nightly job commits updates here. Empty until matches are played. The cron predictions endpoint writes these scores onto Match rows (standings) and store.ts conditions the Elo projections on them.",
-  "updatedAt": "2026-06-21T10:36:26.560Z",
+  "updatedAt": "2026-06-22T12:55:05.271Z",
   "results": [
     {
       "fifaMatchNo": 1,
@@ -289,6 +289,38 @@
       "away": "JPN",
       "homeScore": 0,
       "awayScore": 4
+    },
+    {
+      "fifaMatchNo": 37,
+      "date": "2026-06-21",
+      "home": "URU",
+      "away": "CPV",
+      "homeScore": 2,
+      "awayScore": 2
+    },
+    {
+      "fifaMatchNo": 38,
+      "date": "2026-06-21",
+      "home": "ESP",
+      "away": "KSA",
+      "homeScore": 4,
+      "awayScore": 0
+    },
+    {
+      "fifaMatchNo": 39,
+      "date": "2026-06-21",
+      "home": "BEL",
+      "away": "IRN",
+      "homeScore": 0,
+      "awayScore": 0
+    },
+    {
+      "fifaMatchNo": 40,
+      "date": "2026-06-21",
+      "home": "NZL",
+      "away": "EGY",
+      "homeScore": 1,
+      "awayScore": 3
     }
   ]
 }
