@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { ensureMatchColumns } from "@/lib/ensure-schema";
 import { computeAndStoreProjections } from "@/lib/predictions/store";
+import { refreshMatchPredictions } from "@/lib/predictions/matchPredictions";
 import results2026 from "@/data/results-2026.json";
 
 export const dynamic = "force-dynamic";
@@ -13,13 +14,15 @@ interface StoredResult {
   awayScore: number;
 }
 
-// Triggered nightly by Vercel Cron (see vercel.json). Protected by CRON_SECRET,
-// same as the ticket/roster refresh. Two steps:
+// Triggered nightly by Vercel Cron (see vercel.json). Protected by CRON_SECRET.
+// Three steps:
 //   1. apply the latest committed results (data/results-2026.json, refreshed by
 //      `npm run sync-results`) onto Match rows so the groups page standings are
 //      current;
 //   2. recompute the Elo Monte Carlo projections, now conditioned on those
-//      results, and persist them (TeamProjection).
+//      results, and persist them (TeamProjection);
+//   3. refresh per-match predictions, freezing the ones inside the kickoff
+//      window so past predictions are preserved exactly as they were made.
 export async function GET(request: Request) {
   const secret = process.env.CRON_SECRET;
   if (secret) {
@@ -45,8 +48,19 @@ export async function GET(request: Request) {
     applied++;
   }
 
-  // 2. Recompute projections conditioned on the results.
+  // 2. Recompute the tournament projections conditioned on the results.
   const teams = await computeAndStoreProjections(prisma);
 
-  return NextResponse.json({ ok: true, resultsApplied: applied, resultsKnown: stored.length, teamsProjected: teams });
+  // 3. Refresh per-match predictions and freeze any inside the kickoff window.
+  //    Frozen rows are left untouched, so predictions for games already played
+  //    keep the value they had the night before (drives /accuracy).
+  const predictions = await refreshMatchPredictions(prisma, new Date());
+
+  return NextResponse.json({
+    ok: true,
+    resultsApplied: applied,
+    resultsKnown: stored.length,
+    teamsProjected: teams,
+    predictions,
+  });
 }

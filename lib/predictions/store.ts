@@ -5,7 +5,14 @@ import results2026 from "../../data/results-2026.json";
 import { blendElo } from "./elo";
 import { runSimulations, type GroupFixture, type PlayedMatch, type TeamInput } from "./simulate";
 
-const DEFAULT_ITERATIONS = 20000;
+// Raised from 20,000. Each tournament iteration simulates 72 group matches plus
+// a 31-match knockout bracket (~103 match sims), so 100,000 iterations is ~10M
+// match simulations — a few seconds of single-threaded work, comfortably inside
+// the predictions cron's 120s budget (see app/api/cron/predictions/route.ts).
+// Monte Carlo error falls as 1/sqrt(N), so beyond ~250k the precision gain is
+// not worth the time; 100k keeps per-team champion odds stable to a few tenths
+// of a percent.
+const DEFAULT_ITERATIONS = 100000;
 
 // Run the Elo Monte Carlo simulation from the ratings + group fixtures and
 // persist per-team probabilities. Group matches that have already been played

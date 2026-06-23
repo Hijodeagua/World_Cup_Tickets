@@ -1254,3 +1254,419 @@ table.standings td.team-cell {
     grid-template-columns: 1fr;
   }
 }
+
+/* ===== home board: date sections + 3-column game cards ===== */
+.gday {
+  padding: 34px 0 14px;
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  position: sticky;
+  top: 135px;
+  z-index: 20;
+  background: linear-gradient(var(--bg) 72%, transparent);
+}
+.gday .gd-lead {
+  font-family: "Newsreader", serif;
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--txt);
+}
+.gday .gd-sub {
+  font-family: "Newsreader", serif;
+  font-style: italic;
+  font-size: 16px;
+  color: var(--gold);
+}
+.gday .gd-cnt {
+  margin-left: auto;
+  font-size: 12.5px;
+  color: var(--mut-2);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.gcards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.gcard {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.5fr) minmax(0, 0.95fr);
+  align-items: stretch;
+  gap: 0;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.16s, background 0.16s;
+}
+.gcard:hover {
+  border-color: var(--line-2);
+  background: linear-gradient(90deg, rgba(227, 183, 101, 0.05), transparent 40%), var(--panel);
+}
+.gcard > div {
+  padding: 18px 22px;
+}
+.gcard .gc-outcome,
+.gcard .gc-winner {
+  border-left: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* left: matchup / game info */
+.gc-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.gc-teams {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.gc-teams .tm {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.gc-teams .nm {
+  font-family: "Newsreader", serif;
+  font-size: 23px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.gc-teams .sc {
+  font-family: "Newsreader", serif;
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--mut);
+  margin-left: 2px;
+  font-variant-numeric: tabular-nums;
+}
+.gc-teams .sc.w {
+  color: var(--gold);
+}
+.gc-meta {
+  margin-top: 9px;
+  font-size: 13px;
+  color: var(--mut);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.gc-meta .grp {
+  color: var(--gold-dim);
+  font-weight: 700;
+  font-family: "Newsreader", serif;
+  font-style: italic;
+  font-size: 14.5px;
+}
+.gc-meta .tt {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--mut);
+}
+.gc-meta .tt .ap {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--mut-2);
+  margin-left: 3px;
+}
+
+/* shared caption */
+.gc-cap {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mut-2);
+  margin-bottom: 8px;
+}
+
+/* middle: most likely outcome + breakdown */
+.gc-headline {
+  font-family: "Newsreader", serif;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--txt);
+  margin-bottom: 11px;
+}
+.gc-bar {
+  display: flex;
+  height: 12px;
+  border-radius: 5px;
+  overflow: hidden;
+  background: rgba(233, 224, 210, 0.05);
+}
+.gc-bar .seg {
+  height: 100%;
+}
+.gc-bar .seg.win-a {
+  background: linear-gradient(90deg, var(--gold-dim), var(--gold));
+}
+.gc-bar .seg.draw {
+  background: #3a382f;
+}
+.gc-bar .seg.win-b {
+  background: linear-gradient(90deg, #4a7d8c, var(--emerald));
+}
+.gc-split {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 9px;
+  font-size: 12.5px;
+  color: var(--mut);
+  font-variant-numeric: tabular-nums;
+}
+.gc-split .on {
+  color: var(--txt);
+  font-weight: 700;
+}
+
+/* right: most likely winner + win probability */
+.gc-winner {
+  align-items: flex-start;
+}
+.gc-win-team {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.gc-win-team .flag {
+  font-size: 20px;
+}
+.gc-win-team .nm {
+  font-family: "Newsreader", serif;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.gc-win-pct {
+  font-family: "Newsreader", serif;
+  font-size: 30px;
+  font-weight: 500;
+  color: var(--gold);
+  line-height: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+}
+.gc-win-pct .lab {
+  font-size: 11px;
+  font-style: italic;
+  color: var(--mut);
+  font-weight: 400;
+}
+.gc-grade {
+  margin-top: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.gc-grade.ok {
+  color: var(--emerald);
+}
+.gc-grade.miss {
+  color: var(--red);
+}
+.gc-lock {
+  margin-top: 10px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mut-2);
+}
+.gc-tbd {
+  font-family: "Newsreader", serif;
+  font-style: italic;
+  font-size: 15px;
+  color: var(--mut-2);
+}
+
+@media (max-width: 820px) {
+  .gcard {
+    grid-template-columns: 1fr;
+  }
+  .gcard .gc-outcome,
+  .gcard .gc-winner {
+    border-left: none;
+    border-top: 1px solid var(--line);
+  }
+}
+
+/* ===== accuracy page ===== */
+.acc-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: 16px;
+  margin: 34px 0 6px;
+}
+.acc-hero {
+  background: linear-gradient(160deg, rgba(227, 183, 101, 0.1), transparent 62%), var(--panel);
+  border: 1px solid rgba(227, 183, 101, 0.28);
+  border-radius: 18px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+.acc-hero .l {
+  font-family: "Newsreader", serif;
+  font-style: italic;
+  font-size: 15px;
+  color: var(--gold);
+}
+.acc-hero .big {
+  margin-top: 14px;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+.acc-hero .big .pct {
+  font-family: "Newsreader", serif;
+  font-size: 60px;
+  font-weight: 500;
+  line-height: 0.82;
+  color: var(--gold);
+}
+.acc-hero .big .cap {
+  font-size: 13px;
+  color: var(--mut);
+  font-family: "Newsreader", serif;
+  font-style: italic;
+  padding-bottom: 8px;
+}
+.acc-hero .acc-sub {
+  display: flex;
+  gap: 24px;
+  margin-top: auto;
+  padding-top: 18px;
+}
+.acc-hero .acc-sub .n {
+  font-family: "Newsreader", serif;
+  font-size: 21px;
+  font-weight: 500;
+}
+.acc-hero .acc-sub .l {
+  font-size: 11px;
+  color: var(--mut);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 3px;
+  font-family: "Archivo", sans-serif;
+  font-style: normal;
+}
+.acc-stat {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.acc-stat .l {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mut-2);
+}
+.acc-stat .n {
+  font-family: "Newsreader", serif;
+  font-size: 40px;
+  font-weight: 500;
+  color: var(--txt);
+  margin-top: 8px;
+  line-height: 1;
+}
+.acc-stat .s {
+  font-size: 12.5px;
+  color: var(--mut);
+  margin-top: 8px;
+}
+
+.acc-trend {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 22px 26px;
+  margin-top: 16px;
+}
+.acc-trend .th {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.acc-trend .tg {
+  font-family: "Newsreader", serif;
+  font-style: italic;
+  font-size: 18px;
+  color: var(--txt);
+}
+.acc-trend .csub {
+  font-size: 12.5px;
+  color: var(--mut-2);
+}
+.acc-trend .spark {
+  width: 100%;
+  height: 90px;
+  display: block;
+}
+.spark-line {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+.spark-mid {
+  stroke: var(--line-2);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+  vector-effect: non-scaling-stroke;
+}
+.acc-dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 14px;
+}
+.acc-dots .dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+.acc-dots .dot.ok {
+  background: var(--emerald);
+}
+.acc-dots .dot.miss {
+  background: var(--red);
+}
+.acc-table .fl {
+  font-size: 16px;
+}
+.acc-table .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 820px) {
+  .acc-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

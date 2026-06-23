@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { prisma } from "@/lib/db";
 import { getMatch } from "@/lib/matches";
-import { STAGE_LABELS, formatKickoff, formatPrice } from "@/lib/format";
+import { STAGE_LABELS, formatKickoff } from "@/lib/format";
 import { getBlendedElo } from "@/lib/predictions/ratings";
 import { simulateHeadToHead } from "@/lib/predictions/headToHead";
 import { getMatchupOdds } from "@/lib/odds";
@@ -10,19 +9,6 @@ import { getRoster } from "@/lib/rosters";
 import { MatchupSection } from "@/app/matchup";
 
 export const dynamic = "force-dynamic";
-
-const STATUS_CLASS: Record<string, string> = {
-  AVAILABLE: "available",
-  LIMITED: "limited",
-  SOLD_OUT: "soldout",
-  UNKNOWN: "unk",
-};
-const STATUS_LABEL: Record<string, string> = {
-  AVAILABLE: "Available",
-  LIMITED: "Limited",
-  SOLD_OUT: "Sold out",
-  UNKNOWN: "Not yet on sale",
-};
 
 function side(team: { name: string; flag: string | null } | null, label: string | null): string {
   if (team) return `${team.flag ?? ""} ${team.name}`.trim();
@@ -34,15 +20,7 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
   const match = await getMatch(id);
   if (!match) notFound();
 
-  const recent = await prisma.ticketObservation.findMany({
-    where: { matchId: id },
-    orderBy: { observedAt: "desc" },
-    take: 10,
-  });
-
-  const state = match.currentState;
-  const avail = state?.availability ?? "UNKNOWN";
-  const price = formatPrice(state?.minPrice ?? null, state?.currency ?? null);
+  const completed = match.status === "COMPLETED" && match.homeScore != null && match.awayScore != null;
 
   // Head-to-head matchup view: only when both teams are known (knockout slots
   // stay TBD until the group stage resolves) and both have an Elo rating.
@@ -70,7 +48,6 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
       rosterB,
     };
   }
-  const onSale = avail === "AVAILABLE" || avail === "LIMITED";
 
   return (
     <>
@@ -96,31 +73,29 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
           {formatKickoff(match.kickoff)} · {match.venue.stadium}, {match.venue.city}, {match.venue.country}
         </p>
 
-        <div
-          style={{
-            marginTop: 22,
-            paddingTop: 18,
-            borderTop: "1px solid var(--line)",
-            display: "flex",
-            alignItems: "center",
-            gap: 18,
-            flexWrap: "wrap",
-          }}
-        >
-          <span className={`status ${STATUS_CLASS[avail]}`}>
-            {STATUS_LABEL[avail]}
-            {state?.isStale && <span className="stale"> · stale</span>}
-          </span>
-          {price && <span style={{ fontFamily: "Newsreader, serif", fontSize: 26 }}>from {price}</span>}
-          {state?.lastObservedAt && (
-            <span style={{ fontSize: 12.5, color: "var(--mut-2)" }}>last checked {formatKickoff(state.lastObservedAt)}</span>
-          )}
-          {onSale && (
-            <a className="buy" href="https://www.fifa.com/en/tickets" target="_blank" rel="noreferrer noopener">
-              Buy tickets →
-            </a>
-          )}
-        </div>
+        {completed && (
+          <div
+            style={{
+              marginTop: 22,
+              paddingTop: 18,
+              borderTop: "1px solid var(--line)",
+              display: "flex",
+              alignItems: "center",
+              gap: 14,
+              flexWrap: "wrap",
+            }}
+          >
+            <span
+              className="status available"
+              style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase" }}
+            >
+              Full time
+            </span>
+            <span style={{ fontFamily: "Newsreader, serif", fontSize: 34 }}>
+              {match.homeScore} – {match.awayScore}
+            </span>
+          </div>
+        )}
       </div>
 
       {matchup && (
@@ -134,33 +109,6 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
         />
       )}
 
-      <h2 className="section-h">Recent observations</h2>
-      {recent.length === 0 ? (
-        <p style={{ color: "var(--mut-2)", fontSize: 14 }}>No observations recorded yet.</p>
-      ) : (
-        <table className="data">
-          <thead>
-            <tr>
-              <th>When</th>
-              <th>Source</th>
-              <th>Availability</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {recent.map((o) => (
-              <tr key={o.id}>
-                <td className="t-mut">{formatKickoff(o.observedAt)}</td>
-                <td>{o.providerId}</td>
-                <td>{o.availability}</td>
-                <td className="t-mut">
-                  {o.fetchSucceeded ? o.scrapeStatus : `${o.scrapeStatus}: ${o.failureReason ?? ""}`}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
       <div className="foot" />
     </>
   );

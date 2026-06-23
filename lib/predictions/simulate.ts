@@ -99,7 +99,7 @@ function cmpStanding(x: Standing, y: Standing): number {
 export function runSimulations(
   teams: TeamInput[],
   groupFixtures: Record<string, GroupFixture[]>,
-  iterations = 20000,
+  iterations = 100000,
   seed = 1234,
   playedResults: PlayedMatch[] = [],
 ): TeamProbabilities[] {

@@ -1,5 +1,3 @@
-import type { Availability } from "./tickets/types";
-
 export const STAGE_LABELS: Record<string, string> = {
   GROUP: "Group stage",
   R32: "Round of 32",
@@ -8,13 +6,6 @@ export const STAGE_LABELS: Record<string, string> = {
   SF: "Semi-final",
   THIRD: "Third place",
   FINAL: "Final",
-};
-
-export const AVAILABILITY_BADGE: Record<Availability, { label: string; className: string }> = {
-  AVAILABLE: { label: "Available", className: "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300" },
-  LIMITED: { label: "Limited", className: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300" },
-  SOLD_OUT: { label: "Sold out", className: "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300" },
-  UNKNOWN: { label: "Unknown", className: "bg-neutral-200 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400" },
 };
 
 export const DEFAULT_TIMEZONE = "America/New_York";
@@ -53,13 +44,4 @@ export function formatPct(p: number): string {
   if (p <= 0) return "—";
   if (p < 0.01) return "<1%";
   return `${Math.round(p * 100)}%`;
-}
-
-export function formatPrice(amount: number | null, currency: string | null): string | null {
-  if (amount == null) return null;
-  try {
-    return new Intl.NumberFormat("en-US", { style: "currency", currency: currency ?? "USD", maximumFractionDigits: 0 }).format(amount);
-  } catch {
-    return `${amount} ${currency ?? ""}`.trim();
-  }
 }

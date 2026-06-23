@@ -42,7 +42,10 @@ export interface HeadToHeadInput {
   seed?: number;
 }
 
-const DEFAULT_ITERATIONS = 10_000;
+// Raised from 10,000. A single head-to-head match is one Poisson draw per side,
+// so 50,000 iterations runs in a few milliseconds while tightening the win/draw/
+// loss split to well under a percentage point of Monte Carlo noise.
+const DEFAULT_ITERATIONS = 50_000;
 const DEFAULT_TOP_N = 10;
 
 function decimalOdds(p: number): number {
