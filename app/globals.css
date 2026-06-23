@@ -1671,7 +1671,7 @@ table.standings td.team-cell {
   }
 }
 
-/* --- Groups: advance baseline ("was X%") + Calibration column --- */
+/* --- Groups: advance baseline ("was X%") --- */
 .standings td.pcol .was {
   display: block;
   font-size: 10.5px;
@@ -1680,108 +1680,95 @@ table.standings td.team-cell {
   margin-top: 1px;
   letter-spacing: 0.01em;
 }
-table.standings thead th.calib-h {
-  color: var(--mut);
-}
-.standings td.calib {
-  color: var(--mut-2);
-  font-weight: 500;
-}
-.calib .calib-vals {
-  display: inline-flex;
-  flex-direction: column;
-  gap: 1px;
-  cursor: help;
-}
-.calib .cv {
-  font-size: 11.5px;
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums;
-  color: var(--mut);
-}
-.calib .cv .ct {
-  display: inline-block;
-  min-width: 26px;
-  margin-right: 4px;
-  color: var(--mut-2);
-  font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
 
-/* --- Accuracy: model comparison cards --- */
-.acc-compare {
+/* --- Compare: model vs model --- */
+.cmp-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 4px 0 18px;
+}
+.cmp-stat {
   background: var(--panel);
   border: 1px solid var(--line);
-  border-radius: 18px;
-  padding: 22px 26px;
-  margin-top: 16px;
+  border-radius: 16px;
+  padding: 16px 18px;
 }
-.acc-compare .th {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-  margin-bottom: 14px;
-}
-.acc-compare .tg {
+.cmp-stat .n {
   font-family: "Newsreader", serif;
-  font-style: italic;
-  font-size: 18px;
-  color: var(--txt);
-}
-.acc-compare .csub {
-  font-size: 12.5px;
-  color: var(--mut-2);
-}
-.cmp-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 14px;
-}
-.cmp-card {
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  padding: 14px 16px;
-}
-.cmp-h {
-  font-size: 13px;
-  color: var(--txt);
-  margin-bottom: 10px;
+  font-size: 30px;
   font-weight: 600;
-}
-.cmp-h a {
   color: var(--gold);
-  text-decoration: none;
-}
-.cmp-h a:hover {
-  text-decoration: underline;
-}
-.cmp-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  padding: 4px 0;
-  font-size: 13px;
-}
-.cmp-row .cmp-l {
-  color: var(--mut);
-}
-.cmp-row .cmp-v {
-  font-weight: 700;
-  color: var(--txt);
   font-variant-numeric: tabular-nums;
 }
-.cmp-lead {
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px solid rgba(233, 224, 210, 0.06);
-  font-size: 12px;
-  font-weight: 600;
+.cmp-stat .l {
+  font-size: 12.5px;
+  color: var(--txt);
+  margin-top: 2px;
 }
-.cmp-lead.ok {
+.cmp-stat .s {
+  font-size: 11.5px;
+  color: var(--mut-2);
+  margin-top: 2px;
+}
+table.cmp-table td.cmp-cell {
+  vertical-align: top;
+  white-space: nowrap;
+}
+.cmp-pick {
+  font-family: "Newsreader", serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--txt);
+}
+.cmp-pick.t-ok {
   color: var(--emerald);
 }
-.cmp-lead.miss {
+.cmp-pick.t-bad {
   color: var(--red);
+}
+.cmp-pick .cmp-mark {
+  font-weight: 700;
+}
+.cmp-wdl {
+  font-size: 12px;
+  color: var(--mut);
+  font-variant-numeric: tabular-nums;
+  margin-top: 2px;
+}
+.cmp-wdl .sep {
+  color: var(--mut-2);
+  margin: 0 1px;
+}
+.cmp-proj {
+  font-size: 11.5px;
+  color: var(--mut-2);
+  font-variant-numeric: tabular-nums;
+  margin-top: 2px;
+}
+.cmp-table .ctr {
+  text-align: center;
+}
+.agree-chip {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+}
+.agree-chip.yes {
+  color: var(--emerald);
+  background: rgba(60, 160, 110, 0.1);
+}
+.agree-chip.no {
+  color: var(--mut);
+}
+
+@media (max-width: 720px) {
+  .cmp-summary {
+    grid-template-columns: 1fr;
+  }
 }

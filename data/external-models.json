@@ -1,643 +1,256 @@
 {
-  "note": "External World Cup 2026 model projections, for the Calibration comparison on the groups page and /accuracy. Values are PERCENTAGES (0-100); leave null until filled. These outlets are subscriber-gated, so paste the published figures by hand from the source URLs in `models` (do not invent numbers). Any team/match left null renders as a graceful dash. matchPicks: keyed by fifaMatchNo (see data/fixtures-2026.json); each model's predicted outcome from the home team's perspective: 'A' = home win, 'DRAW', 'B' = away win, or null if not set. Used to grade each external model game-by-game alongside our own model (the 'Fyfa_Rat Model') on /accuracy.",
-  "updatedAt": null,
+  "note": "External World Cup 2026 model projections, for the model-vs-model Compare page (/compare) and its game-by-game grading. Keyed by HOME-AWAY team code (matching data/fixtures-2026.json orientation). Per match: win/draw/loss as published PERCENTAGES (0-100) and the model's projected score (expected goals). These outlets are subscriber-gated, so values are transcribed by hand from the source; missing matches/models degrade to a dash. Our own model is labelled the 'Fyfa_Rat Model' in comparisons.",
+  "updatedAt": "2026-06-23",
   "models": {
     "paddlin": {
       "name": "PADDLIN'",
-      "author": "Michael Caley",
+      "author": "Michael Caley · Expecting Goals",
       "source": "https://www.expectinggoals.com/p/world-cup-2026-paddlin-projections"
-    },
-    "pele": {
-      "name": "PELE",
-      "author": "Silver Bulletin (Nate Silver)",
-      "source": "https://www.natesilver.net/p/world-cup-2026-odds-predictions"
     }
   },
-  "teams": {
-    "CZE": {
-      "group": "A",
+  "matches": {
+    "ENG-GHA": {
       "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
+        "pHome": 82,
+        "pDraw": 13,
+        "pAway": 5,
+        "projHome": 2.5,
+        "projAway": 0.4
       }
     },
-    "KOR": {
-      "group": "A",
+    "PAN-CRO": {
       "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
+        "pHome": 16,
+        "pDraw": 23,
+        "pAway": 62,
+        "projHome": 0.8,
+        "projAway": 1.8
       }
     },
-    "MEX": {
-      "group": "A",
+    "COL-COD": {
       "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
+        "pHome": 71,
+        "pDraw": 20,
+        "pAway": 9,
+        "projHome": 1.9,
+        "projAway": 0.5
       }
     },
-    "RSA": {
-      "group": "A",
+    "BIH-QAT": {
       "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
+        "pHome": 60,
+        "pDraw": 23,
+        "pAway": 17,
+        "projHome": 1.7,
+        "projAway": 0.8
       }
     },
-    "BIH": {
-      "group": "B",
+    "SUI-CAN": {
       "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
+        "pHome": 33,
+        "pDraw": 24,
+        "pAway": 42,
+        "projHome": 1.4,
+        "projAway": 1.6
       }
     },
-    "CAN": {
-      "group": "B",
+    "MAR-HAI": {
       "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
+        "pHome": 84,
+        "pDraw": 12,
+        "pAway": 4,
+        "projHome": 2.6,
+        "projAway": 0.4
       }
     },
-    "QAT": {
-      "group": "B",
+    "SCO-BRA": {
       "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
+        "pHome": 9,
+        "pDraw": 19,
+        "pAway": 72,
+        "projHome": 0.6,
+        "projAway": 2
       }
     },
-    "SUI": {
-      "group": "B",
+    "CZE-MEX": {
       "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
+        "pHome": 13,
+        "pDraw": 21,
+        "pAway": 66,
+        "projHome": 0.7,
+        "projAway": 1.9
       }
     },
-    "BRA": {
-      "group": "C",
+    "RSA-KOR": {
       "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
+        "pHome": 17,
+        "pDraw": 24,
+        "pAway": 60,
+        "projHome": 0.8,
+        "projAway": 1.7
       }
     },
-    "HAI": {
-      "group": "C",
+    "CUW-CIV": {
       "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
+        "pHome": 1,
+        "pDraw": 3,
+        "pAway": 96,
+        "projHome": 0.4,
+        "projAway": 4.3
       }
     },
-    "MAR": {
-      "group": "C",
+    "ECU-GER": {
       "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
+        "pHome": 24,
+        "pDraw": 24,
+        "pAway": 52,
+        "projHome": 1.1,
+        "projAway": 1.7
       }
     },
-    "SCO": {
-      "group": "C",
+    "JPN-SWE": {
       "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
+        "pHome": 45,
+        "pDraw": 24,
+        "pAway": 31,
+        "projHome": 1.7,
+        "projAway": 1.4
       }
     },
-    "AUS": {
-      "group": "D",
+    "TUN-NED": {
       "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
+        "pHome": 7,
+        "pDraw": 15,
+        "pAway": 78,
+        "projHome": 0.5,
+        "projAway": 2.3
       }
     },
-    "PAR": {
-      "group": "D",
+    "PAR-AUS": {
       "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
+        "pHome": 42,
+        "pDraw": 32,
+        "pAway": 26,
+        "projHome": 1.1,
+        "projAway": 0.8
       }
     },
-    "TUR": {
-      "group": "D",
+    "TUR-USA": {
       "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
+        "pHome": 27,
+        "pDraw": 26,
+        "pAway": 47,
+        "projHome": 1.1,
+        "projAway": 1.5
       }
     },
-    "USA": {
-      "group": "D",
+    "NOR-FRA": {
       "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
+        "pHome": 20,
+        "pDraw": 24,
+        "pAway": 56,
+        "projHome": 0.9,
+        "projAway": 1.7
       }
     },
-    "CIV": {
-      "group": "E",
+    "SEN-IRQ": {
       "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
+        "pHome": 77,
+        "pDraw": 17,
+        "pAway": 6,
+        "projHome": 2.1,
+        "projAway": 0.4
       }
     },
-    "CUW": {
-      "group": "E",
+    "CPV-KSA": {
       "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
+        "pHome": 44,
+        "pDraw": 28,
+        "pAway": 28,
+        "projHome": 1.3,
+        "projAway": 1
       }
     },
-    "ECU": {
-      "group": "E",
+    "URU-ESP": {
       "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
+        "pHome": 15,
+        "pDraw": 23,
+        "pAway": 62,
+        "projHome": 0.7,
+        "projAway": 1.7
       }
     },
-    "GER": {
-      "group": "E",
+    "EGY-IRN": {
       "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
+        "pHome": 36,
+        "pDraw": 33,
+        "pAway": 31,
+        "projHome": 0.9,
+        "projAway": 0.8
       }
     },
-    "JPN": {
-      "group": "F",
+    "NZL-BEL": {
       "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
+        "pHome": 3,
+        "pDraw": 7,
+        "pAway": 91,
+        "projHome": 0.5,
+        "projAway": 3.5
       }
     },
-    "NED": {
-      "group": "F",
+    "CRO-GHA": {
       "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
+        "pHome": 65,
+        "pDraw": 21,
+        "pAway": 14,
+        "projHome": 2,
+        "projAway": 0.8
       }
     },
-    "SWE": {
-      "group": "F",
+    "PAN-ENG": {
       "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
+        "pHome": 7,
+        "pDraw": 17,
+        "pAway": 76,
+        "projHome": 0.5,
+        "projAway": 2.1
       }
     },
-    "TUN": {
-      "group": "F",
+    "COD-UZB": {
       "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
+        "pHome": 46,
+        "pDraw": 29,
+        "pAway": 26,
+        "projHome": 1.3,
+        "projAway": 0.9
       }
     },
-    "BEL": {
-      "group": "G",
+    "COL-POR": {
       "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
+        "pHome": 34,
+        "pDraw": 29,
+        "pAway": 37,
+        "projHome": 1.1,
+        "projAway": 1.2
       }
     },
-    "EGY": {
-      "group": "G",
+    "ALG-AUT": {
       "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
+        "pHome": 36,
+        "pDraw": 28,
+        "pAway": 37,
+        "projHome": 1.2,
+        "projAway": 1.2
       }
     },
-    "IRN": {
-      "group": "G",
+    "JOR-ARG": {
       "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      }
-    },
-    "NZL": {
-      "group": "G",
-      "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      }
-    },
-    "CPV": {
-      "group": "H",
-      "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      }
-    },
-    "ESP": {
-      "group": "H",
-      "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      }
-    },
-    "KSA": {
-      "group": "H",
-      "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      }
-    },
-    "URU": {
-      "group": "H",
-      "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      }
-    },
-    "FRA": {
-      "group": "I",
-      "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      }
-    },
-    "IRQ": {
-      "group": "I",
-      "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      }
-    },
-    "NOR": {
-      "group": "I",
-      "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      }
-    },
-    "SEN": {
-      "group": "I",
-      "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      }
-    },
-    "ALG": {
-      "group": "J",
-      "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      }
-    },
-    "ARG": {
-      "group": "J",
-      "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      }
-    },
-    "AUT": {
-      "group": "J",
-      "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      }
-    },
-    "JOR": {
-      "group": "J",
-      "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      }
-    },
-    "COD": {
-      "group": "K",
-      "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      }
-    },
-    "COL": {
-      "group": "K",
-      "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      }
-    },
-    "POR": {
-      "group": "K",
-      "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      }
-    },
-    "UZB": {
-      "group": "K",
-      "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      }
-    },
-    "CRO": {
-      "group": "L",
-      "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      }
-    },
-    "ENG": {
-      "group": "L",
-      "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      }
-    },
-    "GHA": {
-      "group": "L",
-      "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      }
-    },
-    "PAN": {
-      "group": "L",
-      "paddlin": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
-      },
-      "pele": {
-        "winGroup": null,
-        "advance": null,
-        "champion": null
+        "pHome": 1,
+        "pDraw": 3,
+        "pAway": 97,
+        "projHome": 0.3,
+        "projAway": 4.3
       }
     }
-  },
-  "matchPicks": {}
+  }
 }

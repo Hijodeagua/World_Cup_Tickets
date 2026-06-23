@@ -1,16 +1,15 @@
-// Reads data/external-models.json — the published projections from two outside
-// World Cup 2026 models (Michael Caley's PADDLIN' and Silver Bulletin's PELE) —
-// so the groups page can show a "Calibration" comparison against our own model
-// (labelled the "Fyfa_Rat Model") and /accuracy can grade all three game by game.
+// Reads data/external-models.json — published per-match World Cup 2026
+// projections from outside models (currently Michael Caley's PADDLIN') — so the
+// Compare page (/compare) can put our own model (the "Fyfa_Rat Model") side by
+// side with them: win/draw/loss split, projected score, and game-by-game grading.
 //
-// The figures are subscriber-gated, so the JSON is filled in by hand; every
-// field is optional and missing values degrade to a dash / are skipped. Nothing
-// here throws on absent data.
+// The figures are subscriber-gated, so the JSON is transcribed by hand; every
+// match/model is optional and missing data degrades to a dash. Nothing throws.
 
 import data from "../../data/external-models.json";
 import type { Outcome } from "./matchPredictions";
 
-export type ModelKey = "paddlin" | "pele";
+export type ModelKey = string;
 
 export interface ModelMeta {
   key: ModelKey;
@@ -19,53 +18,51 @@ export interface ModelMeta {
   source: string;
 }
 
-export interface ExternalTeamOdds {
-  // Percentages (0..100) as published, or null when not yet entered.
-  winGroup: number | null;
-  advance: number | null;
-  champion: number | null;
-}
-
-interface RawTeam {
-  group: string;
-  paddlin?: Partial<ExternalTeamOdds>;
-  pele?: Partial<ExternalTeamOdds>;
+export interface ExternalMatch {
+  // Win/draw/loss as published percentages (0..100), home team's perspective.
+  pHome: number;
+  pDraw: number;
+  pAway: number;
+  // Projected score (expected goals).
+  projHome: number;
+  projAway: number;
 }
 
 const MODELS = data.models as Record<ModelKey, { name: string; author: string; source: string }>;
-const TEAMS = data.teams as Record<string, RawTeam>;
-const MATCH_PICKS = (data.matchPicks ?? {}) as Record<string, Partial<Record<ModelKey, Outcome | null>>>;
+const MATCHES = data.matches as Record<string, Record<ModelKey, ExternalMatch | undefined>>;
 
-export const MODEL_KEYS: ModelKey[] = ["paddlin", "pele"];
+// Every model defined in the file, in declaration order.
+export const MODEL_KEYS: ModelKey[] = Object.keys(MODELS);
 
 export function modelMeta(key: ModelKey): ModelMeta {
   const m = MODELS[key];
   return { key, name: m.name, author: m.author, source: m.source };
 }
 
-// External odds for one team + model, or null fields when nothing is entered.
-export function externalOdds(code: string | null | undefined, key: ModelKey): ExternalTeamOdds {
-  const raw = code ? TEAMS[code]?.[key] : undefined;
-  return {
-    winGroup: raw?.winGroup ?? null,
-    advance: raw?.advance ?? null,
-    champion: raw?.champion ?? null,
-  };
+// One model's projection for a fixture (keyed home-away), or null when absent.
+export function externalMatch(
+  homeCode: string | null | undefined,
+  awayCode: string | null | undefined,
+  key: ModelKey,
+): ExternalMatch | null {
+  if (!homeCode || !awayCode) return null;
+  return MATCHES[`${homeCode}-${awayCode}`]?.[key] ?? null;
 }
 
-// True if any external advance figure has been entered for this team — used to
-// decide whether the Calibration cell has anything to show.
-export function hasAnyAdvance(code: string | null | undefined): boolean {
-  return MODEL_KEYS.some((k) => externalOdds(code, k).advance != null);
+// The model's most likely outcome for a fixture (argmax of W/D/L), or null.
+export function externalPick(
+  homeCode: string | null | undefined,
+  awayCode: string | null | undefined,
+  key: ModelKey,
+): { outcome: Outcome; p: number } | null {
+  const e = externalMatch(homeCode, awayCode, key);
+  if (!e) return null;
+  if (e.pHome >= e.pDraw && e.pHome >= e.pAway) return { outcome: "A", p: e.pHome };
+  if (e.pAway >= e.pDraw && e.pAway >= e.pHome) return { outcome: "B", p: e.pAway };
+  return { outcome: "DRAW", p: e.pDraw };
 }
 
-// A model's predicted outcome for a given fixture (by fifaMatchNo), or null.
-export function matchPick(fifaMatchNo: number, key: ModelKey): Outcome | null {
-  return MATCH_PICKS[String(fifaMatchNo)]?.[key] ?? null;
-}
-
-// True if any external per-match picks exist at all — gates the model-comparison
-// UI on /accuracy so it stays hidden until the data is filled in.
-export function hasAnyMatchPicks(): boolean {
-  return Object.values(MATCH_PICKS).some((m) => MODEL_KEYS.some((k) => m?.[k] != null));
+// True if any model has a projection for this fixture — gates a Compare row.
+export function hasAnyExternal(homeCode: string | null | undefined, awayCode: string | null | undefined): boolean {
+  return MODEL_KEYS.some((k) => externalMatch(homeCode, awayCode, k) != null);
 }

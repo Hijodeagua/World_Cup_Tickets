@@ -2,7 +2,6 @@ import { prisma } from "@/lib/db";
 import { ensureMatchColumns } from "@/lib/ensure-schema";
 import { STAGE_LABELS, formatKickoff } from "@/lib/format";
 import { actualOutcome, mostLikelyOutcome, resolvePrediction, type Outcome } from "@/lib/predictions/matchPredictions";
-import { MODEL_KEYS, hasAnyMatchPicks, matchPick, modelMeta, type ModelKey } from "@/lib/predictions/externalModels";
 
 export const dynamic = "force-dynamic";
 
@@ -39,8 +38,6 @@ export default async function AccuracyPage() {
     correct: boolean;
     frozen: boolean;
     runningPct: number;
-    // Outside models' calls for this fixture (null where no pick is on file).
-    ext: Record<ModelKey, { pick: Outcome; correct: boolean } | null>;
   }
 
   const graded: Graded[] = [];
@@ -63,12 +60,6 @@ export default async function AccuracyPage() {
     byClass[predicted].total++;
     if (correct) byClass[predicted].correct++;
 
-    const ext: Record<ModelKey, { pick: Outcome; correct: boolean } | null> = { paddlin: null, pele: null };
-    for (const k of MODEL_KEYS) {
-      const pick = matchPick(m.fifaMatchNo, k);
-      if (pick) ext[k] = { pick, correct: pick === actual };
-    }
-
     graded.push({
       id: m.id,
       kickoff: m.kickoff,
@@ -85,26 +76,7 @@ export default async function AccuracyPage() {
       correct,
       frozen: rp.frozen,
       runningPct: 0,
-      ext,
     });
-  }
-
-  // Head-to-head vs the outside models: for each model, accuracy over the games
-  // it actually called, plus our own accuracy over that same set (a fair,
-  // like-for-like comparison). Stays empty until picks are entered.
-  const showModels = hasAnyMatchPicks();
-  const h2h: Record<ModelKey, { model: number; ours: number; total: number }> = {
-    paddlin: { model: 0, ours: 0, total: 0 },
-    pele: { model: 0, ours: 0, total: 0 },
-  };
-  for (const g of graded) {
-    for (const k of MODEL_KEYS) {
-      const e = g.ext[k];
-      if (!e) continue;
-      h2h[k].total++;
-      if (e.correct) h2h[k].model++;
-      if (g.correct) h2h[k].ours++;
-    }
   }
 
   // Running accuracy after each game (chronological).
@@ -209,46 +181,6 @@ export default async function AccuracyPage() {
             </div>
           </div>
 
-          {showModels && (
-            <div className="acc-compare">
-              <div className="th">
-                <span className="tg">How we compare</span>
-                <span className="csub">Hit-rate over the games each model called — Fyfa_Rat Model vs the public models</span>
-              </div>
-              <div className="cmp-grid">
-                {MODEL_KEYS.filter((k) => h2h[k].total > 0).map((k) => {
-                  const m = modelMeta(k);
-                  const h = h2h[k];
-                  const them = (h.model / h.total) * 100;
-                  const us = (h.ours / h.total) * 100;
-                  const lead = us - them;
-                  return (
-                    <div className="cmp-card" key={k}>
-                      <div className="cmp-h">
-                        <a href={m.source} target="_blank" rel="noopener noreferrer">
-                          {m.name}
-                        </a>{" "}
-                        <span className="t-mut">· {m.author}</span>
-                      </div>
-                      <div className="cmp-row">
-                        <span className="cmp-l">Fyfa_Rat Model</span>
-                        <span className="cmp-v">{pct(us)}</span>
-                      </div>
-                      <div className="cmp-row">
-                        <span className="cmp-l">{m.name}</span>
-                        <span className="cmp-v">{pct(them)}</span>
-                      </div>
-                      <div className={`cmp-lead ${lead >= 0 ? "ok" : "miss"}`}>
-                        {lead === 0 ? "Level" : `${lead > 0 ? "We lead" : "They lead"} by ${pct(Math.abs(lead))}`}
-                        <span className="t-mut"> · {h.total} games</span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
           <h2 className="section-h">Game by game</h2>
           <table className="data acc-table">
             <thead>
@@ -258,7 +190,6 @@ export default async function AccuracyPage() {
                 <th>Predicted</th>
                 <th>Result</th>
                 <th>Call</th>
-                {showModels && MODEL_KEYS.map((k) => <th key={k}>{modelMeta(k).name}</th>)}
                 <th className="num">Running</th>
               </tr>
             </thead>
@@ -288,15 +219,6 @@ export default async function AccuracyPage() {
                       <span className="t-mut">{outcomeText(g.actual, g.a, g.b)}</span>
                     </td>
                     <td className={g.correct ? "t-ok" : "t-bad"}>{g.correct ? "✓ Correct" : "✗ Missed"}</td>
-                    {showModels &&
-                      MODEL_KEYS.map((k) => {
-                        const e = g.ext[k];
-                        return (
-                          <td key={k} className={e ? (e.correct ? "t-ok" : "t-bad") : "t-mut"}>
-                            {e ? (e.correct ? "✓" : "✗") : "—"}
-                          </td>
-                        );
-                      })}
                     <td className="num">{pct(g.runningPct)}</td>
                   </tr>
                 ))}
