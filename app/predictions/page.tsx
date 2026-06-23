@@ -39,10 +39,6 @@ export default async function PredictionsPage() {
           {Math.round(BLEND_WEIGHT_ONLINE * 100)}/{Math.round((1 - BLEND_WEIGHT_ONLINE) * 100)}). A projection —
           not a prediction.
         </p>
-        <div className="meth">
-          Refreshed whenever the rating file is updated (edit <code>data/elo-ratings.json</code> and run{" "}
-          <code>npm run predict</code>).
-        </div>
       </section>
 
       {fav && (

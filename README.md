@@ -28,8 +28,18 @@ prediction the model actually made beforehand — no hindsight.
   frozen row is **never recomputed**, preserving the pre-game prediction for
   grading on `/accuracy`.
 - `TeamProjection` — per-team Elo Monte Carlo tournament odds (win group,
-  advance, reach each round, champion).
+  advance, reach each round, champion). `baselinePQualify` snapshots the
+  pre-tournament advance odds once and never overwrites them, so the groups page
+  can show how a team's chances have moved since kickoff ("was X%").
 - `Player` — auto-pulled squads (Wikipedia) with a manual override layer.
+
+External model figures for the **Calibration** comparison live in
+`data/external-models.json` (not the database): published World Cup 2026 odds
+and per-match picks from Michael Caley's **PADDLIN'** and Silver Bulletin's
+**PELE**. The outlets are subscriber-gated, so the values are pasted in by hand
+(see the source URLs in the file); every field is optional and missing data
+degrades to a dash. Our own model is labelled the **Fyfa_Rat Model** in those
+comparisons.
 
 ## Pages
 
@@ -40,8 +50,12 @@ prediction the model actually made beforehand — no hindsight.
   through completed games (each graded ✓/✗ against the frozen call).
 - `/groups` — the twelve groups: live standings (P/W/D/L, GF/GA/GD, points)
   computed from completed results, alongside the Elo **Win Grp** / **Advance**
-  projections for each team. Projections are recalculated after every result —
-  played matches are fixed, the rest simulated (see below).
+  projections for each team (Advance shows the tournament-start figure in
+  parentheses), plus a **Calibration** column comparing our advance odds against
+  PADDLIN' and PELE. Projections are recalculated after every result — played
+  matches are fixed, the rest simulated (see below). Played results are read from
+  the completed `Match` rows in the database (the same source as the standings),
+  so the two never disagree.
 - `/matches/[id]` — match detail with the final score (once played) and a
   **matchup view**: an Elo head-to-head forecast (win/draw/loss + average
   scoreline + the ten most likely scorelines), optional market lines, and both
@@ -49,7 +63,10 @@ prediction the model actually made beforehand — no hindsight.
 - `/predictions` — Elo Monte Carlo title projections (see below).
 - `/accuracy` — grades the model game by game: predicted outcome, actual result,
   ✓/✗, and a running accuracy score, with aggregate stats (overall %, accuracy by
-  predicted outcome type, and a running-accuracy trend over time).
+  predicted outcome type, and a running-accuracy trend over time). When per-match
+  picks are present in `data/external-models.json`, it also shows a head-to-head
+  comparison of the Fyfa_Rat Model against PADDLIN' and PELE over the games each
+  one called.
 - `/api/cron/predictions` — applies the latest results to `Match` rows,
   recomputes the Elo projections, and refreshes/freezes per-match predictions
   (Bearer `CRON_SECRET`).

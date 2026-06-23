@@ -1,0 +1,643 @@
+{
+  "note": "External World Cup 2026 model projections, for the Calibration comparison on the groups page and /accuracy. Values are PERCENTAGES (0-100); leave null until filled. These outlets are subscriber-gated, so paste the published figures by hand from the source URLs in `models` (do not invent numbers). Any team/match left null renders as a graceful dash. matchPicks: keyed by fifaMatchNo (see data/fixtures-2026.json); each model's predicted outcome from the home team's perspective: 'A' = home win, 'DRAW', 'B' = away win, or null if not set. Used to grade each external model game-by-game alongside our own model (the 'Fyfa_Rat Model') on /accuracy.",
+  "updatedAt": null,
+  "models": {
+    "paddlin": {
+      "name": "PADDLIN'",
+      "author": "Michael Caley",
+      "source": "https://www.expectinggoals.com/p/world-cup-2026-paddlin-projections"
+    },
+    "pele": {
+      "name": "PELE",
+      "author": "Silver Bulletin (Nate Silver)",
+      "source": "https://www.natesilver.net/p/world-cup-2026-odds-predictions"
+    }
+  },
+  "teams": {
+    "CZE": {
+      "group": "A",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "KOR": {
+      "group": "A",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "MEX": {
+      "group": "A",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "RSA": {
+      "group": "A",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "BIH": {
+      "group": "B",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "CAN": {
+      "group": "B",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "QAT": {
+      "group": "B",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "SUI": {
+      "group": "B",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "BRA": {
+      "group": "C",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "HAI": {
+      "group": "C",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "MAR": {
+      "group": "C",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "SCO": {
+      "group": "C",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "AUS": {
+      "group": "D",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "PAR": {
+      "group": "D",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "TUR": {
+      "group": "D",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "USA": {
+      "group": "D",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "CIV": {
+      "group": "E",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "CUW": {
+      "group": "E",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "ECU": {
+      "group": "E",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "GER": {
+      "group": "E",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "JPN": {
+      "group": "F",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "NED": {
+      "group": "F",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "SWE": {
+      "group": "F",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "TUN": {
+      "group": "F",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "BEL": {
+      "group": "G",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "EGY": {
+      "group": "G",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "IRN": {
+      "group": "G",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "NZL": {
+      "group": "G",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "CPV": {
+      "group": "H",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "ESP": {
+      "group": "H",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "KSA": {
+      "group": "H",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "URU": {
+      "group": "H",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "FRA": {
+      "group": "I",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "IRQ": {
+      "group": "I",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "NOR": {
+      "group": "I",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "SEN": {
+      "group": "I",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "ALG": {
+      "group": "J",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "ARG": {
+      "group": "J",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "AUT": {
+      "group": "J",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "JOR": {
+      "group": "J",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "COD": {
+      "group": "K",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "COL": {
+      "group": "K",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "POR": {
+      "group": "K",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "UZB": {
+      "group": "K",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "CRO": {
+      "group": "L",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "ENG": {
+      "group": "L",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "GHA": {
+      "group": "L",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    },
+    "PAN": {
+      "group": "L",
+      "paddlin": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      },
+      "pele": {
+        "winGroup": null,
+        "advance": null,
+        "champion": null
+      }
+    }
+  },
+  "matchPicks": {}
+}

@@ -1670,3 +1670,118 @@ table.standings td.team-cell {
     grid-template-columns: 1fr 1fr;
   }
 }
+
+/* --- Groups: advance baseline ("was X%") + Calibration column --- */
+.standings td.pcol .was {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--mut-2);
+  margin-top: 1px;
+  letter-spacing: 0.01em;
+}
+table.standings thead th.calib-h {
+  color: var(--mut);
+}
+.standings td.calib {
+  color: var(--mut-2);
+  font-weight: 500;
+}
+.calib .calib-vals {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 1px;
+  cursor: help;
+}
+.calib .cv {
+  font-size: 11.5px;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  color: var(--mut);
+}
+.calib .cv .ct {
+  display: inline-block;
+  min-width: 26px;
+  margin-right: 4px;
+  color: var(--mut-2);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* --- Accuracy: model comparison cards --- */
+.acc-compare {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 22px 26px;
+  margin-top: 16px;
+}
+.acc-compare .th {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.acc-compare .tg {
+  font-family: "Newsreader", serif;
+  font-style: italic;
+  font-size: 18px;
+  color: var(--txt);
+}
+.acc-compare .csub {
+  font-size: 12.5px;
+  color: var(--mut-2);
+}
+.cmp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+.cmp-card {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+.cmp-h {
+  font-size: 13px;
+  color: var(--txt);
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+.cmp-h a {
+  color: var(--gold);
+  text-decoration: none;
+}
+.cmp-h a:hover {
+  text-decoration: underline;
+}
+.cmp-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 4px 0;
+  font-size: 13px;
+}
+.cmp-row .cmp-l {
+  color: var(--mut);
+}
+.cmp-row .cmp-v {
+  font-weight: 700;
+  color: var(--txt);
+  font-variant-numeric: tabular-nums;
+}
+.cmp-lead {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(233, 224, 210, 0.06);
+  font-size: 12px;
+  font-weight: 600;
+}
+.cmp-lead.ok {
+  color: var(--emerald);
+}
+.cmp-lead.miss {
+  color: var(--red);
+}
