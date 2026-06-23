@@ -1,5 +1,5 @@
-// Pluggable match-odds source. Mirrors the ticket-provider philosophy: gated on
-// an API key, never throws, and degrades to a clean "unavailable" result so the
+// Pluggable match-odds source: gated on an API key, never throws, and degrades
+// to a clean "unavailable" result so the
 // matchup forecast still renders (from our own simulation) when there's no key
 // or no market coverage for a given fixture.
 //

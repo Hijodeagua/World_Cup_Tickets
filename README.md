@@ -1,77 +1,76 @@
-# World Cup Tickets
+# World Cup 2026 — Match Predictions
 
-A website that tracks FIFA World Cup 2026 matches and shows which still have
-tickets available. Match browsing and ticket availability are co-equal features.
+A website that predicts every FIFA World Cup 2026 match with an Elo Monte Carlo
+model and grades those predictions against the real results.
 
 ## Why it's built this way
 
-Match schedules are public and easy. Live ticket availability is **not** — FIFA
-has no free public ticketing API and its site is bot-protected. So availability
-is modeled as a **pluggable provider** with autonomous scheduled fetching plus a
-manual override, and ticket data is stored as an **append-only observation
-stream**, never overwritten in place. This unlocks history, sell-out timing, and
-source-reliability analysis, and keeps the site useful even when a source breaks.
+The model makes a call for every fixture — most likely outcome (win / draw /
+loss) plus the full simulation split. To grade it honestly, a prediction is
+**frozen the night before kickoff** and never recomputed once the game has been
+played: data refreshes can update *upcoming* games but can't rewrite history.
+That frozen snapshot is what the Accuracy page scores, so the grade reflects the
+prediction the model actually made beforehand — no hindsight.
 
 ## Stack
 
 - **Next.js 15** (App Router) + TypeScript + Tailwind CSS v4
 - **Prisma** ORM — Postgres in every environment (local and production)
-- **Vercel Cron** for the autonomous availability refresh
+- **Vercel Cron** for the nightly results + predictions refresh
 
 ## Data model (`prisma/schema.prisma`)
 
 - `Team`, `Venue`, `Match` — the schedule (104 matches, 16 host stadiums).
   `Match` also carries the result (`status`, `homeScore`, `awayScore`) once
   played, which drives the group standings and conditions the projections.
-- `TicketObservation` — **immutable**, one row per fetch attempt (success or
-  failure), with prices, raw payload, confidence, source tier, and a structured
-  `scrapeStatus` (OK / SOURCE_DOWN / LAYOUT_CHANGED / BLOCKED / NO_DATA / ERROR).
-- `CurrentTicketState` — **derived** from the stream by the resolver.
-- `ProviderRun` — per-run log; powers the source-health dashboard.
-- `ManualOverride` — human-entered availability (subject to TTL decay).
-- `RefreshLock` — prevents overlapping cron runs.
-
-## Ticket providers (`lib/tickets/`)
-
-- `ManualProvider` — reads `ManualOverride`; entries older than the TTL
-  (`MANUAL_OVERRIDE_TTL_MS`) decay to UNKNOWN so they never silently beat a fresh
-  automated read.
-- `TicketmasterProvider` — **real integration** with the Ticketmaster Discovery
-  API. Queries by team names + city + date window, maps event onsale status to
-  availability and `priceRanges` to price. Gated on `TICKETMASTER_API_KEY`; with
-  no key it degrades to a clean UNKNOWN. Note: FIFA sells most World Cup tickets
-  on its own portal, so Discovery coverage of these matches may be partial — the
-  provider records that as NO_DATA rather than guessing.
-- `BestEffortScraperProvider` — placeholder slot for an official-portal source.
-  Never throws; any failure becomes a structured observation. Implement
-  `fetchRaw` to wire it up.
-- `resolver.ts` — picks the authoritative state by source tier → confidence →
-  recency, and flags staleness (`STALE_AFTER_MS`).
-- `index.ts` — the refresh loop: adaptive polling (closer matches polled more
-  often), run-lock, request jitter, observation writes, derived-state recompute,
-  and `ProviderRun` logging.
+- `MatchPrediction` — the per-match win/draw/loss split (`pWinA`/`pDraw`/`pWinB`,
+  blended Elo, iteration count). `frozen` is set the night before kickoff; a
+  frozen row is **never recomputed**, preserving the pre-game prediction for
+  grading on `/accuracy`.
+- `TeamProjection` — per-team Elo Monte Carlo tournament odds (win group,
+  advance, reach each round, champion).
+- `Player` — auto-pulled squads (Wikipedia) with a manual override layer.
 
 ## Pages
 
-- `/` — match list with filters (team, host city, stage, "available only").
+- `/` — the match board: every fixture as a 3-column game card — matchup/info,
+  **most likely outcome** with the simulation split, and the **most likely
+  winner** with win probability — grouped under date headers. Starts at today and
+  shows upcoming games forward; switch to **Past results** to navigate back
+  through completed games (each graded ✓/✗ against the frozen call).
 - `/groups` — the twelve groups: live standings (P/W/D/L, GF/GA/GD, points)
   computed from completed results, alongside the Elo **Win Grp** / **Advance**
   projections for each team. Projections are recalculated after every result —
   played matches are fixed, the rest simulated (see below).
-- `/matches/[id]` — match detail, availability + price, buy link, recent
-  observations, and a **matchup view**: an Elo head-to-head forecast
-  (win/draw/loss + average scoreline + the ten most likely scorelines), optional
-  market lines, and both teams' rosters. Shown only when both teams are known.
+- `/matches/[id]` — match detail with the final score (once played) and a
+  **matchup view**: an Elo head-to-head forecast (win/draw/loss + average
+  scoreline + the ten most likely scorelines), optional market lines, and both
+  teams' rosters. Shown only when both teams are known.
 - `/predictions` — Elo Monte Carlo title projections (see below).
-- `/admin/health` — source health (error rate, last successful fetch, recent runs).
-- `/api/cron/refresh` — the ticket refresh endpoint (Bearer `CRON_SECRET`).
-- `/api/cron/predictions` — applies the latest results to `Match` rows and
-  recomputes the Elo projections (Bearer `CRON_SECRET`).
+- `/accuracy` — grades the model game by game: predicted outcome, actual result,
+  ✓/✗, and a running accuracy score, with aggregate stats (overall %, accuracy by
+  predicted outcome type, and a running-accuracy trend over time).
+- `/api/cron/predictions` — applies the latest results to `Match` rows,
+  recomputes the Elo projections, and refreshes/freezes per-match predictions
+  (Bearer `CRON_SECRET`).
+- `/api/cron/rosters` — weekly squad pull (Bearer `CRON_SECRET`).
+
+## Per-match predictions (`lib/predictions/matchPredictions.ts`)
+
+Each fixture's win/draw/loss split comes from the same Elo + Poisson head-to-head
+engine as the matchup view. Upcoming games are computed **live** from the current
+ratings; the nightly cron snapshots and **freezes** each prediction once it is
+within 24h of kickoff (or already played), so the frozen value is exactly what
+the model said the night before. `/accuracy` grades the frozen call against the
+result.
 
 ## Title projections (`lib/predictions/`)
 
-A Monte Carlo simulation (default 20,000 tournaments) estimates each team's odds
-to win its group, advance, and lift the trophy.
+A Monte Carlo simulation (default 100,000 tournaments) estimates each team's odds
+to win its group, advance, and lift the trophy. (Monte Carlo error falls as
+1/√N, so ~100k keeps champion odds stable to a few tenths of a percent while
+finishing in a few seconds — well inside the cron's 120s budget; beyond ~250k the
+precision gain isn't worth the time.)
 
 - `data/elo-ratings.json` — strength snapshot blending an online World Football
   Elo (`eloOnline`, hand-maintained) and the model rating (`eloModel`); blend
@@ -114,12 +113,12 @@ The per-match page runs the same Elo + Poisson engine as the title projections
 on just the two teams:
 
 - `headToHead.ts` — derives win/draw/loss and the average scoreline from a large
-  run (default 10,000) for stable percentages, while surfacing the **ten most
+  run (default 50,000) for stable percentages, while surfacing the **ten most
   likely exact scorelines** for human-readable texture. Deterministic per
   matchup (seeded from the two Elos). Host nations get the same home boost as the
   tournament sim.
-- `lib/odds/` — a **pluggable, env-gated odds source** (The Odds API) mirroring
-  the ticket-provider design: with `THE_ODDS_API_KEY` set it fetches h2h lines,
+- `lib/odds/` — a **pluggable, env-gated odds source** (The Odds API): with
+  `THE_ODDS_API_KEY` set it fetches h2h lines,
   averages across books, and de-vigs to implied probabilities shown beside the
   model; with no key (or no market coverage) it degrades cleanly and the forecast
   shows the model only. Never throws.
@@ -135,29 +134,26 @@ Neon, Vercel Postgres, etc.) and put its connection string in `DATABASE_URL`.
 
 ```bash
 npm install
-cp .env.example .env          # set DATABASE_URL (Postgres) + CRON_SECRET (+ optional TICKETMASTER_API_KEY)
+cp .env.example .env          # set DATABASE_URL (Postgres) + CRON_SECRET
 npm run db:push               # create the schema in your Postgres database
-npm run db:seed               # seed schedule + demo overrides, run first refresh
+npm run db:seed               # seed schedule, results, projections + predictions
 npm run dev                   # http://localhost:3000
 ```
 
-Set `TICKETMASTER_API_KEY` (free from https://developer.ticketmaster.com) to
-activate the live Ticketmaster provider; otherwise it stays a no-op.
-
-Trigger a refresh manually:
+Trigger the nightly predictions refresh manually:
 
 ```bash
-curl -H "Authorization: Bearer <CRON_SECRET>" http://localhost:3000/api/cron/refresh
+curl -H "Authorization: Bearer <CRON_SECRET>" http://localhost:3000/worldcup/api/cron/predictions
 ```
 
 ## Production (Vercel)
 
 1. Set `DATABASE_URL` to your production Postgres connection string. The
    datasource `provider` is already `postgresql`, so no schema change is needed.
-2. Set `CRON_SECRET`. `vercel.json` schedules three crons: the hourly ticket
-   refresh, a weekly roster pull, and a **nightly predictions refresh**
-   (`/api/cron/predictions`, 08:00 UTC) that applies new results and recomputes
-   projections.
+2. Set `CRON_SECRET`. `vercel.json` schedules two crons: a weekly roster pull and
+   a **nightly predictions refresh** (`/api/cron/predictions`, 08:00 UTC) that
+   applies new results, recomputes projections, and freezes per-match predictions
+   inside the kickoff window.
 
 ## Nightly Elo + projections refresh
 
@@ -182,12 +178,12 @@ npm run sync-elo && npm run sync-results
 npm run predict        # recompute projections from the synced data
 ```
 
-> **Schema note:** this integration adds `status`/`homeScore`/`awayScore` to
-> `Match`. They're applied automatically at runtime — `lib/ensure-schema.ts`
-> runs an idempotent `ADD COLUMN IF NOT EXISTS` (memoized, once per server
-> instance) before any Match query, so no build-time DB access or manual
-> migration is needed. `npm run db:push` still applies them up front for a
-> local DB.
+> **Schema note:** `status`/`homeScore`/`awayScore` on `Match` and the
+> `MatchPrediction` table are applied automatically at runtime —
+> `lib/ensure-schema.ts` runs idempotent `ADD COLUMN IF NOT EXISTS` /
+> `CREATE TABLE IF NOT EXISTS` (memoized, once per server instance) before any
+> read, so no build-time DB access or manual migration is needed. `npm run
+> db:push` still applies them up front for a local DB.
 
 ## Data accuracy note
 
@@ -207,6 +203,6 @@ stadium double-booked on a day).
 
 ## Out of scope (v1)
 
-Notifications/price alerts and price-history charts are intentionally deferred,
-but the observation stream is designed so they layer on top later without schema
-changes.
+Calibration plots (predicted vs. observed frequency) and per-confidence-bucket
+accuracy are deferred; the frozen `MatchPrediction` rows carry the probabilities
+needed to add them later without schema changes.

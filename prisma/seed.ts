@@ -190,36 +190,12 @@ async function main() {
     });
   }
 
-  // Demo manual overrides so availability is visible out of the box.
-  const overrides = [
-    { fifaMatchNo: 1, availability: "AVAILABLE", minPrice: 165, currency: "USD", note: "Opening match — Category 3 available" },
-    { fifaMatchNo: 4, availability: "LIMITED", minPrice: 290, currency: "USD", note: "USA opener — few seats left" },
-    { fifaMatchNo: 7, availability: "AVAILABLE", minPrice: 240, currency: "USD", note: "Brazil v Morocco" },
-    { fifaMatchNo: 17, availability: "LIMITED", minPrice: 410, currency: "USD", note: "France v Senegal" },
-    { fifaMatchNo: 22, availability: "SOLD_OUT", currency: "USD", note: "England v Croatia — sold out on official portal" },
-  ];
-  for (const o of overrides) {
-    const match = await prisma.match.findUnique({ where: { fifaMatchNo: o.fifaMatchNo } });
-    if (!match) continue;
-    await prisma.manualOverride.upsert({
-      where: { matchId: match.id },
-      create: { matchId: match.id, availability: o.availability, minPrice: o.minPrice ?? null, currency: o.currency ?? null, note: o.note ?? null, setBy: "seed" },
-      update: { availability: o.availability, minPrice: o.minPrice ?? null, currency: o.currency ?? null, note: o.note ?? null, setBy: "seed" },
-    });
-  }
-
   const counts = {
     venues: await prisma.venue.count(),
     teams: await prisma.team.count(),
     matches: await prisma.match.count(),
-    overrides: await prisma.manualOverride.count(),
   };
   console.log("Seeded:", counts);
-
-  // Populate the observation stream + derived state from the seeded data.
-  const { runRefresh } = await import("../lib/tickets/index");
-  const result = await runRefresh();
-  console.log("Initial refresh:", result);
 
   // Apply any committed completed results so standings reflect them immediately
   // (empty until matches are played; the nightly job keeps it current).
@@ -242,6 +218,11 @@ async function main() {
   const { computeAndStoreProjections } = await import("../lib/predictions/store");
   const n = await computeAndStoreProjections(prisma);
   console.log("Projections computed for", n, "teams");
+
+  // Seed per-match predictions (freezes any already inside the kickoff window).
+  const { refreshMatchPredictions } = await import("../lib/predictions/matchPredictions");
+  const mp = await refreshMatchPredictions(prisma);
+  console.log("Match predictions:", mp);
 }
 
 main()

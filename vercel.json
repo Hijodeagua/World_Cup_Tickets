@@ -1,10 +1,6 @@
 {
   "crons": [
     {
-      "path": "/worldcup/api/cron/refresh",
-      "schedule": "0 10 * * *"
-    },
-    {
       "path": "/worldcup/api/cron/rosters",
       "schedule": "0 6 * * 1"
     },

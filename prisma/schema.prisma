@@ -1,14 +1,9 @@
-// World Cup Tickets — data model.
-//
-// Core design: ticket data is an append-only OBSERVATION STREAM, never an
-// overwrite-in-place status. Every fetch attempt writes one immutable
-// TicketObservation row; CurrentTicketState is derived from that stream.
+// World Cup 2026 — match predictions data model.
 //
 // Uses Postgres in every environment (local and production) so the committed
 // schema always matches the live deployment. "enum" fields are kept as String
-// constrained in app code (see lib/tickets/types.ts) and raw payloads are
-// stored as stringified JSON for portability. Point DATABASE_URL at any
-// Postgres instance (local Docker, Neon, Vercel Postgres, etc.).
+// constrained in app code. Point DATABASE_URL at any Postgres instance (local
+// Docker, Neon, Vercel Postgres, etc.).
 
 datasource db {
   provider = "postgresql"
@@ -65,91 +60,30 @@ model Match {
   homeScore Int?
   awayScore Int?
 
-  observations TicketObservation[]
-  currentState CurrentTicketState?
-
   @@index([kickoff])
 }
 
-// Immutable: one row per fetch attempt, success OR failure. Never updated.
-model TicketObservation {
-  id         String   @id @default(cuid())
-  matchId    String
-  match      Match    @relation(fields: [matchId], references: [id])
-  providerId String
-  observedAt DateTime @default(now())
+// Frozen per-match Elo prediction. The nightly predictions cron computes a
+// win/draw/loss split for every upcoming fixture with both teams known, and
+// FREEZES it the night before kickoff (see lib/predictions/matchPredictions.ts).
+// Once frozen — or once the match has been played — the row is never recomputed,
+// so the model is always graded against the prediction it actually made before
+// the game (app/accuracy).
+model MatchPrediction {
+  matchId     String   @id
+  fifaMatchNo Int      @unique
+  homeCode    String?
+  awayCode    String?
+  eloA        Int
+  eloB        Int
+  pWinA       Float
+  pDraw       Float
+  pWinB       Float
+  iterations  Int
+  frozen      Boolean  @default(false)
+  computedAt  DateTime @updatedAt
 
-  availability String // AVAILABLE | LIMITED | SOLD_OUT | UNKNOWN
-
-  minPrice    Float?
-  medianPrice Float?
-  currency    String?
-  category    String?
-  quantity    Int?
-  priceType   String? // FACE_VALUE | RESALE | UNKNOWN
-
-  rawPayload    String?
-  confidence    Float   @default(0)
-  sourceTier    Int     @default(0)
-  parserVersion String?
-
-  fetchSucceeded Boolean @default(true)
-  scrapeStatus   String  @default("OK") // OK | SOURCE_DOWN | LAYOUT_CHANGED | BLOCKED | NO_DATA | ERROR
-  failureReason  String?
-  responseTimeMs Int?
-
-  @@index([matchId, observedAt])
-  @@index([providerId, observedAt])
-}
-
-// Derived from the observation stream by the resolver. One row per match.
-model CurrentTicketState {
-  matchId String @id
-  match   Match  @relation(fields: [matchId], references: [id])
-
-  availability      String
-  minPrice          Float?
-  medianPrice       Float?
-  currency          String?
-  sourceTier        Int       @default(0)
-  confidence        Float     @default(0)
-  winningProviderId String?
-  lastObservedAt    DateTime?
-  isStale           Boolean   @default(false)
-  updatedAt         DateTime  @updatedAt
-}
-
-// Structured per-run log — the early-warning system for broken sources.
-model ProviderRun {
-  id             String    @id @default(cuid())
-  providerId     String
-  startedAt      DateTime  @default(now())
-  completedAt    DateTime?
-  matchesChecked Int       @default(0)
-  matchesUpdated Int       @default(0)
-  successCount   Int       @default(0)
-  failureCount   Int       @default(0)
-  failures       String? // stringified JSON: [{matchId, scrapeStatus, reason}]
-
-  @@index([providerId, startedAt])
-}
-
-// Human-in-the-loop overrides. Read by ManualProvider, subject to TTL/decay.
-model ManualOverride {
-  matchId      String   @id
-  availability String
-  minPrice     Float?
-  currency     String?
-  note         String?
-  setBy        String?
-  updatedAt    DateTime @updatedAt
-}
-
-// Prevents overlapping cron runs (Vercel Cron can double-fire).
-model RefreshLock {
-  id        String   @id @default("global")
-  lockedAt  DateTime
-  expiresAt DateTime
+  @@index([fifaMatchNo])
 }
 
 // Elo Monte Carlo projection per team. Recomputed by scripts/predict.ts.

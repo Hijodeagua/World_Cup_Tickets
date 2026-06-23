@@ -7,14 +7,12 @@ export interface MatchFilters {
   teams?: string[]; // multiple team codes (top-5 filter); any match involving any of them
   city?: string;
   stage?: string;
-  availableOnly?: boolean;
 }
 
 const matchInclude = {
   venue: true,
   homeTeam: true,
   awayTeam: true,
-  currentState: true,
 } satisfies Prisma.MatchInclude;
 
 export type MatchWithRelations = Prisma.MatchGetPayload<{ include: typeof matchInclude }>;
@@ -33,9 +31,6 @@ export async function getMatches(filters: MatchFilters): Promise<MatchWithRelati
   }
   if (filters.city) where.venue = { city: filters.city };
   if (filters.stage) where.stage = filters.stage;
-  if (filters.availableOnly) {
-    where.currentState = { availability: { in: ["AVAILABLE", "LIMITED"] } };
-  }
 
   return prisma.match.findMany({
     where,
