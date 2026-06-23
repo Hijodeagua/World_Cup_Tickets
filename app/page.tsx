@@ -32,6 +32,7 @@ export default async function HomePage() {
           live: rp.live,
           mostLikely: mostLikelyOutcome(rp),
           winner: favoredWinner(rp),
+          topScore: rp.topScoreline,
         }
       : null;
 

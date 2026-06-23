@@ -46,6 +46,7 @@ export interface GamePrediction {
   mostLikely: Outcome;
   // The side more likely to win outright, ignoring the draw.
   winner: { side: "A" | "B"; p: number };
+  topScore: { goalsA: number; goalsB: number } | null;
 }
 
 export interface GameFixture {
@@ -187,19 +188,26 @@ function GameCard({ fx, q }: { fx: GameFixture; q: string }) {
         )}
       </div>
 
-      {/* Right: most likely winner + win probability */}
+      {/* Right: most likely score */}
       <div className="gc-winner">
         {pred && winnerTeam ? (
           <>
-            <div className="gc-cap">{pred.mostLikely === "DRAW" ? "Most likely winner" : "Projected winner"}</div>
+            <div className="gc-cap">Most likely score</div>
             <div className="gc-win-team">
               <span className="flag">{winnerTeam.f}</span>
               <span className="nm">{winnerTeam.n}</span>
             </div>
-            <div className="gc-win-pct">
-              {pc(pred.winner.p)}
-              <span className="lab">to win</span>
-            </div>
+            {pred.topScore ? (
+              <div className="gc-win-pct">
+                {pred.topScore.goalsA}–{pred.topScore.goalsB}
+                <span className="lab">most common result</span>
+              </div>
+            ) : (
+              <div className="gc-win-pct">
+                {pc(pred.winner.p)}
+                <span className="lab">to win</span>
+              </div>
+            )}
             {actual && (
               <div className={`gc-grade ${correct ? "ok" : "miss"}`}>{correct ? "✓ Correct" : "✗ Missed"}</div>
             )}

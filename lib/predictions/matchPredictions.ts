@@ -23,6 +23,7 @@ export interface MatchPredictionValue {
   eloA: number; // blended Elo (display), host boost applied inside the sim
   eloB: number;
   iterations: number;
+  topScoreline: { goalsA: number; goalsB: number } | null;
 }
 
 // Freeze a prediction once the match is within this window of kickoff (i.e. the
@@ -34,7 +35,11 @@ export function predictMatch(codeA: string | null | undefined, codeB: string | n
   const eloB = getBlendedElo(codeB);
   if (eloA == null || eloB == null) return null;
   const h2h = simulateHeadToHead({ eloA, eloB, codeA: codeA ?? undefined, codeB: codeB ?? undefined });
-  return { pWinA: h2h.pWinA, pDraw: h2h.pDraw, pWinB: h2h.pWinB, eloA, eloB, iterations: h2h.iterations };
+  const top = h2h.topScorelines[0] ?? null;
+  return {
+    pWinA: h2h.pWinA, pDraw: h2h.pDraw, pWinB: h2h.pWinB, eloA, eloB, iterations: h2h.iterations,
+    topScoreline: top ? { goalsA: top.goalsA, goalsB: top.goalsB } : null,
+  };
 }
 
 // Which of the three outcomes the model thinks is most likely. Ties break toward
@@ -78,6 +83,10 @@ export function resolvePrediction(
   codeB: string | null | undefined,
 ): ResolvedPrediction | null {
   if (stored) {
+    // Sim is deterministic (seeded from Elos), so re-derive the top scoreline
+    // without storing it — avoids a schema change.
+    const h2h = simulateHeadToHead({ eloA: stored.eloA, eloB: stored.eloB, codeA: codeA ?? undefined, codeB: codeB ?? undefined });
+    const top = h2h.topScorelines[0] ?? null;
     return {
       pWinA: stored.pWinA,
       pDraw: stored.pDraw,
@@ -87,6 +96,7 @@ export function resolvePrediction(
       iterations: stored.iterations,
       frozen: stored.frozen,
       live: false,
+      topScoreline: top ? { goalsA: top.goalsA, goalsB: top.goalsB } : null,
     };
   }
   const v = predictMatch(codeA, codeB);
