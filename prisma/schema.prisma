@@ -93,6 +93,9 @@ model TeamProjection {
   elo          Int
   pGroupWinner Float
   pQualify     Float
+  // Pre-tournament advance odds, captured once and never overwritten, so the UI
+  // can show how a team's chances have moved since kickoff ("was X%").
+  baselinePQualify Float?
   pR16         Float
   pQF          Float
   pSF          Float

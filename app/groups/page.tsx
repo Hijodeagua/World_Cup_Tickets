@@ -1,10 +1,15 @@
 import { prisma } from "@/lib/db";
 import { ensureMatchColumns } from "@/lib/ensure-schema";
 import { computeStandings, type ResultInput } from "@/lib/predictions/standings";
+import { MODEL_KEYS, externalOdds, hasAnyAdvance, modelMeta } from "@/lib/predictions/externalModels";
 
 export const dynamic = "force-dynamic";
 
 const fmtPct = (v: number) => (v <= 0 ? "—" : v < 0.01 ? "<1%" : `${Math.round(v * 100)}%`);
+// External figures are stored as whole percentages (0..100).
+const fmtExt = (v: number | null) => (v == null ? "—" : `${Math.round(v)}%`);
+// Short tag for an external model, e.g. PADDLIN' -> "PAD".
+const tag = (name: string) => name.replace(/[^A-Za-z]/g, "").slice(0, 3).toUpperCase();
 
 export default async function GroupsPage() {
   await ensureMatchColumns(prisma);
@@ -58,10 +63,12 @@ export default async function GroupsPage() {
         <h1 className="display">The Groups</h1>
         <p>
           Twelve groups of four. Standings update from completed results; the <b>Win Grp</b> and <b>Advance</b>{" "}
-          columns are Elo Monte Carlo projections
+          columns are the <b>Fyfa_Rat Model</b>&apos;s Elo Monte Carlo projections
           {iterations ? <> ({iterations.toLocaleString()} simulations)</> : null}, recalculated after each result —
-          played matches are fixed, the rest simulated. Top two of every group plus the eight best third-placed teams
-          reach the round of 32.
+          played matches are fixed, the rest simulated. <b>Advance</b> shows each team&apos;s chance to reach the round
+          of 32, with its tournament-start figure in parentheses; <b>Calibration</b> sets that against the same metric
+          from two public models — PADDLIN&apos; (Michael Caley) and PELE (Silver Bulletin). Top two of every group plus
+          the eight best third-placed teams reach the round of 32.
         </p>
         <div className="meth">
           {completed.length > 0 ? (
@@ -69,7 +76,7 @@ export default async function GroupsPage() {
           ) : (
             <>No group matches played yet — standings show the pre-tournament field; projections are full simulations.</>
           )}{" "}
-          Refreshed nightly (<code>/api/cron/predictions</code>).
+          Refreshed nightly.
         </div>
       </section>
 
@@ -97,11 +104,16 @@ export default async function GroupsPage() {
                     <th className="pts">Pts</th>
                     <th className="pcol">Win Grp</th>
                     <th className="pcol">Advance</th>
+                    <th className="pcol calib-h" title="Same metric (advance to the round of 32) from two public models, for comparison with the Fyfa_Rat Model's Advance">
+                      Calibration
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {rows.map((r, i) => {
                     const p = proj.get(r.code);
+                    const showCalib = hasAnyAdvance(r.code);
+                    const ourAdvance = p ? `${Math.round(p.pQualify * 100)}%` : "—";
                     return (
                       <tr key={r.code} className={i < 2 ? "qual" : ""}>
                         <td className="l team-cell">
@@ -118,7 +130,36 @@ export default async function GroupsPage() {
                         <td>{r.gd > 0 ? `+${r.gd}` : r.gd}</td>
                         <td className="pts">{r.pts}</td>
                         <td className="pcol">{p ? fmtPct(p.pGroupWinner) : "—"}</td>
-                        <td className="pcol">{p ? fmtPct(p.pQualify) : "—"}</td>
+                        <td className="pcol">
+                          {p ? fmtPct(p.pQualify) : "—"}
+                          {p && p.baselinePQualify != null && (
+                            <span className="was" title="Chance to advance at tournament start">
+                              was {fmtPct(p.baselinePQualify)}
+                            </span>
+                          )}
+                        </td>
+                        <td className="pcol calib">
+                          {showCalib ? (
+                            <span
+                              className="calib-vals"
+                              title={MODEL_KEYS.map((k) => {
+                                const m = modelMeta(k);
+                                return `${m.name} (${m.author}): ${fmtExt(externalOdds(r.code, k).advance)}`;
+                              })
+                                .concat(`Fyfa_Rat Model: ${ourAdvance}`)
+                                .join("\n")}
+                            >
+                              {MODEL_KEYS.map((k) => (
+                                <span key={k} className="cv">
+                                  <span className="ct">{tag(modelMeta(k).name)}</span>
+                                  {fmtExt(externalOdds(r.code, k).advance)}
+                                </span>
+                              ))}
+                            </span>
+                          ) : (
+                            "—"
+                          )}
+                        </td>
                       </tr>
                     );
                   })}

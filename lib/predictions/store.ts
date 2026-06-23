@@ -1,7 +1,7 @@
 import type { PrismaClient } from "@prisma/client";
 import elo from "../../data/elo-ratings.json";
 import fixtures from "../../data/fixtures-2026.json";
-import results2026 from "../../data/results-2026.json";
+import { ensureProjectionColumns } from "../ensure-schema";
 import { blendElo } from "./elo";
 import { runSimulations, type GroupFixture, type PlayedMatch, type TeamInput } from "./simulate";
 
@@ -16,10 +16,15 @@ const DEFAULT_ITERATIONS = 100000;
 
 // Run the Elo Monte Carlo simulation from the ratings + group fixtures and
 // persist per-team probabilities. Group matches that have already been played
-// (data/results-2026.json) are fixed rather than simulated, so projections
-// update after every real result. Shared by the seed, scripts/predict.ts, and
-// the nightly cron.
+// are fixed rather than simulated, so projections update after every real
+// result. The played results come from the COMPLETED Match rows in the database
+// — the same source the standings read — so the groups page never shows
+// standings and projections that disagree (e.g. a team that has clinched
+// reading below 100% to advance). Shared by the seed, scripts/predict.ts, and
+// the nightly cron, which applies the latest results onto Match rows first.
 export async function computeAndStoreProjections(prisma: PrismaClient, iterations = DEFAULT_ITERATIONS): Promise<number> {
+  await ensureProjectionColumns(prisma);
+
   const ratings = new Map(elo.ratings.map((r) => [r.code, r]));
 
   const teams: TeamInput[] = (fixtures.teams as { code: string; group: string }[]).map((t) => {
@@ -32,21 +37,48 @@ export async function computeAndStoreProjections(prisma: PrismaClient, iteration
     (groupFixtures[m.group] ??= []).push({ home: m.home, away: m.away });
   }
 
-  const playedResults: PlayedMatch[] = (results2026.results as PlayedMatch[]).map((r) => ({
-    home: r.home,
-    away: r.away,
-    homeScore: r.homeScore,
-    awayScore: r.awayScore,
-  }));
+  // Condition on real results from the database: every completed group match,
+  // oriented home|away exactly as the fixtures (matches are seeded from them).
+  const completed = await prisma.match.findMany({
+    where: { stage: "GROUP", status: "COMPLETED" },
+    include: { homeTeam: { select: { code: true } }, awayTeam: { select: { code: true } } },
+  });
+  const playedResults: PlayedMatch[] = completed
+    .filter((m) => m.homeTeam && m.awayTeam && m.homeScore != null && m.awayScore != null)
+    .map((m) => ({
+      home: m.homeTeam!.code,
+      away: m.awayTeam!.code,
+      homeScore: m.homeScore!,
+      awayScore: m.awayScore!,
+    }));
 
   const probs = runSimulations(teams, groupFixtures, iterations, 1234, playedResults);
 
+  // Baseline "at tournament start" advance odds: the full pre-tournament
+  // simulation with no results fixed. Captured once per team and never
+  // overwritten, so the "(was X%)" reference on the groups page stays anchored
+  // to kickoff even as ratings drift through the tournament.
+  const prior = new Map(
+    (await prisma.teamProjection.findMany({ select: { code: true, baselinePQualify: true } })).map((p) => [
+      p.code,
+      p.baselinePQualify,
+    ]),
+  );
+  const needBaseline = teams.some((t) => prior.get(t.code) == null);
+  const freshBaseline = new Map<string, number>();
+  if (needBaseline) {
+    const base = playedResults.length === 0 ? probs : runSimulations(teams, groupFixtures, iterations, 1234, []);
+    for (const b of base) freshBaseline.set(b.code, b.pQualify);
+  }
+
   for (const p of probs) {
+    const baselinePQualify = prior.get(p.code) ?? freshBaseline.get(p.code) ?? null;
     const data = {
       group: p.group,
       elo: p.elo,
       pGroupWinner: p.pGroupWinner,
       pQualify: p.pQualify,
+      baselinePQualify,
       pR16: p.pR16,
       pQF: p.pQF,
       pSF: p.pSF,

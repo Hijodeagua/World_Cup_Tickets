@@ -48,3 +48,21 @@ export function ensureMatchColumns(prisma: PrismaClient): Promise<void> {
   }
   return ensured;
 }
+
+// The TeamProjection.baselinePQualify column is applied here at runtime for the
+// same reason as ensureMatchColumns: Vercel's build container can't reach the
+// database, so additive, idempotent changes are applied on first use instead of
+// in the build step. Call before reading/writing baseline projection odds.
+let ensuredProjection: Promise<void> | null = null;
+
+export function ensureProjectionColumns(prisma: PrismaClient): Promise<void> {
+  if (!ensuredProjection) {
+    ensuredProjection = (async () => {
+      await prisma.$executeRawUnsafe(`ALTER TABLE "TeamProjection" ADD COLUMN IF NOT EXISTS "baselinePQualify" DOUBLE PRECISION`);
+    })().catch((e) => {
+      ensuredProjection = null; // let a later call retry if this one failed
+      throw e;
+    });
+  }
+  return ensuredProjection;
+}
