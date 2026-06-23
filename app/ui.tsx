@@ -22,6 +22,9 @@ export function SiteNav() {
       <Link href="/accuracy" className={cls("/accuracy")}>
         Accuracy
       </Link>
+      <Link href="/compare" className={cls("/compare")}>
+        Compare
+      </Link>
     </nav>
   );
 }
