@@ -31,7 +31,7 @@ jobs:
       - name: Check out World_Cup_Tickets
         uses: actions/checkout@v4
         with:
-          ref: claude/world-cup-elo-integration-dgni0c
+          ref: main
 
       - name: Check out Can-Tre-Beat-Vegas (Elo engine + results)
         uses: actions/checkout@v4
@@ -77,5 +77,5 @@ jobs:
             echo "No rating/result changes."
           else
             git commit -m "chore: nightly Elo ratings + WC results refresh"
-            git push origin HEAD:claude/world-cup-elo-integration-dgni0c
+            git push origin HEAD:main
           fi
