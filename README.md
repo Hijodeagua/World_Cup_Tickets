@@ -178,15 +178,20 @@ curl -H "Authorization: Bearer <CRON_SECRET>" http://localhost:3000/worldcup/api
 Keeping the groups page and projections current is a nightly pipeline:
 
 1. **GitHub Actions** (`.github/workflows/nightly-elo.yml`, 07:00 UTC) checks
-   out this repo and Can-Tre-Beat-Vegas, runs the Python Elo engine
+   out `main` and Can-Tre-Beat-Vegas, runs the Python Elo engine
    (`fetch_results` → `export_ratings`) to **recalculate ratings from
    newly-played games**, then `npm run sync-elo` + `npm run sync-results` and
-   commits the refreshed `data/elo-ratings.json` and `data/results-2026.json`.
-   (No extra secrets: Can-Tre-Beat-Vegas is public, so the default
-   `GITHUB_TOKEN` checks it out.)
-2. **Vercel Cron** (`/api/cron/predictions`, 08:00 UTC) then reads the committed
-   data, writes the results onto `Match` rows (driving the standings) and
-   recomputes the Elo Monte Carlo projections conditioned on them.
+   commits the refreshed `data/elo-ratings.json` and `data/results-2026.json`
+   back to `main`. (No extra secrets: Can-Tre-Beat-Vegas is public, so the
+   default `GITHUB_TOKEN` checks it out.)
+2. **Vercel Cron** (`/api/cron/predictions`, 08:00 UTC) then writes the results
+   onto `Match` rows (driving the standings) and recomputes the Elo Monte Carlo
+   projections — group-stage advancement and full tournament-to-champion odds —
+   conditioned on them. This runs **every night regardless** of whether a new
+   result landed. For the results it pulls the **live** feed directly
+   (`RESULTS_CSV_URL`, default martj42), so a new game is reflected the next
+   night even if step 1's commit hasn't landed; the committed
+   `data/results-2026.json` is the offline fallback.
 
 To run the whole chain locally (with Can-Tre-Beat-Vegas checked out alongside):
 

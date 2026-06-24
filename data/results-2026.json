@@ -1,5 +1,358 @@
 {
   "note": "Completed World Cup 2026 match results, keyed by fifaMatchNo (matches data/fixtures-2026.json seed order). Populated by `npm run sync-results` from the Can-Tre-Beat-Vegas results dataset; the nightly job commits updates here. Empty until matches are played. The cron predictions endpoint writes these scores onto Match rows (standings) and store.ts conditions the Elo projections on them.",
-  "updatedAt": "2026-06-17T15:14:20.088Z",
-  "results": []
+  "updatedAt": "2026-06-24T04:09:19.971Z",
+  "results": [
+    {
+      "fifaMatchNo": 1,
+      "date": "2026-06-11",
+      "home": "MEX",
+      "away": "RSA",
+      "homeScore": 2,
+      "awayScore": 0
+    },
+    {
+      "fifaMatchNo": 2,
+      "date": "2026-06-11",
+      "home": "KOR",
+      "away": "CZE",
+      "homeScore": 2,
+      "awayScore": 1
+    },
+    {
+      "fifaMatchNo": 3,
+      "date": "2026-06-12",
+      "home": "CAN",
+      "away": "BIH",
+      "homeScore": 1,
+      "awayScore": 1
+    },
+    {
+      "fifaMatchNo": 4,
+      "date": "2026-06-12",
+      "home": "USA",
+      "away": "PAR",
+      "homeScore": 4,
+      "awayScore": 1
+    },
+    {
+      "fifaMatchNo": 5,
+      "date": "2026-06-13",
+      "home": "HAI",
+      "away": "SCO",
+      "homeScore": 0,
+      "awayScore": 1
+    },
+    {
+      "fifaMatchNo": 6,
+      "date": "2026-06-13",
+      "home": "AUS",
+      "away": "TUR",
+      "homeScore": 2,
+      "awayScore": 0
+    },
+    {
+      "fifaMatchNo": 7,
+      "date": "2026-06-13",
+      "home": "BRA",
+      "away": "MAR",
+      "homeScore": 1,
+      "awayScore": 1
+    },
+    {
+      "fifaMatchNo": 8,
+      "date": "2026-06-13",
+      "home": "QAT",
+      "away": "SUI",
+      "homeScore": 1,
+      "awayScore": 1
+    },
+    {
+      "fifaMatchNo": 9,
+      "date": "2026-06-14",
+      "home": "CIV",
+      "away": "ECU",
+      "homeScore": 1,
+      "awayScore": 0
+    },
+    {
+      "fifaMatchNo": 10,
+      "date": "2026-06-14",
+      "home": "GER",
+      "away": "CUW",
+      "homeScore": 7,
+      "awayScore": 1
+    },
+    {
+      "fifaMatchNo": 11,
+      "date": "2026-06-14",
+      "home": "NED",
+      "away": "JPN",
+      "homeScore": 2,
+      "awayScore": 2
+    },
+    {
+      "fifaMatchNo": 12,
+      "date": "2026-06-14",
+      "home": "SWE",
+      "away": "TUN",
+      "homeScore": 5,
+      "awayScore": 1
+    },
+    {
+      "fifaMatchNo": 13,
+      "date": "2026-06-15",
+      "home": "KSA",
+      "away": "URU",
+      "homeScore": 1,
+      "awayScore": 1
+    },
+    {
+      "fifaMatchNo": 14,
+      "date": "2026-06-15",
+      "home": "ESP",
+      "away": "CPV",
+      "homeScore": 0,
+      "awayScore": 0
+    },
+    {
+      "fifaMatchNo": 15,
+      "date": "2026-06-15",
+      "home": "IRN",
+      "away": "NZL",
+      "homeScore": 2,
+      "awayScore": 2
+    },
+    {
+      "fifaMatchNo": 16,
+      "date": "2026-06-15",
+      "home": "BEL",
+      "away": "EGY",
+      "homeScore": 1,
+      "awayScore": 1
+    },
+    {
+      "fifaMatchNo": 17,
+      "date": "2026-06-16",
+      "home": "FRA",
+      "away": "SEN",
+      "homeScore": 3,
+      "awayScore": 1
+    },
+    {
+      "fifaMatchNo": 18,
+      "date": "2026-06-16",
+      "home": "IRQ",
+      "away": "NOR",
+      "homeScore": 1,
+      "awayScore": 4
+    },
+    {
+      "fifaMatchNo": 19,
+      "date": "2026-06-16",
+      "home": "ARG",
+      "away": "ALG",
+      "homeScore": 3,
+      "awayScore": 0
+    },
+    {
+      "fifaMatchNo": 20,
+      "date": "2026-06-16",
+      "home": "AUT",
+      "away": "JOR",
+      "homeScore": 3,
+      "awayScore": 1
+    },
+    {
+      "fifaMatchNo": 21,
+      "date": "2026-06-17",
+      "home": "GHA",
+      "away": "PAN",
+      "homeScore": 1,
+      "awayScore": 0
+    },
+    {
+      "fifaMatchNo": 22,
+      "date": "2026-06-17",
+      "home": "ENG",
+      "away": "CRO",
+      "homeScore": 4,
+      "awayScore": 2
+    },
+    {
+      "fifaMatchNo": 23,
+      "date": "2026-06-17",
+      "home": "POR",
+      "away": "COD",
+      "homeScore": 1,
+      "awayScore": 1
+    },
+    {
+      "fifaMatchNo": 24,
+      "date": "2026-06-17",
+      "home": "UZB",
+      "away": "COL",
+      "homeScore": 1,
+      "awayScore": 3
+    },
+    {
+      "fifaMatchNo": 25,
+      "date": "2026-06-18",
+      "home": "CZE",
+      "away": "RSA",
+      "homeScore": 1,
+      "awayScore": 1
+    },
+    {
+      "fifaMatchNo": 26,
+      "date": "2026-06-18",
+      "home": "SUI",
+      "away": "BIH",
+      "homeScore": 4,
+      "awayScore": 1
+    },
+    {
+      "fifaMatchNo": 27,
+      "date": "2026-06-18",
+      "home": "CAN",
+      "away": "QAT",
+      "homeScore": 6,
+      "awayScore": 0
+    },
+    {
+      "fifaMatchNo": 28,
+      "date": "2026-06-18",
+      "home": "MEX",
+      "away": "KOR",
+      "homeScore": 1,
+      "awayScore": 0
+    },
+    {
+      "fifaMatchNo": 29,
+      "date": "2026-06-19",
+      "home": "BRA",
+      "away": "HAI",
+      "homeScore": 3,
+      "awayScore": 0
+    },
+    {
+      "fifaMatchNo": 30,
+      "date": "2026-06-19",
+      "home": "SCO",
+      "away": "MAR",
+      "homeScore": 0,
+      "awayScore": 1
+    },
+    {
+      "fifaMatchNo": 31,
+      "date": "2026-06-19",
+      "home": "TUR",
+      "away": "PAR",
+      "homeScore": 0,
+      "awayScore": 1
+    },
+    {
+      "fifaMatchNo": 32,
+      "date": "2026-06-19",
+      "home": "USA",
+      "away": "AUS",
+      "homeScore": 2,
+      "awayScore": 0
+    },
+    {
+      "fifaMatchNo": 33,
+      "date": "2026-06-20",
+      "home": "GER",
+      "away": "CIV",
+      "homeScore": 2,
+      "awayScore": 1
+    },
+    {
+      "fifaMatchNo": 34,
+      "date": "2026-06-20",
+      "home": "ECU",
+      "away": "CUW",
+      "homeScore": 0,
+      "awayScore": 0
+    },
+    {
+      "fifaMatchNo": 35,
+      "date": "2026-06-20",
+      "home": "NED",
+      "away": "SWE",
+      "homeScore": 5,
+      "awayScore": 1
+    },
+    {
+      "fifaMatchNo": 36,
+      "date": "2026-06-20",
+      "home": "TUN",
+      "away": "JPN",
+      "homeScore": 0,
+      "awayScore": 4
+    },
+    {
+      "fifaMatchNo": 37,
+      "date": "2026-06-21",
+      "home": "URU",
+      "away": "CPV",
+      "homeScore": 2,
+      "awayScore": 2
+    },
+    {
+      "fifaMatchNo": 38,
+      "date": "2026-06-21",
+      "home": "ESP",
+      "away": "KSA",
+      "homeScore": 4,
+      "awayScore": 0
+    },
+    {
+      "fifaMatchNo": 39,
+      "date": "2026-06-21",
+      "home": "BEL",
+      "away": "IRN",
+      "homeScore": 0,
+      "awayScore": 0
+    },
+    {
+      "fifaMatchNo": 40,
+      "date": "2026-06-21",
+      "home": "NZL",
+      "away": "EGY",
+      "homeScore": 1,
+      "awayScore": 3
+    },
+    {
+      "fifaMatchNo": 41,
+      "date": "2026-06-22",
+      "home": "NOR",
+      "away": "SEN",
+      "homeScore": 3,
+      "awayScore": 2
+    },
+    {
+      "fifaMatchNo": 42,
+      "date": "2026-06-22",
+      "home": "FRA",
+      "away": "IRQ",
+      "homeScore": 3,
+      "awayScore": 0
+    },
+    {
+      "fifaMatchNo": 43,
+      "date": "2026-06-22",
+      "home": "ARG",
+      "away": "AUT",
+      "homeScore": 2,
+      "awayScore": 0
+    },
+    {
+      "fifaMatchNo": 44,
+      "date": "2026-06-22",
+      "home": "JOR",
+      "away": "ALG",
+      "homeScore": 1,
+      "awayScore": 2
+    }
+  ]
 }
