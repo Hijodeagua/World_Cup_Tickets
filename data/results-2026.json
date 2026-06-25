@@ -1,6 +1,6 @@
 {
   "note": "Completed World Cup 2026 match results, keyed by fifaMatchNo (matches data/fixtures-2026.json seed order). Populated by `npm run sync-results` from the Can-Tre-Beat-Vegas results dataset; the nightly job commits updates here. Empty until matches are played. The cron predictions endpoint writes these scores onto Match rows (standings) and store.ts conditions the Elo projections on them.",
-  "updatedAt": "2026-06-24T10:26:12.007Z",
+  "updatedAt": "2026-06-25T10:18:50.396Z",
   "results": [
     {
       "fifaMatchNo": 1,
@@ -383,6 +383,54 @@
       "date": "2026-06-23",
       "home": "COL",
       "away": "COD",
+      "homeScore": 1,
+      "awayScore": 0
+    },
+    {
+      "fifaMatchNo": 49,
+      "date": "2026-06-24",
+      "home": "SCO",
+      "away": "BRA",
+      "homeScore": 0,
+      "awayScore": 3
+    },
+    {
+      "fifaMatchNo": 50,
+      "date": "2026-06-24",
+      "home": "MAR",
+      "away": "HAI",
+      "homeScore": 4,
+      "awayScore": 2
+    },
+    {
+      "fifaMatchNo": 51,
+      "date": "2026-06-24",
+      "home": "SUI",
+      "away": "CAN",
+      "homeScore": 2,
+      "awayScore": 1
+    },
+    {
+      "fifaMatchNo": 52,
+      "date": "2026-06-24",
+      "home": "BIH",
+      "away": "QAT",
+      "homeScore": 3,
+      "awayScore": 1
+    },
+    {
+      "fifaMatchNo": 53,
+      "date": "2026-06-24",
+      "home": "CZE",
+      "away": "MEX",
+      "homeScore": 0,
+      "awayScore": 3
+    },
+    {
+      "fifaMatchNo": 54,
+      "date": "2026-06-24",
+      "home": "RSA",
+      "away": "KOR",
       "homeScore": 1,
       "awayScore": 0
     }
