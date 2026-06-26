@@ -45,12 +45,12 @@
     {
       "code": "NED",
       "eloOnline": 1965,
-      "eloModel": 1930
+      "eloModel": 1943
     },
     {
       "code": "GER",
       "eloOnline": 1930,
-      "eloModel": 1932
+      "eloModel": 1895
     },
     {
       "code": "BEL",
@@ -85,7 +85,7 @@
     {
       "code": "JPN",
       "eloOnline": 1830,
-      "eloModel": 1962
+      "eloModel": 1941
     },
     {
       "code": "SEN",
@@ -95,7 +95,7 @@
     {
       "code": "USA",
       "eloOnline": 1805,
-      "eloModel": 1899
+      "eloModel": 1852
     },
     {
       "code": "MEX",
@@ -105,7 +105,7 @@
     {
       "code": "ECU",
       "eloOnline": 1790,
-      "eloModel": 1840
+      "eloModel": 1878
     },
     {
       "code": "AUT",
@@ -120,7 +120,7 @@
     {
       "code": "TUR",
       "eloOnline": 1780,
-      "eloModel": 1756
+      "eloModel": 1803
     },
     {
       "code": "SCO",
@@ -150,7 +150,7 @@
     {
       "code": "SWE",
       "eloOnline": 1740,
-      "eloModel": 1663
+      "eloModel": 1684
     },
     {
       "code": "ALG",
@@ -160,12 +160,12 @@
     {
       "code": "AUS",
       "eloOnline": 1720,
-      "eloModel": 1882
+      "eloModel": 1874
     },
     {
       "code": "CIV",
       "eloOnline": 1710,
-      "eloModel": 1779
+      "eloModel": 1808
     },
     {
       "code": "EGY",
@@ -185,12 +185,12 @@
     {
       "code": "PAR",
       "eloOnline": 1690,
-      "eloModel": 1786
+      "eloModel": 1794
     },
     {
       "code": "TUN",
       "eloOnline": 1680,
-      "eloModel": 1621
+      "eloModel": 1608
     },
     {
       "code": "COD",
@@ -250,12 +250,12 @@
     {
       "code": "CUW",
       "eloOnline": 1450,
-      "eloModel": 1650
+      "eloModel": 1621
     }
   ],
   "eloModelSource": {
     "engine": "Can-Tre-Beat-Vegas soccer Elo (soccer/model/elo.py)",
-    "generatedAt": "2026-06-25T10:18:34+00:00",
-    "syncedAt": "2026-06-25T10:18:49.916Z"
+    "generatedAt": "2026-06-26T10:26:22+00:00",
+    "syncedAt": "2026-06-26T10:26:39.120Z"
   }
 }
