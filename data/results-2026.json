@@ -1,6 +1,6 @@
 {
   "note": "Completed World Cup 2026 match results, keyed by fifaMatchNo (matches data/fixtures-2026.json seed order). Populated by `npm run sync-results` from the Can-Tre-Beat-Vegas results dataset; the nightly job commits updates here. Empty until matches are played. The cron predictions endpoint writes these scores onto Match rows (standings) and store.ts conditions the Elo projections on them.",
-  "updatedAt": "2026-06-26T10:26:39.628Z",
+  "updatedAt": "2026-06-27T09:32:23.754Z",
   "results": [
     {
       "fifaMatchNo": 1,
