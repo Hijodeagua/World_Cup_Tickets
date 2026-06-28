@@ -1,6 +1,6 @@
 {
   "note": "Completed World Cup 2026 match results, keyed by fifaMatchNo (matches data/fixtures-2026.json seed order). Populated by `npm run sync-results` from the Can-Tre-Beat-Vegas results dataset; the nightly job commits updates here. Empty until matches are played. The cron predictions endpoint writes these scores onto Match rows (standings) and store.ts conditions the Elo projections on them.",
-  "updatedAt": "2026-06-27T09:32:23.754Z",
+  "updatedAt": "2026-06-28T10:07:35.252Z",
   "results": [
     {
       "fifaMatchNo": 1,
@@ -481,6 +481,102 @@
       "away": "AUS",
       "homeScore": 0,
       "awayScore": 0
+    },
+    {
+      "fifaMatchNo": 61,
+      "date": "2026-06-26",
+      "home": "NOR",
+      "away": "FRA",
+      "homeScore": 1,
+      "awayScore": 4
+    },
+    {
+      "fifaMatchNo": 62,
+      "date": "2026-06-26",
+      "home": "SEN",
+      "away": "IRQ",
+      "homeScore": 5,
+      "awayScore": 0
+    },
+    {
+      "fifaMatchNo": 63,
+      "date": "2026-06-26",
+      "home": "EGY",
+      "away": "IRN",
+      "homeScore": 1,
+      "awayScore": 1
+    },
+    {
+      "fifaMatchNo": 64,
+      "date": "2026-06-26",
+      "home": "NZL",
+      "away": "BEL",
+      "homeScore": 1,
+      "awayScore": 5
+    },
+    {
+      "fifaMatchNo": 65,
+      "date": "2026-06-26",
+      "home": "CPV",
+      "away": "KSA",
+      "homeScore": 0,
+      "awayScore": 0
+    },
+    {
+      "fifaMatchNo": 66,
+      "date": "2026-06-26",
+      "home": "URU",
+      "away": "ESP",
+      "homeScore": 0,
+      "awayScore": 1
+    },
+    {
+      "fifaMatchNo": 67,
+      "date": "2026-06-27",
+      "home": "PAN",
+      "away": "ENG",
+      "homeScore": 0,
+      "awayScore": 2
+    },
+    {
+      "fifaMatchNo": 68,
+      "date": "2026-06-27",
+      "home": "CRO",
+      "away": "GHA",
+      "homeScore": 2,
+      "awayScore": 1
+    },
+    {
+      "fifaMatchNo": 69,
+      "date": "2026-06-27",
+      "home": "ALG",
+      "away": "AUT",
+      "homeScore": 3,
+      "awayScore": 3
+    },
+    {
+      "fifaMatchNo": 70,
+      "date": "2026-06-27",
+      "home": "JOR",
+      "away": "ARG",
+      "homeScore": 1,
+      "awayScore": 3
+    },
+    {
+      "fifaMatchNo": 71,
+      "date": "2026-06-27",
+      "home": "COL",
+      "away": "POR",
+      "homeScore": 0,
+      "awayScore": 0
+    },
+    {
+      "fifaMatchNo": 72,
+      "date": "2026-06-27",
+      "home": "COD",
+      "away": "UZB",
+      "homeScore": 3,
+      "awayScore": 1
     }
   ]
 }
