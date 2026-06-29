@@ -140,7 +140,7 @@
     {
       "code": "CAN",
       "eloOnline": 1750,
-      "eloModel": 1801
+      "eloModel": 1822
     },
     {
       "code": "KOR",
@@ -210,7 +210,7 @@
     {
       "code": "RSA",
       "eloOnline": 1640,
-      "eloModel": 1695
+      "eloModel": 1674
     },
     {
       "code": "UZB",
@@ -255,7 +255,7 @@
   ],
   "eloModelSource": {
     "engine": "Can-Tre-Beat-Vegas soccer Elo (soccer/model/elo.py)",
-    "generatedAt": "2026-06-28T10:07:17+00:00",
-    "syncedAt": "2026-06-28T10:07:34.724Z"
+    "generatedAt": "2026-06-29T12:04:11+00:00",
+    "syncedAt": "2026-06-29T12:04:29.279Z"
   }
 }
