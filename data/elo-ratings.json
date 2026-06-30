@@ -30,7 +30,7 @@
     {
       "code": "BRA",
       "eloOnline": 2025,
-      "eloModel": 1972
+      "eloModel": 1999
     },
     {
       "code": "ENG",
@@ -45,12 +45,12 @@
     {
       "code": "NED",
       "eloOnline": 1965,
-      "eloModel": 1943
+      "eloModel": 1945
     },
     {
       "code": "GER",
       "eloOnline": 1930,
-      "eloModel": 1895
+      "eloModel": 1886
     },
     {
       "code": "BEL",
@@ -75,7 +75,7 @@
     {
       "code": "MAR",
       "eloOnline": 1865,
-      "eloModel": 1967
+      "eloModel": 1965
     },
     {
       "code": "SUI",
@@ -85,7 +85,7 @@
     {
       "code": "JPN",
       "eloOnline": 1830,
-      "eloModel": 1941
+      "eloModel": 1913
     },
     {
       "code": "SEN",
@@ -185,7 +185,7 @@
     {
       "code": "PAR",
       "eloOnline": 1690,
-      "eloModel": 1794
+      "eloModel": 1803
     },
     {
       "code": "TUN",
@@ -255,7 +255,7 @@
   ],
   "eloModelSource": {
     "engine": "Can-Tre-Beat-Vegas soccer Elo (soccer/model/elo.py)",
-    "generatedAt": "2026-06-29T12:04:11+00:00",
-    "syncedAt": "2026-06-29T12:04:29.279Z"
+    "generatedAt": "2026-06-30T10:34:33+00:00",
+    "syncedAt": "2026-06-30T10:34:49.996Z"
   }
 }
