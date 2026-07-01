@@ -432,3 +432,110 @@ export function ProjectionsTable({ rows, cols }: { rows: ProjRow[]; cols: string
     </table>
   );
 }
+
+/* ---- trophy odds over time (multi-line chart) ---- */
+export interface OddsSeries {
+  code: string;
+  name: string;
+  flag: string;
+  color: string;
+  values: number[]; // championship odds (%) per point, aligned with `points`
+}
+export interface TimelinePoint {
+  date: string;
+  label: string;
+}
+
+// A colour-per-team line chart of championship odds after every match-day, in
+// the spirit of the reference "Trophy odds over time" graphic. Pure inline SVG
+// (no chart lib): each team's live odds is a polyline, coloured by national kit,
+// labelled at its latest value on the right.
+export function TrophyOddsChart({
+  points,
+  series,
+  threshold,
+}: {
+  points: TimelinePoint[];
+  series: OddsSeries[];
+  threshold: number;
+}) {
+  const W = 860;
+  const H = 430;
+  const pad = { top: 20, right: 132, bottom: 34, left: 34 };
+  const plotW = W - pad.left - pad.right;
+  const plotH = H - pad.top - pad.bottom;
+
+  const n = points.length;
+  const rawMax = Math.max(...series.flatMap((s) => s.values), threshold * 100);
+  const maxY = Math.ceil(rawMax / 5) * 5; // round up to a tidy 5% gridline
+  const x = (i: number) => pad.left + (n <= 1 ? 0 : (i / (n - 1)) * plotW);
+  const y = (v: number) => pad.top + plotH - (v / maxY) * plotH;
+
+  const yTicks: number[] = [];
+  for (let v = 0; v <= maxY; v += 5) yTicks.push(v);
+
+  // Show a date tick roughly every other point so the axis doesn't crowd; always
+  // include the first and last.
+  const every = Math.max(1, Math.round(n / 9));
+  const fmtDate = (p: TimelinePoint) => {
+    if (p.label === "Start") return "Start";
+    const [, m, d] = p.date.split("-");
+    const mon = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][+m];
+    return `${mon} ${+d}`;
+  };
+
+  // De-collide the right-edge labels: walk top-to-bottom keeping a minimum gap.
+  const GAP = 15;
+  const labels = series
+    .map((s) => ({ s, v: s.values[n - 1], yv: y(s.values[n - 1]) }))
+    .sort((a, b) => a.yv - b.yv);
+  for (let i = 1; i < labels.length; i++) {
+    if (labels[i].yv - labels[i - 1].yv < GAP) labels[i].yv = labels[i - 1].yv + GAP;
+  }
+
+  return (
+    <div className="oddsts">
+      <h3>Trophy odds over time</h3>
+      <div className="csub">
+        Championship odds for every team that has reached {Math.round(threshold * 100)}%, updated after every match
+        played. Each line is coloured by national kit.
+      </div>
+      <svg viewBox={`0 0 ${W} ${H}`} className="oddssvg" role="img" aria-label="Championship odds over time">
+        {yTicks.map((v) => (
+          <g key={v}>
+            <line x1={pad.left} x2={pad.left + plotW} y1={y(v)} y2={y(v)} className="grid" />
+            <text x={pad.left - 8} y={y(v) + 3} className="ylab">
+              {v}
+            </text>
+          </g>
+        ))}
+        {points.map((p, i) =>
+          i % every === 0 || i === n - 1 ? (
+            <text key={i} x={x(i)} y={H - pad.bottom + 18} className="xlab">
+              {fmtDate(p)}
+            </text>
+          ) : null,
+        )}
+        {series.map((s) => (
+          <polyline
+            key={s.code}
+            points={s.values.map((v, i) => `${x(i)},${y(v)}`).join(" ")}
+            fill="none"
+            stroke={s.color}
+            strokeWidth={2.4}
+            strokeLinejoin="round"
+            strokeLinecap="round"
+          />
+        ))}
+        {labels.map(({ s, v, yv }) => (
+          <g key={s.code}>
+            <circle cx={x(n - 1)} cy={y(v)} r={2.8} fill={s.color} />
+            <text x={x(n - 1) + 8} y={yv + 3.5} className="slab" fill={s.color}>
+              {s.flag} {s.name} {Math.round(v)}%
+            </text>
+          </g>
+        ))}
+      </svg>
+    </div>
+  );
+}

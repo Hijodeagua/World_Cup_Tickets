@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { BLEND_WEIGHT_ONLINE } from "@/lib/predictions/elo";
-import { ProjectionsTable, type ProjRow } from "../ui";
+import timeline from "@/data/trophy-odds-timeline.json";
+import { ProjectionsTable, TrophyOddsChart, type ProjRow } from "../ui";
 
 export const dynamic = "force-dynamic";
 
@@ -91,6 +92,14 @@ export default async function PredictionsPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {timeline.series.length > 0 && (
+        <TrophyOddsChart
+          points={timeline.points}
+          series={timeline.series}
+          threshold={timeline.appearThreshold}
+        />
       )}
 
       <div className="legend">

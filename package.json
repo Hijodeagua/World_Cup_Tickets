@@ -11,6 +11,7 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
     "predict": "tsx scripts/predict.ts",
+    "timeline": "tsx scripts/trophy-odds-timeline.ts",
     "rosters": "tsx scripts/fetch-rosters.ts",
     "sync-elo": "tsx scripts/sync-elo.ts",
     "sync-results": "tsx scripts/sync-results.ts"
