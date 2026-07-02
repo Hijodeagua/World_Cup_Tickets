@@ -35,7 +35,7 @@
     {
       "code": "ENG",
       "eloOnline": 2000,
-      "eloModel": 2020
+      "eloModel": 2033
     },
     {
       "code": "POR",
@@ -55,7 +55,7 @@
     {
       "code": "BEL",
       "eloOnline": 1925,
-      "eloModel": 1862
+      "eloModel": 1892
     },
     {
       "code": "CRO",
@@ -90,12 +90,12 @@
     {
       "code": "SEN",
       "eloOnline": 1815,
-      "eloModel": 1862
+      "eloModel": 1832
     },
     {
       "code": "USA",
       "eloOnline": 1805,
-      "eloModel": 1852
+      "eloModel": 1862
     },
     {
       "code": "MEX",
@@ -175,7 +175,7 @@
     {
       "code": "BIH",
       "eloOnline": 1700,
-      "eloModel": 1588
+      "eloModel": 1577
     },
     {
       "code": "GHA",
@@ -195,7 +195,7 @@
     {
       "code": "COD",
       "eloOnline": 1660,
-      "eloModel": 1788
+      "eloModel": 1775
     },
     {
       "code": "QAT",
@@ -255,7 +255,7 @@
   ],
   "eloModelSource": {
     "engine": "Can-Tre-Beat-Vegas soccer Elo (soccer/model/elo.py)",
-    "generatedAt": "2026-07-01T10:45:41+00:00",
-    "syncedAt": "2026-07-01T10:45:57.974Z"
+    "generatedAt": "2026-07-02T10:13:22+00:00",
+    "syncedAt": "2026-07-02T10:13:41.217Z"
   }
 }
