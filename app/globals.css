@@ -710,6 +710,56 @@ footer.site .inner {
   color: var(--mut-2);
   margin-bottom: 18px;
 }
+
+/* trophy odds over time (multi-line SVG chart) */
+.oddsts {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 24px 28px 18px;
+  margin: 34px 0 6px;
+}
+.oddsts h3 {
+  font-family: "Newsreader", serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 19px;
+  color: var(--txt);
+  margin-bottom: 3px;
+}
+.oddsts .csub {
+  font-size: 12.5px;
+  color: var(--mut-2);
+  margin-bottom: 10px;
+  max-width: 640px;
+}
+.oddssvg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.oddssvg .grid {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+.oddssvg .ylab {
+  fill: var(--mut-2);
+  font-size: 11px;
+  text-anchor: end;
+  font-variant-numeric: tabular-nums;
+}
+.oddssvg .xlab {
+  fill: var(--mut-2);
+  font-size: 11px;
+  text-anchor: middle;
+  font-variant-numeric: tabular-nums;
+}
+.oddssvg .slab {
+  font-size: 12.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
 .bar {
   display: grid;
   grid-template-columns: 118px 1fr 46px;
