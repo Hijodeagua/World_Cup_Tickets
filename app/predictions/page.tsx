@@ -94,12 +94,8 @@ export default async function PredictionsPage() {
         </div>
       )}
 
-      {timeline.series.length > 0 && (
-        <TrophyOddsChart
-          points={timeline.points}
-          series={timeline.series}
-          threshold={timeline.appearThreshold}
-        />
+      {timeline.series.length > 0 && timeline.points.length >= 2 && (
+        <TrophyOddsChart points={timeline.points} series={timeline.series} />
       )}
 
       <div className="legend">

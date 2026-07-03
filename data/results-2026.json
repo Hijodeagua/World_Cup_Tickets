@@ -1,6 +1,6 @@
 {
-  "note": "Completed World Cup 2026 match results, keyed by fifaMatchNo (matches data/fixtures-2026.json seed order). Populated by `npm run sync-results` from the Can-Tre-Beat-Vegas results dataset; the nightly job commits updates here. Empty until matches are played. The cron predictions endpoint writes these scores onto Match rows (standings) and store.ts conditions the Elo projections on them.",
-  "updatedAt": "2026-07-03T10:09:38.425Z",
+  "note": "Completed World Cup 2026 match results. `results` are group-stage rows keyed by fifaMatchNo (matches data/fixtures-2026.json seed order); `knockoutResults` are played knockout rounds in feed orientation with the advancing team as `winner` (decided by score, or the shootout for drawn ties). Populated by `npm run sync-results` from the martj42 feed via Can-Tre-Beat-Vegas; the nightly job commits updates here. The cron predictions endpoint writes group scores onto Match rows (standings), store.ts conditions the Elo projections on them, and scripts/trophy-odds-timeline.ts uses both sections for the odds-over-time chart.",
+  "updatedAt": "2026-07-03T10:47:16.508Z",
   "results": [
     {
       "fifaMatchNo": 1,
@@ -577,6 +577,112 @@
       "away": "UZB",
       "homeScore": 3,
       "awayScore": 1
+    }
+  ],
+  "knockoutResults": [
+    {
+      "date": "2026-06-28",
+      "home": "RSA",
+      "away": "CAN",
+      "homeScore": 0,
+      "awayScore": 1,
+      "winner": "CAN"
+    },
+    {
+      "date": "2026-06-29",
+      "home": "BRA",
+      "away": "JPN",
+      "homeScore": 2,
+      "awayScore": 1,
+      "winner": "BRA"
+    },
+    {
+      "date": "2026-06-29",
+      "home": "GER",
+      "away": "PAR",
+      "homeScore": 1,
+      "awayScore": 1,
+      "winner": "PAR"
+    },
+    {
+      "date": "2026-06-29",
+      "home": "NED",
+      "away": "MAR",
+      "homeScore": 1,
+      "awayScore": 1,
+      "winner": "MAR"
+    },
+    {
+      "date": "2026-06-30",
+      "home": "CIV",
+      "away": "NOR",
+      "homeScore": 1,
+      "awayScore": 2,
+      "winner": "NOR"
+    },
+    {
+      "date": "2026-06-30",
+      "home": "FRA",
+      "away": "SWE",
+      "homeScore": 3,
+      "awayScore": 0,
+      "winner": "FRA"
+    },
+    {
+      "date": "2026-06-30",
+      "home": "MEX",
+      "away": "ECU",
+      "homeScore": 2,
+      "awayScore": 0,
+      "winner": "MEX"
+    },
+    {
+      "date": "2026-07-01",
+      "home": "ENG",
+      "away": "COD",
+      "homeScore": 2,
+      "awayScore": 1,
+      "winner": "ENG"
+    },
+    {
+      "date": "2026-07-01",
+      "home": "BEL",
+      "away": "SEN",
+      "homeScore": 3,
+      "awayScore": 2,
+      "winner": "BEL"
+    },
+    {
+      "date": "2026-07-01",
+      "home": "USA",
+      "away": "BIH",
+      "homeScore": 2,
+      "awayScore": 0,
+      "winner": "USA"
+    },
+    {
+      "date": "2026-07-02",
+      "home": "ESP",
+      "away": "AUT",
+      "homeScore": 3,
+      "awayScore": 0,
+      "winner": "ESP"
+    },
+    {
+      "date": "2026-07-02",
+      "home": "POR",
+      "away": "CRO",
+      "homeScore": 2,
+      "awayScore": 1,
+      "winner": "POR"
+    },
+    {
+      "date": "2026-07-02",
+      "home": "SUI",
+      "away": "ALG",
+      "homeScore": 2,
+      "awayScore": 0,
+      "winner": "SUI"
     }
   ]
 }

@@ -1,5 +1,5 @@
 {
-  "note": "Primary national-kit (home shirt) colour per team code, used to colour each line in the 'Trophy odds over time' chart on the Projections page. Approximate brand colours; edit freely. Teams without an entry fall back to a neutral grey in the chart.",
+  "note": "Primary national-kit (home shirt) colour per team code, used to colour each line in the 'Trophy odds over time' chart on the Projections page. Approximate brand colours; edit freely (takes effect on the next `npm run timeline`). Covers all 48 qualified teams from data/fixtures-2026.json; a team missing here falls back to a neutral grey in the chart.",
   "colors": {
     "ARG": "#75AADB",
     "BRA": "#F7D117",
@@ -15,8 +15,6 @@
     "CRO": "#D01C2B",
     "USA": "#1B2A54",
     "MEX": "#0B6E3C",
-    "ITA": "#0B5CAF",
-    "DEN": "#B22234",
     "SUI": "#D52B1E",
     "SEN": "#2E9E5B",
     "MAR": "#B01E2E",
@@ -40,6 +38,16 @@
     "TUR": "#D01C2B",
     "SCO": "#173B6E",
     "NZL": "#2B2B2B",
-    "SUI2": "#D52B1E"
+    "ALG": "#E9E5DA",
+    "BIH": "#2C4E9C",
+    "CPV": "#2A52BE",
+    "CUW": "#1FA3E0",
+    "HAI": "#1D3E8F",
+    "IRQ": "#3A7D44",
+    "JOR": "#A6192E",
+    "KSA": "#14894C",
+    "PAN": "#D50032",
+    "QAT": "#8A1538",
+    "TUN": "#E01A22"
   }
 }

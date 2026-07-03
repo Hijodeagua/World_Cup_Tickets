@@ -439,6 +439,7 @@ export interface OddsSeries {
   name: string;
   flag: string;
   color: string;
+  eliminatedAt: string | null; // ISO date the team was knocked out, or null while alive
   values: number[]; // championship odds (%) per point, aligned with `points`
 }
 export interface TimelinePoint {
@@ -449,24 +450,17 @@ export interface TimelinePoint {
 // A colour-per-team line chart of championship odds after every match-day, in
 // the spirit of the reference "Trophy odds over time" graphic. Pure inline SVG
 // (no chart lib): each team's live odds is a polyline, coloured by national kit,
-// labelled at its latest value on the right.
-export function TrophyOddsChart({
-  points,
-  series,
-  threshold,
-}: {
-  points: TimelinePoint[];
-  series: OddsSeries[];
-  threshold: number;
-}) {
+// labelled at its latest value on the right. Knocked-out teams render dimmed
+// with a struck-through label.
+export function TrophyOddsChart({ points, series }: { points: TimelinePoint[]; series: OddsSeries[] }) {
   const W = 860;
   const H = 430;
-  const pad = { top: 20, right: 132, bottom: 34, left: 34 };
+  const pad = { top: 20, right: 152, bottom: 34, left: 34 };
   const plotW = W - pad.left - pad.right;
   const plotH = H - pad.top - pad.bottom;
 
   const n = points.length;
-  const rawMax = Math.max(...series.flatMap((s) => s.values), threshold * 100);
+  const rawMax = Math.max(...series.flatMap((s) => s.values), 5);
   const maxY = Math.ceil(rawMax / 5) * 5; // round up to a tidy 5% gridline
   const x = (i: number) => pad.left + (n <= 1 ? 0 : (i / (n - 1)) * plotW);
   const y = (v: number) => pad.top + plotH - (v / maxY) * plotH;
@@ -484,21 +478,28 @@ export function TrophyOddsChart({
     return `${mon} ${+d}`;
   };
 
-  // De-collide the right-edge labels: walk top-to-bottom keeping a minimum gap.
+  // De-collide the right-edge labels: walk top-to-bottom keeping a minimum gap,
+  // then walk back up clamping to the bottom of the viewBox — several teams
+  // finishing near 0% (eliminations) would otherwise cascade off the chart.
   const GAP = 15;
+  const maxLabelY = H - pad.bottom + 6; // keep the lowest label above the date axis
   const labels = series
     .map((s) => ({ s, v: s.values[n - 1], yv: y(s.values[n - 1]) }))
     .sort((a, b) => a.yv - b.yv);
   for (let i = 1; i < labels.length; i++) {
     if (labels[i].yv - labels[i - 1].yv < GAP) labels[i].yv = labels[i - 1].yv + GAP;
   }
+  for (let i = labels.length - 1, bound = maxLabelY; i >= 0; i--, bound -= GAP) {
+    if (labels[i].yv > bound) labels[i].yv = bound;
+    else break;
+  }
 
   return (
     <div className="oddsts">
       <h3>Trophy odds over time</h3>
       <div className="csub">
-        Championship odds for every team that has reached {Math.round(threshold * 100)}%, updated after every match
-        played. Each line is coloured by national kit.
+        Championship odds for the leading contenders, updated after every match played. Each line is coloured by
+        national kit; <s>crossed-out</s> teams have been knocked out.
       </div>
       <svg viewBox={`0 0 ${W} ${H}`} className="oddssvg" role="img" aria-label="Championship odds over time">
         {yTicks.map((v) => (
@@ -522,16 +523,20 @@ export function TrophyOddsChart({
             points={s.values.map((v, i) => `${x(i)},${y(v)}`).join(" ")}
             fill="none"
             stroke={s.color}
+            strokeOpacity={s.eliminatedAt ? 0.45 : 1}
             strokeWidth={2.4}
             strokeLinejoin="round"
             strokeLinecap="round"
           />
         ))}
         {labels.map(({ s, v, yv }) => (
-          <g key={s.code}>
+          <g key={s.code} opacity={s.eliminatedAt ? 0.6 : 1}>
             <circle cx={x(n - 1)} cy={y(v)} r={2.8} fill={s.color} />
             <text x={x(n - 1) + 8} y={yv + 3.5} className="slab" fill={s.color}>
-              {s.flag} {s.name} {Math.round(v)}%
+              {s.flag}{" "}
+              <tspan textDecoration={s.eliminatedAt ? "line-through" : undefined}>
+                {s.name} {Math.round(v)}%
+              </tspan>
             </text>
           </g>
         ))}

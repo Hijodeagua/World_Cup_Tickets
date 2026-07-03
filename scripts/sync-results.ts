@@ -9,13 +9,14 @@
 //
 // Usage:
 //   npm run sync-results
-//   RESULTS_CSV_PATH=/path/to/results.csv npm run sync-results
+//   RESULTS_CSV_PATH=/path/to/results.csv SHOOTOUTS_CSV_PATH=/path/to/shootouts.csv npm run sync-results
 
 import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { parseWorldCupResultsCsv } from "../lib/results/parse";
 
 const DEFAULT_SOURCE = "../Can-Tre-Beat-Vegas/soccer/data/results.csv";
+const DEFAULT_SHOOTOUTS = "../Can-Tre-Beat-Vegas/soccer/data/shootouts.csv";
 const OUT_FILE = resolve(__dirname, "../data/results-2026.json");
 
 function main() {
@@ -27,15 +28,25 @@ function main() {
     throw new Error(`Could not read results CSV at ${csvPath}. Set RESULTS_CSV_PATH or check out Can-Tre-Beat-Vegas alongside this repo.`);
   }
 
-  const { results, unmatched } = parseWorldCupResultsCsv(text);
+  // Shootouts decide knockout draws; best-effort since the file may lag results.
+  const shootoutsPath = resolve(process.cwd(), process.env.SHOOTOUTS_CSV_PATH ?? DEFAULT_SHOOTOUTS);
+  let shootoutsText: string | undefined;
+  try {
+    shootoutsText = readFileSync(shootoutsPath, "utf8");
+  } catch {
+    console.warn(`sync-results: no shootouts CSV at ${shootoutsPath}; knockout draws will have unknown winners`);
+  }
+
+  const { results, knockoutResults, unmatched } = parseWorldCupResultsCsv(text, shootoutsText);
 
   const payload = {
     note: (JSON.parse(readFileSync(OUT_FILE, "utf8")) as { note: string }).note,
     updatedAt: new Date().toISOString(),
     results,
+    knockoutResults,
   };
   writeFileSync(OUT_FILE, JSON.stringify(payload, null, 2) + "\n");
-  console.log(`sync-results: wrote ${results.length} completed group-stage result(s) to ${OUT_FILE}`);
+  console.log(`sync-results: wrote ${results.length} group + ${knockoutResults.length} knockout result(s) to ${OUT_FILE}`);
   if (unmatched.length) console.warn(`sync-results: ${unmatched.length} unmatched row(s): ${unmatched.slice(0, 5).join("; ")}${unmatched.length > 5 ? " …" : ""}`);
 }
 

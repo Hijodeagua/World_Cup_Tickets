@@ -64,15 +64,22 @@ jobs:
         env:
           ELO_RATINGS_PATH: ${{ github.workspace }}/Can-Tre-Beat-Vegas/soccer/model/artifacts/elo_ratings.json
           RESULTS_CSV_PATH: ${{ github.workspace }}/Can-Tre-Beat-Vegas/soccer/data/results.csv
+          SHOOTOUTS_CSV_PATH: ${{ github.workspace }}/Can-Tre-Beat-Vegas/soccer/data/shootouts.csv
         run: |
           npm run sync-elo
           npm run sync-results
+
+      # Rebuild the trophy-odds-over-time chart data from the refreshed results
+      # (replays from the frozen baseline in data/elo-baseline-2026.json, so
+      # earlier points never change; newly knocked-out teams get crossed out).
+      - name: Regenerate trophy odds timeline
+        run: npm run timeline
 
       - name: Commit refreshed data
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/elo-ratings.json data/results-2026.json
+          git add data/elo-ratings.json data/results-2026.json data/trophy-odds-timeline.json
           if git diff --cached --quiet; then
             echo "No rating/result changes."
           else
