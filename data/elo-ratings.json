@@ -20,7 +20,7 @@
     {
       "code": "FRA",
       "eloOnline": 2065,
-      "eloModel": 2094
+      "eloModel": 2103
     },
     {
       "code": "ESP",
@@ -75,7 +75,7 @@
     {
       "code": "MAR",
       "eloOnline": 1865,
-      "eloModel": 1965
+      "eloModel": 1997
     },
     {
       "code": "SUI",
@@ -140,7 +140,7 @@
     {
       "code": "CAN",
       "eloOnline": 1750,
-      "eloModel": 1822
+      "eloModel": 1790
     },
     {
       "code": "KOR",
@@ -185,7 +185,7 @@
     {
       "code": "PAR",
       "eloOnline": 1690,
-      "eloModel": 1803
+      "eloModel": 1793
     },
     {
       "code": "TUN",
@@ -255,7 +255,7 @@
   ],
   "eloModelSource": {
     "engine": "Can-Tre-Beat-Vegas soccer Elo (soccer/model/elo.py)",
-    "generatedAt": "2026-07-04T09:27:45+00:00",
-    "syncedAt": "2026-07-04T09:28:04.004Z"
+    "generatedAt": "2026-07-05T09:45:34+00:00",
+    "syncedAt": "2026-07-05T09:45:52.797Z"
   }
 }
