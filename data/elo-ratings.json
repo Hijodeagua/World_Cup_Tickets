@@ -30,12 +30,12 @@
     {
       "code": "BRA",
       "eloOnline": 2025,
-      "eloModel": 1999
+      "eloModel": 1941
     },
     {
       "code": "ENG",
       "eloOnline": 2000,
-      "eloModel": 2033
+      "eloModel": 2067
     },
     {
       "code": "POR",
@@ -100,7 +100,7 @@
     {
       "code": "MEX",
       "eloOnline": 1800,
-      "eloModel": 2007
+      "eloModel": 1972
     },
     {
       "code": "ECU",
@@ -115,7 +115,7 @@
     {
       "code": "NOR",
       "eloOnline": 1780,
-      "eloModel": 1892
+      "eloModel": 1951
     },
     {
       "code": "TUR",
@@ -255,7 +255,7 @@
   ],
   "eloModelSource": {
     "engine": "Can-Tre-Beat-Vegas soccer Elo (soccer/model/elo.py)",
-    "generatedAt": "2026-07-05T09:45:34+00:00",
-    "syncedAt": "2026-07-05T09:45:52.797Z"
+    "generatedAt": "2026-07-06T11:41:29+00:00",
+    "syncedAt": "2026-07-06T11:41:45.520Z"
   }
 }
