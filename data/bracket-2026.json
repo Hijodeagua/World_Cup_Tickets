@@ -1,0 +1,22 @@
+{
+  "note": "Knockout bracket lineage for World Cup 2026: which earlier matches feed each knockout slot, keyed by fifaMatchNo. R32 slots (73-88) are decided by the group tables plus FIFA's third-place allocation, which depends on WHICH eight thirds qualify — so R32 participants are taken from the results feed rather than modeled here. From the round of 16 on, every slot is a pure winner/loser link per the official FIFA match schedule (third-place game takes the semi-final losers). The R16 and QF links have been cross-checked against the observed 2026 pairings.",
+  "source": "FIFA World Cup 26 official match schedule",
+  "lineage": {
+    "89": { "home": { "winnerOf": 74 }, "away": { "winnerOf": 77 } },
+    "90": { "home": { "winnerOf": 73 }, "away": { "winnerOf": 75 } },
+    "91": { "home": { "winnerOf": 76 }, "away": { "winnerOf": 78 } },
+    "92": { "home": { "winnerOf": 79 }, "away": { "winnerOf": 80 } },
+    "93": { "home": { "winnerOf": 83 }, "away": { "winnerOf": 84 } },
+    "94": { "home": { "winnerOf": 81 }, "away": { "winnerOf": 82 } },
+    "95": { "home": { "winnerOf": 86 }, "away": { "winnerOf": 88 } },
+    "96": { "home": { "winnerOf": 85 }, "away": { "winnerOf": 87 } },
+    "97": { "home": { "winnerOf": 89 }, "away": { "winnerOf": 90 } },
+    "98": { "home": { "winnerOf": 93 }, "away": { "winnerOf": 94 } },
+    "99": { "home": { "winnerOf": 91 }, "away": { "winnerOf": 92 } },
+    "100": { "home": { "winnerOf": 95 }, "away": { "winnerOf": 96 } },
+    "101": { "home": { "winnerOf": 97 }, "away": { "winnerOf": 98 } },
+    "102": { "home": { "winnerOf": 99 }, "away": { "winnerOf": 100 } },
+    "103": { "home": { "loserOf": 101 }, "away": { "loserOf": 102 } },
+    "104": { "home": { "winnerOf": 101 }, "away": { "winnerOf": 102 } }
+  }
+}

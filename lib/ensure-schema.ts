@@ -21,6 +21,7 @@ export function ensureMatchColumns(prisma: PrismaClient): Promise<void> {
       await prisma.$executeRawUnsafe(`ALTER TABLE "Match" ADD COLUMN IF NOT EXISTS "status" TEXT NOT NULL DEFAULT 'SCHEDULED'`);
       await prisma.$executeRawUnsafe(`ALTER TABLE "Match" ADD COLUMN IF NOT EXISTS "homeScore" INTEGER`);
       await prisma.$executeRawUnsafe(`ALTER TABLE "Match" ADD COLUMN IF NOT EXISTS "awayScore" INTEGER`);
+      await prisma.$executeRawUnsafe(`ALTER TABLE "Match" ADD COLUMN IF NOT EXISTS "winnerCode" TEXT`);
       // Frozen per-match predictions (lib/predictions/matchPredictions.ts). New
       // table, created here at runtime for the same reason as the columns above:
       // Vercel's build container can't reach the database, so this is idempotent

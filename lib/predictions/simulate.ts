@@ -6,6 +6,20 @@ import {
   simulateKnockout,
   simulateMatch,
 } from "./elo";
+import { FIRST_KNOCKOUT_MATCH, KNOCKOUT_LINEAGE, LAST_KNOCKOUT_MATCH } from "../bracket";
+
+// Real knockout state (from the Match rows): the actual teams in each slot and,
+// once played, the side that advanced. When every round-of-32 slot has both
+// teams — i.e. the group stage is over and the real bracket is set — the
+// simulation runs THAT bracket instead of an Elo-seeded hypothetical: completed
+// knockout games are fixed to their real winner, unplayed ones are simulated,
+// and later rounds chain through the lineage.
+export interface KnockoutSlotState {
+  fifaMatchNo: number;
+  home: string | null;
+  away: string | null;
+  winner: string | null;
+}
 
 export interface TeamInput {
   code: string;
@@ -102,10 +116,16 @@ export function runSimulations(
   iterations = 100000,
   seed = 1234,
   playedResults: PlayedMatch[] = [],
+  knockout: KnockoutSlotState[] = [],
 ): TeamProbabilities[] {
   const rng = makeRng(seed);
   const byCode = new Map(teams.map((t) => [t.code, t]));
   const groups = [...new Set(teams.map((t) => t.group))].sort();
+
+  // Use the real bracket when it exists: all 16 round-of-32 pairings known.
+  const koByNo = new Map(knockout.map((s) => [s.fifaMatchNo, s]));
+  const r32 = Array.from({ length: 16 }, (_, i) => koByNo.get(FIRST_KNOCKOUT_MATCH + i));
+  const realBracket = r32.length === 16 && r32.every((s) => s?.home && s.away);
 
   // Index played matches by "home|away" so rankGroup can fix their outcomes.
   const playedByMatch = new Map<string, PlayedMatch>();
@@ -130,6 +150,44 @@ export function runSimulations(
       runners.push(standings[1].code);
       thirds.push(standings[2]);
       counts.get(standings[0].code)!.gw++;
+    }
+
+    if (realBracket) {
+      // The tournament's actual round of 32 is set — "advance" is no longer a
+      // probability, it's the 32 teams on the bracket.
+      for (const s of r32) {
+        counts.get(s!.home!)!.q++;
+        counts.get(s!.away!)!.q++;
+      }
+
+      // Walk the real bracket in match order (feeders always have a lower match
+      // number). Played games are fixed to their real winner — shootouts
+      // included, via winnerCode — the rest are simulated; slots the feed
+      // hasn't filled yet chain through the lineage from simulated winners.
+      const winnerOf = new Map<number, string>();
+      const loserOf = new Map<number, string>();
+      for (let no = FIRST_KNOCKOUT_MATCH; no <= LAST_KNOCKOUT_MATCH; no++) {
+        const s = koByNo.get(no);
+        const lin = KNOCKOUT_LINEAGE.get(no);
+        if (lin?.home.loserOf) continue; // third-place game — no bearing on survival odds
+        const fromSource = (src: { winnerOf?: number; loserOf?: number }) =>
+          src.winnerOf ? winnerOf.get(src.winnerOf) : loserOf.get(src.loserOf ?? -1);
+        const home = s?.home ?? (lin ? fromSource(lin.home) : undefined);
+        const away = s?.away ?? (lin ? fromSource(lin.away) : undefined);
+        if (!home || !away) continue; // shouldn't happen with a full lineage
+        const w =
+          s?.winner ?? (simulateKnockout(byCode.get(home)!.elo, byCode.get(away)!.elo, rng) === 1 ? home : away);
+        winnerOf.set(no, w);
+        loserOf.set(no, w === home ? away : home);
+
+        const k = counts.get(w)!;
+        if (no <= 88) k.r16++;
+        else if (no <= 96) k.qf++;
+        else if (no <= 100) k.sf++;
+        else if (no <= 102) k.fin++;
+        else k.champ++;
+      }
+      continue;
     }
 
     const bestThirds = [...thirds].sort(cmpStanding).slice(0, 8).map((t) => t.code);

@@ -1,9 +1,10 @@
 import type { PrismaClient } from "@prisma/client";
 import elo from "../../data/elo-ratings.json";
 import fixtures from "../../data/fixtures-2026.json";
-import { ensureProjectionColumns } from "../ensure-schema";
+import { FIRST_KNOCKOUT_MATCH, LAST_KNOCKOUT_MATCH } from "../bracket";
+import { ensureMatchColumns, ensureProjectionColumns } from "../ensure-schema";
 import { blendElo } from "./elo";
-import { runSimulations, type GroupFixture, type PlayedMatch, type TeamInput } from "./simulate";
+import { runSimulations, type GroupFixture, type KnockoutSlotState, type PlayedMatch, type TeamInput } from "./simulate";
 
 // Raised from 20,000. Each tournament iteration simulates 72 group matches plus
 // a 31-match knockout bracket (~103 match sims), so 100,000 iterations is ~10M
@@ -23,6 +24,7 @@ const DEFAULT_ITERATIONS = 100000;
 // reading below 100% to advance). Shared by the seed, scripts/predict.ts, and
 // the nightly cron, which applies the latest results onto Match rows first.
 export async function computeAndStoreProjections(prisma: PrismaClient, iterations = DEFAULT_ITERATIONS): Promise<number> {
+  await ensureMatchColumns(prisma);
   await ensureProjectionColumns(prisma);
 
   const ratings = new Map(elo.ratings.map((r) => [r.code, r]));
@@ -52,7 +54,26 @@ export async function computeAndStoreProjections(prisma: PrismaClient, iteration
       awayScore: m.awayScore!,
     }));
 
-  const probs = runSimulations(teams, groupFixtures, iterations, 1234, playedResults);
+  // Real knockout bracket state (teams filled by the nightly knockout sync).
+  // Once every round-of-32 slot is set, the simulation follows THIS bracket —
+  // real results fixed, the rest simulated — instead of an Elo-seeded one.
+  const koMatches = await prisma.match.findMany({
+    where: { fifaMatchNo: { gte: FIRST_KNOCKOUT_MATCH, lte: LAST_KNOCKOUT_MATCH } },
+    include: { homeTeam: { select: { code: true } }, awayTeam: { select: { code: true } } },
+  });
+  const knockout: KnockoutSlotState[] = koMatches.map((m) => {
+    const home = m.homeTeam?.code ?? null;
+    const away = m.awayTeam?.code ?? null;
+    // Advancing side: the recorded winner (covers shootouts), or the score
+    // winner for a decisive completed game missing a winnerCode.
+    let winner = m.winnerCode ?? null;
+    if (!winner && m.status === "COMPLETED" && m.homeScore != null && m.awayScore != null && m.homeScore !== m.awayScore) {
+      winner = m.homeScore > m.awayScore ? home : away;
+    }
+    return { fifaMatchNo: m.fifaMatchNo, home, away, winner };
+  });
+
+  const probs = runSimulations(teams, groupFixtures, iterations, 1234, playedResults, knockout);
 
   // Baseline "at tournament start" advance odds: the full pre-tournament
   // simulation with no results fixed. Captured once per team and never

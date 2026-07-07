@@ -23,6 +23,9 @@ prediction the model actually made beforehand — no hindsight.
 - `Team`, `Venue`, `Match` — the schedule (104 matches, 16 host stadiums).
   `Match` also carries the result (`status`, `homeScore`, `awayScore`) once
   played, which drives the group standings and conditions the projections.
+  Knockout rows additionally carry `winnerCode` — the side that advanced —
+  because a drawn knockout game is decided on penalties, which the score
+  can't express; this is what advances the bracket.
 - `MatchPrediction` — the per-match win/draw/loss split (`pWinA`/`pDraw`/`pWinB`,
   blended Elo, iteration count). `frozen` is set the night before kickoff; a
   frozen row is **never recomputed**, preserving the pre-game prediction for
@@ -56,6 +59,11 @@ optional and missing data degrades to a dash. Our own model is labelled the
   are fixed, the rest simulated (see below). Played results are read from the
   completed `Match` rows in the database (the same source as the standings), so
   the two never disagree.
+- `/bracket` — the real knockout bracket, round of 32 through the final:
+  every slot fills in with the actual teams as results land (updated by the
+  nightly refresh), winners advance, drawn games show who went through on
+  penalties, and upcoming ties carry the model's call. Slots the feed hasn't
+  announced yet render their lineage label ("Winner Match 97").
 - `/matches/[id]` — match detail with the final score (once played) and a
   **matchup view**: an Elo head-to-head forecast (win/draw/loss + average
   scoreline + the ten most likely scorelines), optional market lines, and both
@@ -69,8 +77,9 @@ optional and missing data degrades to a dash. Our own model is labelled the
   projected score, whether the two agree, and (once played) which got it right,
   plus summary hit-rates. Reads `data/external-models.json`.
 - `/api/cron/predictions` — applies the latest results to `Match` rows,
-  recomputes the Elo projections, and refreshes/freezes per-match predictions
-  (Bearer `CRON_SECRET`).
+  advances the knockout bracket (actual teams, scores, shootout winners, plus
+  later-round slots via the bracket lineage), recomputes the Elo projections,
+  and refreshes/freezes per-match predictions (Bearer `CRON_SECRET`).
 - `/api/cron/rosters` — weekly squad pull (Bearer `CRON_SECRET`).
 
 ## Per-match predictions (`lib/predictions/matchPredictions.ts`)
@@ -98,10 +107,15 @@ precision gain isn't worth the time.)
 - `elo.ts` — Poisson goals model driven by Elo difference (host boost for the
   three host nations); yields W/D/L and goal differences for tiebreakers.
 - `simulate.ts` — simulates the real group fixtures, ranks with tiebreakers,
-  qualifies 12 winners + 12 runners-up + 8 best thirds, then runs an Elo-seeded
-  single-elimination bracket. **Already-played group matches
+  qualifies 12 winners + 12 runners-up + 8 best thirds, then runs the knockout
+  as single elimination. **Already-played matches
   (`data/results-2026.json`) are fixed, not simulated**, so projections
-  condition on real results.
+  condition on real results — and **once the real round of 32 is set, the
+  simulation runs the actual bracket** (`lib/bracket.ts` +
+  `data/bracket-2026.json`): played knockout games are fixed to their real
+  winner (shootouts included via `winnerCode`), unplayed ties are simulated,
+  and undecided slots chain through the official lineage. Before the group
+  stage is done, the bracket falls back to Elo seeding.
 - Recompute: `npm run predict` (optionally pass iterations, e.g.
   `npm run predict 50000`). The nightly job does this automatically.
 
@@ -119,11 +133,37 @@ output so a single implementation backs both projects.
   `../Can-Tre-Beat-Vegas/...`), maps engine team names to our codes
   (`data/team-name-map.json`) and writes `eloModel` into `data/elo-ratings.json`
   with provenance (`eloModelSource`).
-- `npm run sync-results` reads completed WC-2026 scores from that repo's
-  `soccer/data/results.csv` and writes `data/results-2026.json`.
+- `npm run sync-results` reads WC-2026 scores from that repo's
+  `soccer/data/results.csv` (plus `shootouts.csv` for drawn knockout games) and
+  writes `data/results-2026.json` — group results and knockout rows alike.
 
-Caveat: the knockout bracket is **Elo-seeded**, not FIFA's exact slot/third-place
-table — a projection, not a prediction.
+Caveat: **before** the group stage is decided, the simulated knockout bracket
+is **Elo-seeded**, not FIFA's exact slot/third-place table. Once the real round
+of 32 exists, the simulation and the `/bracket` page follow the actual bracket.
+
+## Knockout bracket (`lib/bracket.ts`, `data/bracket-2026.json`)
+
+The bracket advances nightly from two sources:
+
+1. **The results feed** is ground truth for who occupies each slot: a knockout
+   row appears with its actual teams as soon as the pairing is set ("NA"
+   scores until played), and completed games carry the score plus — for draws
+   — the shootout winner from `shootouts.csv`. Feed rows are matched to
+   fixtures 73–104 by stadium (feed city → venue, tolerant of the feed's
+   loose city naming) and date (±1 day).
+2. **The bracket lineage** (`data/bracket-2026.json`, from the official FIFA
+   match schedule) says which matches feed each round-of-16-onward slot, so
+   winners advance into next-round slots the feed hasn't announced yet, and
+   empty slots get a label ("Winner Match 97"). Round-of-32 slots are not
+   modeled from the group tables (FIFA's third-place allocation depends on
+   which eight thirds qualify) — they come from the feed.
+
+`applyKnockoutsToDb` writes the resolved bracket onto the `Match` rows —
+teams, scores, `winnerCode` — so the match board, the `/bracket` page, the
+projections and the per-match predictions (knockout games get a frozen
+prediction as soon as their teams are known) all follow the real tournament.
+It only ever fills slots, never clears them, so a feed hiccup can't blank out
+the bracket.
 
 ## Matchup view (`lib/predictions/headToHead.ts`, `lib/odds/`, `lib/rosters.ts`)
 
@@ -185,13 +225,15 @@ Keeping the groups page and projections current is a nightly pipeline:
    back to `main`. (No extra secrets: Can-Tre-Beat-Vegas is public, so the
    default `GITHUB_TOKEN` checks it out.)
 2. **Vercel Cron** (`/api/cron/predictions`, 08:00 UTC) then writes the results
-   onto `Match` rows (driving the standings) and recomputes the Elo Monte Carlo
-   projections — group-stage advancement and full tournament-to-champion odds —
-   conditioned on them. This runs **every night regardless** of whether a new
-   result landed. For the results it pulls the **live** feed directly
-   (`RESULTS_CSV_URL`, default martj42), so a new game is reflected the next
-   night even if step 1's commit hasn't landed; the committed
-   `data/results-2026.json` is the offline fallback.
+   onto `Match` rows (driving the standings), **advances the knockout bracket**
+   (teams, scores and shootout winners onto matches 73–104, later rounds filled
+   from the winners via the lineage), and recomputes the Elo Monte Carlo
+   projections — conditioned on the results and, once the round of 32 is set,
+   on the **real bracket**. This runs **every night regardless** of whether a
+   new result landed. For the results it pulls the **live** feed directly
+   (`RESULTS_CSV_URL` + `SHOOTOUTS_CSV_URL`, default martj42), so a new game is
+   reflected the next night even if step 1's commit hasn't landed; the
+   committed `data/results-2026.json` is the offline fallback.
 
 To run the whole chain locally (with Can-Tre-Beat-Vegas checked out alongside):
 
@@ -201,8 +243,8 @@ npm run sync-elo && npm run sync-results
 npm run predict        # recompute projections from the synced data
 ```
 
-> **Schema note:** `status`/`homeScore`/`awayScore` on `Match` and the
-> `MatchPrediction` table are applied automatically at runtime —
+> **Schema note:** `status`/`homeScore`/`awayScore`/`winnerCode` on `Match` and
+> the `MatchPrediction` table are applied automatically at runtime —
 > `lib/ensure-schema.ts` runs idempotent `ADD COLUMN IF NOT EXISTS` /
 > `CREATE TABLE IF NOT EXISTS` (memoized, once per server instance) before any
 > read, so no build-time DB access or manual migration is needed. `npm run

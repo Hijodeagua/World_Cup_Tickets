@@ -114,9 +114,10 @@ export default async function PredictionsPage() {
 
       <p className="meth" style={{ margin: "20px 0 0", maxWidth: 720 }}>
         Method: group matches simulated with a Poisson goals model driven by Elo difference (host boost for
-        USA/MEX/CAN); top two per group plus the eight best third-placed teams advance; the knockout bracket is
-        Elo-seeded (not FIFA&apos;s exact slot table) and resolved as single elimination. &ldquo;Advance&rdquo; =
-        reach the round of 32.
+        USA/MEX/CAN); top two per group plus the eight best third-placed teams advance. Once the real round of 32
+        is set, the simulation runs the <b>actual bracket</b> — played knockout games are fixed to their real
+        winners (shootouts included) and only the remaining ties are simulated; before that, the bracket is
+        Elo-seeded. &ldquo;Advance&rdquo; = reach the round of 32.
       </p>
       <div className="foot" />
     </>

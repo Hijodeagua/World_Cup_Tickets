@@ -60,6 +60,11 @@ model Match {
   homeScore Int?
   awayScore Int?
 
+  // Knockout only: the team code that advances. Usually implied by the score,
+  // but a drawn knockout game is decided on penalties, which the score can't
+  // express — this is what drives the bracket to the next round.
+  winnerCode String?
+
   @@index([kickoff])
 }
 
