@@ -1,6 +1,6 @@
 {
-  "note": "World Cup 2026 match results, keyed by fifaMatchNo (matches data/fixtures-2026.json seed order). Populated by `npm run sync-results` from the Can-Tre-Beat-Vegas results dataset; the nightly job commits updates here. `results` are completed group-stage scores; `knockouts` are the knockout rows (73-104) with the actual teams \u2014 including upcoming pairings the feed has announced (null scores) \u2014 and the advancing `winner` (shootout-resolved for drawn games). The cron predictions endpoint writes these onto Match rows (standings + bracket) and store.ts conditions the Elo projections on them.",
-  "updatedAt": "2026-07-07T00:42:35.807Z",
+  "note": "World Cup 2026 match results, keyed by fifaMatchNo (matches data/fixtures-2026.json seed order). Populated by `npm run sync-results` from the Can-Tre-Beat-Vegas results dataset; the nightly job commits updates here. `results` are completed group-stage scores; `knockouts` are the knockout rows (73-104) with the actual teams — including upcoming pairings the feed has announced (null scores) — and the advancing `winner` (shootout-resolved for drawn games). The cron predictions endpoint writes these onto Match rows (standings + bracket) and store.ts conditions the Elo projections on them.",
+  "updatedAt": "2026-07-07T10:29:42.341Z",
   "results": [
     {
       "fifaMatchNo": 1,
@@ -786,9 +786,9 @@
       "date": "2026-07-06",
       "home": "POR",
       "away": "ESP",
-      "homeScore": null,
-      "awayScore": null,
-      "winner": null
+      "homeScore": 0,
+      "awayScore": 1,
+      "winner": "ESP"
     },
     {
       "fifaMatchNo": 94,
@@ -796,9 +796,9 @@
       "date": "2026-07-06",
       "home": "USA",
       "away": "BEL",
-      "homeScore": null,
-      "awayScore": null,
-      "winner": null
+      "homeScore": 1,
+      "awayScore": 4,
+      "winner": "BEL"
     },
     {
       "fifaMatchNo": 95,
@@ -826,6 +826,16 @@
       "date": "2026-07-09",
       "home": "FRA",
       "away": "MAR",
+      "homeScore": null,
+      "awayScore": null,
+      "winner": null
+    },
+    {
+      "fifaMatchNo": 98,
+      "stage": "QF",
+      "date": "2026-07-10",
+      "home": "ESP",
+      "away": "BEL",
       "homeScore": null,
       "awayScore": null,
       "winner": null
