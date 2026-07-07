@@ -176,8 +176,9 @@ async function main() {
   }
 
   // 32 real knockout matches: real venue/date/time from the official schedule,
-  // teams TBD (decided by group results). Bracket lineage isn't modeled here —
-  // the /predictions page projects who fills these slots via Elo.
+  // teams TBD at upsert time (decided by group results). The committed knockout
+  // rows in data/results-2026.json fill teams/scores just below, and the
+  // nightly cron keeps the bracket advancing via lib/bracket.ts.
   for (const m of knockoutMatches) {
     const kickoff = new Date(`${m.date}T${m.timeET}:00${ET_UTC_OFFSET}`);
     if (Number.isNaN(kickoff.getTime())) throw new Error(`invalid knockout kickoff: match ${m.matchNo}`);
@@ -201,6 +202,7 @@ async function main() {
   // (empty until matches are played; the nightly job keeps it current).
   const results = (await import("../data/results-2026.json")).default as {
     results: { fifaMatchNo: number; homeScore: number; awayScore: number }[];
+    knockouts?: import("../lib/results/parse").KnockoutRow[];
   };
   let applied = 0;
   for (const r of results.results) {
@@ -213,6 +215,12 @@ async function main() {
     applied++;
   }
   console.log("Applied", applied, "completed result(s)");
+
+  // Fill the knockout bracket from the committed knockout rows (actual teams,
+  // scores, shootout winners) and the lineage — same path as the nightly cron.
+  const { applyKnockoutsToDb } = await import("../lib/bracket");
+  const bracket = await applyKnockoutsToDb(prisma, results.knockouts ?? []);
+  console.log("Knockout bracket:", bracket);
 
   // Compute Elo Monte Carlo projections (conditioned on any applied results).
   const { computeAndStoreProjections } = await import("../lib/predictions/store");

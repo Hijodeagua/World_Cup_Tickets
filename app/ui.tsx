@@ -16,6 +16,9 @@ export function SiteNav() {
       <Link href="/groups" className={cls("/groups")}>
         Groups
       </Link>
+      <Link href="/bracket" className={cls("/bracket")}>
+        Bracket
+      </Link>
       <Link href="/predictions" className={cls("/predictions")}>
         Projections
       </Link>
