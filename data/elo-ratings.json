@@ -15,7 +15,7 @@
     {
       "code": "ARG",
       "eloOnline": 2090,
-      "eloModel": 2100
+      "eloModel": 2111
     },
     {
       "code": "FRA",
@@ -70,7 +70,7 @@
     {
       "code": "COL",
       "eloOnline": 1880,
-      "eloModel": 1975
+      "eloModel": 1969
     },
     {
       "code": "MAR",
@@ -80,7 +80,7 @@
     {
       "code": "SUI",
       "eloOnline": 1835,
-      "eloModel": 1902
+      "eloModel": 1908
     },
     {
       "code": "JPN",
@@ -170,7 +170,7 @@
     {
       "code": "EGY",
       "eloOnline": 1700,
-      "eloModel": 1838
+      "eloModel": 1827
     },
     {
       "code": "BIH",
@@ -255,7 +255,7 @@
   ],
   "eloModelSource": {
     "engine": "Can-Tre-Beat-Vegas soccer Elo (soccer/model/elo.py)",
-    "generatedAt": "2026-07-07T10:29:24+00:00",
-    "syncedAt": "2026-07-07T10:29:41.687Z"
+    "generatedAt": "2026-07-08T09:29:45+00:00",
+    "syncedAt": "2026-07-08T09:30:02.355Z"
   }
 }
