@@ -1,6 +1,6 @@
 {
   "note": "World Cup 2026 match results, keyed by fifaMatchNo (matches data/fixtures-2026.json seed order). Populated by `npm run sync-results` from the Can-Tre-Beat-Vegas results dataset; the nightly job commits updates here. `results` are completed group-stage scores; `knockouts` are the knockout rows (73-104) with the actual teams — including upcoming pairings the feed has announced (null scores) — and the advancing `winner` (shootout-resolved for drawn games). The cron predictions endpoint writes these onto Match rows (standings + bracket) and store.ts conditions the Elo projections on them.",
-  "updatedAt": "2026-07-13T10:33:13.021Z",
+  "updatedAt": "2026-07-14T09:09:42.920Z",
   "results": [
     {
       "fifaMatchNo": 1,
@@ -846,9 +846,9 @@
       "date": "2026-07-11",
       "home": "NOR",
       "away": "ENG",
-      "homeScore": null,
-      "awayScore": null,
-      "winner": null
+      "homeScore": 1,
+      "awayScore": 2,
+      "winner": "ENG"
     },
     {
       "fifaMatchNo": 100,
@@ -856,6 +856,26 @@
       "date": "2026-07-11",
       "home": "ARG",
       "away": "SUI",
+      "homeScore": 3,
+      "awayScore": 1,
+      "winner": "ARG"
+    },
+    {
+      "fifaMatchNo": 101,
+      "stage": "SF",
+      "date": "2026-07-14",
+      "home": "FRA",
+      "away": "ESP",
+      "homeScore": null,
+      "awayScore": null,
+      "winner": null
+    },
+    {
+      "fifaMatchNo": 102,
+      "stage": "SF",
+      "date": "2026-07-15",
+      "home": "ENG",
+      "away": "ARG",
       "homeScore": null,
       "awayScore": null,
       "winner": null
