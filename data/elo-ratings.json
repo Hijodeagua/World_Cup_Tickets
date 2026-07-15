@@ -20,12 +20,12 @@
     {
       "code": "FRA",
       "eloOnline": 2065,
-      "eloModel": 2135
+      "eloModel": 2091
     },
     {
       "code": "ESP",
       "eloOnline": 2070,
-      "eloModel": 2147
+      "eloModel": 2190
     },
     {
       "code": "BRA",
@@ -255,7 +255,7 @@
   ],
   "eloModelSource": {
     "engine": "Can-Tre-Beat-Vegas soccer Elo (soccer/model/elo.py)",
-    "generatedAt": "2026-07-14T09:09:23+00:00",
-    "syncedAt": "2026-07-14T09:09:42.301Z"
+    "generatedAt": "2026-07-15T09:14:42+00:00",
+    "syncedAt": "2026-07-15T09:15:00.185Z"
   }
 }
