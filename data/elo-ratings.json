@@ -15,7 +15,7 @@
     {
       "code": "ARG",
       "eloOnline": 2090,
-      "eloModel": 2132
+      "eloModel": 2158
     },
     {
       "code": "FRA",
@@ -35,7 +35,7 @@
     {
       "code": "ENG",
       "eloOnline": 2000,
-      "eloModel": 2086
+      "eloModel": 2060
     },
     {
       "code": "POR",
@@ -255,7 +255,7 @@
   ],
   "eloModelSource": {
     "engine": "Can-Tre-Beat-Vegas soccer Elo (soccer/model/elo.py)",
-    "generatedAt": "2026-07-15T09:14:42+00:00",
-    "syncedAt": "2026-07-15T09:15:00.185Z"
+    "generatedAt": "2026-07-16T09:20:21+00:00",
+    "syncedAt": "2026-07-16T09:20:39.150Z"
   }
 }
