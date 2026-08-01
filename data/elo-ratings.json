@@ -115,7 +115,7 @@
     {
       "code": "NOR",
       "eloOnline": 1780,
-      "eloModel": 1913
+      "eloModel": 1912
     },
     {
       "code": "TUR",
@@ -200,7 +200,7 @@
     {
       "code": "QAT",
       "eloOnline": 1650,
-      "eloModel": 1580
+      "eloModel": 1581
     },
     {
       "code": "KSA",
@@ -255,7 +255,7 @@
   ],
   "eloModelSource": {
     "engine": "Can-Tre-Beat-Vegas soccer Elo (soccer/model/elo.py)",
-    "generatedAt": "2026-07-31T09:49:30+00:00",
-    "syncedAt": "2026-07-31T09:49:50.502Z"
+    "generatedAt": "2026-08-01T09:10:46+00:00",
+    "syncedAt": "2026-08-01T09:11:04.695Z"
   }
 }
