@@ -1,6 +1,6 @@
 {
   "note": "World Cup 2026 match results, keyed by fifaMatchNo (matches data/fixtures-2026.json seed order). Populated by `npm run sync-results` from the Can-Tre-Beat-Vegas results dataset; the nightly job commits updates here. `results` are completed group-stage scores; `knockouts` are the knockout rows (73-104) with the actual teams — including upcoming pairings the feed has announced (null scores) — and the advancing `winner` (shootout-resolved for drawn games). The cron predictions endpoint writes these onto Match rows (standings + bracket) and store.ts conditions the Elo projections on them.",
-  "updatedAt": "2026-08-04T09:42:52.771Z",
+  "updatedAt": "2026-08-05T09:41:15.215Z",
   "results": [
     {
       "fifaMatchNo": 1,
