@@ -150,7 +150,7 @@
     {
       "code": "SWE",
       "eloOnline": 1740,
-      "eloModel": 1717
+      "eloModel": 1716
     },
     {
       "code": "ALG",
@@ -255,7 +255,7 @@
   ],
   "eloModelSource": {
     "engine": "Can-Tre-Beat-Vegas soccer Elo (soccer/model/elo.py)",
-    "generatedAt": "2026-11-19T16:28:20+00:00",
-    "syncedAt": "2026-11-19T16:28:36.385Z"
+    "generatedAt": "2026-11-20T15:59:30+00:00",
+    "syncedAt": "2026-11-20T15:59:45.494Z"
   }
 }
